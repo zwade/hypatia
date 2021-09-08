@@ -1,0 +1,20 @@
+{
+  "packageManager": "yarn@3.0.1",
+  "devDependencies": {
+    "typescript": "^4.4.2"
+  },
+  "workspaces": [
+    "*"
+  ],
+  "dependencies": {
+    "node-gyp": "^8.2.0"
+  },
+  "r": {
+    "ts:watch": "tsc -b -w xtermjs",
+    "watch": [
+      "r:ts:watch",
+      "r:xtermjs:watch",
+      "r:client:watch"
+    ]
+  }
+}

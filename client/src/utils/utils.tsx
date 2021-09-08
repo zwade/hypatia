@@ -1,0 +1,1 @@
+export const minmax = (e: number, min: number, max: number) => Math.min(Math.max(e, min), max);
