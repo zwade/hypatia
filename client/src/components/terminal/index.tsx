@@ -37,7 +37,7 @@ export const Terminal = () => {
 
         conn.connect();
 
-        // xterm.terminal.onResize(({ rows, cols }) => conn.resize(rows, cols));
+        xterm.terminal.onResize(({ rows, cols }) => conn.resize(rows, cols));
     }, [xterm]);
 
     return (

@@ -1,6 +1,7 @@
 const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { DefinePlugin } = require("webpack");
 
 module.exports = {
     mode: "development",
@@ -11,6 +12,9 @@ module.exports = {
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js", ".scss", ".css"],
+        fallback: {
+            "assert": require.resolve("assert")
+        }
     },
 
     devServer: {
@@ -23,6 +27,9 @@ module.exports = {
             "/ws-api": {
                 "target": "http://localhost:3001",
                 "ws": true
+            },
+            "/module": {
+                "target": "http://localhost:3001",
             }
         },
     },
@@ -66,6 +73,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "./index.html")
         }),
+        new DefinePlugin({
+            "process.env": JSON.stringify({}),
+        })
     ],
 
     // When importing a module whose path matches one of the following, just
