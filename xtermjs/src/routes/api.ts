@@ -19,16 +19,30 @@ export const apiRouter = express.Router()
 const terminals: Record<number, pty.IPty> = {};
 const logs: Record<number, string> = {};
 const timeouts: Record<number, NodeJS.Timeout> = {};
+const sockets: Record<number, Set<WebSocket>> = {};
 
 const deleteSession = (session: number) => () => {
     const term = terminals[session] as pty.IPty | undefined;
-    if (term === undefined) return;
 
-    term.kill();
-    console.log('Closed terminal ' + term.pid);
+    try {
+        term?.kill();
+        console.log('Closed terminal ' + session);
+    } catch {
+        // pass
+    }
+
+    for (const socket of sockets[session] ?? []) {
+        try {
+            socket.close();
+        } catch {
+            // pass
+        }
+    }
+
     // Clean things up
-    delete terminals[term.pid];
-    delete logs[term.pid];
+    delete terminals[session];
+    delete logs[session];
+    delete sockets[session];
 }
 
 const clearTermination = (session: number) => {
@@ -49,16 +63,21 @@ apiRouter.post('/terminals', (req, res) => {
     marshal(req.query, M.obj({cols: M.str, rows: M.str}));
     const env = Object.assign({}, process.env as Record<string, string>);
     env['COLORTERM'] = 'truecolor';
-    const cols = parseInt(req.query.cols, 10),
-        rows = parseInt(req.query.rows, 10),
-        term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
-            name: 'xterm-256color',
-            cols: cols || 80,
-            rows: rows || 24,
-            cwd: process.platform === 'win32' ? undefined : env.PWD,
-            env: env,
-            encoding: USE_BINARY ? null : 'utf8'
-        });
+    const cols = parseInt(req.query.cols, 10);
+    const rows = parseInt(req.query.rows, 10);
+    const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+        name: 'xterm-256color',
+        cols: cols || 80,
+        rows: rows || 24,
+        cwd: process.platform === 'win32' ? undefined : env.PWD,
+        env: env,
+        encoding: USE_BINARY ? null : 'utf8'
+    });
+
+    const pid = term.pid
+    term.onExit(() => {
+        deleteSession(pid)();
+    })
 
     console.log('Created terminal with PID: ' + term.pid);
     terminals[term.pid] = term;
@@ -109,6 +128,9 @@ wsRouter.ws('/terminals/:pid', function (ws, req) {
         ws.send("Invalid terminal pid");
         return;
     }
+
+    const socketSet = sockets[pid] ??= new Set();
+    socketSet.add(ws);
 
     const term = terminals[pid];
     if (term === undefined) {
@@ -164,12 +186,15 @@ wsRouter.ws('/terminals/:pid', function (ws, req) {
         }
     });
     ws.on('message', function(msg) {
-        const msgAsBuffer = 
-            Array.isArray(msg) ? Buffer.concat(msg) : 
+        const msgAsBuffer =
+            Array.isArray(msg) ? Buffer.concat(msg) :
             Buffer.from(msg as string, "utf-8");
         term.write(msgAsBuffer.toString("utf-8"));
     });
     ws.on('close', function () {
-        scheduleTermination(term.pid);
+        socketSet.delete(ws);
+        if (socketSet.size === 0) {
+            scheduleTermination(term.pid);
+        }
     });
 });

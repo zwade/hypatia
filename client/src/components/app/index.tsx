@@ -8,6 +8,7 @@ import { Page } from "../page";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 
 import "./index.scss";
+import { AppContainer } from "../app-container";
 
 const Pages = () => (
     <Router>
@@ -22,10 +23,12 @@ export const App = () => {
     return (
         <TerminalRunProvider>
             <ModuleProvider>
-                <Divider
-                    firstChild={<Pages/>}
-                    secondChild={<Terminal/>}
-                />
+                <AppContainer>
+                    <Divider
+                        firstChild={<Pages/>}
+                        secondChild={<Terminal/>}
+                    />
+                </AppContainer>
             </ModuleProvider>
         </TerminalRunProvider>
     );

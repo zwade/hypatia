@@ -67,7 +67,7 @@ export const Terminal = () => {
             setConn(null);
         }
         const onResize = ({ cols, rows }: { cols: number, rows: number }) => conn.resize(rows, cols);
-        const onRunHandler = (cmd: string) => conn.write(cmd + "\n");
+        const onRunHandler = (cmd: string) => conn.write(cmd);
 
         conn.on("finish", onFinish);
         conn.on("close", onClose)

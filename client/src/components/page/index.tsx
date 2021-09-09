@@ -6,35 +6,14 @@ import RehypeHighlight from "rehype-highlight";
 import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
 
+import { AttrPlugin } from "./attrs";
+import { Code } from "./custom-components";
+
 import "./page.scss";
 import "./material-dark.scss";
-import { AttrPlugin } from "./attrs";
-import { TerminalRunContext } from "../../providers/terminal-run";
-import { flatten } from "../../utils/utils";
 
 export interface Props {
 
-}
-
-const code = (props: { attrs?: string, className?: string, inline?: boolean, children: React.ReactNode }) => {
-    const { run } = React.useContext(TerminalRunContext);
-
-    const { attrs, children, inline, ...rest } = props;
-    const attrSet = new Set(attrs?.split(/\s+/) ?? []);
-    console.log(attrSet);
-
-    const code = flatten(children);
-
-    return (
-        <>
-            <code {...rest}>{ children }</code>
-            {
-                attrSet.has("execute")
-                    ? <span className="execute-button" onClick={() => run(code)}>↪</span>
-                    : null
-            }
-        </>
-    );
 }
 
 export const Page = (props: Props) => {
@@ -51,7 +30,7 @@ export const Page = (props: Props) => {
                 className="markdown"
                 remarkPlugins={[AttrPlugin]}
                 rehypePlugins={[RehypeHighlight]}
-                components={{ code }}
+                components={{ code: Code }}
             >
                 { pageContent }
             </ReactMarkdown>

@@ -1,0 +1,30 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    &>.header {
+        min-height: 64px;
+        font-size: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        font-variant-caps: small-caps;
+        background-color: #2096f3;
+        color: #FFFFFF;
+        padding-left: 16px;
+    }
+
+    &>.content {
+        flex-grow: 1;
+        position: relative;
+
+        .content-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+}

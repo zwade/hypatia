@@ -1,3 +1,5 @@
+$border-radius: 4px;
+
 .page {
     display: flex;
     flex-direction: column;
@@ -6,30 +8,103 @@
     .markdown {
         flex-grow: 1;
         padding: 16px;
+        overflow: auto;
     }
 
     .navigation {
         display: flex;
         flex-direction: row;
-        min-height: 64px;
+        min-height: 48px;
         justify-content: space-between;
         align-items: center;
-        background: #888888;
+        background: rgb(44, 44, 43);
+        color: #FFFFFF;
 
-        .nav-button {
+        .navigation-previous, .navigation-next {
             min-width: 128px;
-            padding: 8px;
-            cursor: pointer;
 
             &.navigation-next {
                 text-align: right;
             }
         }
 
+        .nav-button {
+            cursor: pointer;
+            margin: 8px;
+            padding: 8px;
+            border-radius: $border-radius;
+            background-color: #FFFFFF00;
+            transition: background-color 100ms ease-in-out;
+
+            &:hover {
+                background-color: #FFFFFF30;
+            }
+        }
+
         .navigation-current {
             display: flex;
             flex-direction: row;
-            column-gap: 8px;
+
+            &>div:not(:last-child)::after {
+               content: "⟩";
+               font-weight: bold;
+               margin: 0px 8px;
+            }
+
+            .pageno {
+                font-feature-settings: "tnum";
+            }
+        }
+    }
+
+    .code {
+        flex-direction: row;
+
+        &.inline {
+            display: inline-flex;
+        }
+
+        &.executable {
+            code {
+                border-radius: $border-radius 0px 0px $border-radius;
+            }
+        }
+
+        &:not(.inline) {
+            display: flex;
+
+            code {
+                flex-grow: 1;
+            }
+
+            .execute-button {
+                padding: 16px;
+                font-size: 24px;
+            }
+        }
+
+        &.clicked {
+            .execute-button {
+                background-color: #1d991d;
+            }
+        }
+
+        .execute-button {
+            font-size: 12px;
+            padding: 4px;
+            color: white;
+            background-color: #888888;
+            transition: background-color 100ms ease-in-out;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 0px $border-radius $border-radius 0px;
+        }
+
+        &.executable.inline, .execute-button {
+            cursor: pointer;
         }
     }
 }
