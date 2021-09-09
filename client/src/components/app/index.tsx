@@ -7,6 +7,8 @@ import { Terminal } from "../terminal"
 import { Page } from "../page";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 
+import "./index.scss";
+
 const Pages = () => (
     <Router>
         <Switch>

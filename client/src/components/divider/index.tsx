@@ -14,8 +14,8 @@ const minCap = 0.2;
 export const Divider = (props: Props) => {
     const [firstProportion, setFirstProportion] = React.useState(0.5);
     const [div, setDiv] = React.useState<HTMLDivElement | null>(null);
-    const [mouseDown, setMouseDown] = React.useState(false)  
-    
+    const [mouseDown, setMouseDown] = React.useState(false)
+
     React.useEffect(() => {
         if (mouseDown && div) {
             const divClientRect = div.getClientRects()[0];
@@ -33,7 +33,7 @@ export const Divider = (props: Props) => {
             window.addEventListener("mousemove", onMouseMove);
             window.addEventListener("mouseup", onMouseUp);
 
-            return () => { 
+            return () => {
                 window.removeEventListener("mousemove", onMouseMove)
                 window.removeEventListener("mouseup", onMouseUp)
             }
@@ -42,8 +42,8 @@ export const Divider = (props: Props) => {
 
     const clientWidth = div?.getClientRects()[0]?.width ?? 0;
 
-    const firstWidth = clientWidth * firstProportion; 
-    const secondWidth = clientWidth - firstWidth; 
+    const firstWidth = clientWidth * firstProportion;
+    const secondWidth = clientWidth - firstWidth;
 
     return (
         <div className="divider-container" ref={setDiv}>
@@ -60,7 +60,7 @@ export const Divider = (props: Props) => {
             />
             <div
                 className="child second-child"
-                style={{ width: secondWidth - 3 }}
+                style={{ width: secondWidth }}
             >
                 { props.secondChild }
             </div>

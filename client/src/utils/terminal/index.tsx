@@ -1,5 +1,6 @@
 type Events = {
     "finish": ((ws: WebSocket, sessionId: number) => void);
+    "close": () => void;
 }
 
 interface ApiTerminal {
@@ -18,6 +19,7 @@ export class TerminalConnection {
 
     private events: { [K in keyof Events]: Set<Events[K]> } = {
         finish: new Set(),
+        close: new Set(),
     }
 
     public constructor(sessionId: number | null, rows: number, cols: number) {
@@ -83,6 +85,14 @@ export class TerminalConnection {
         const ws = new WebSocket(wsUri);
         this.ws = ws
 
+        this.ws.onclose = () => {
+            this.trigger("close");
+        }
+
+        this.ws.onerror = () => {
+            this.trigger("close");
+        }
+
         this.ws.onopen = () => {
             this.trigger("finish", ws, sessionId);
         }
@@ -96,10 +106,10 @@ export class TerminalConnection {
     }
 
     public on<T extends keyof Events>(evt: T, cb: Events[T]) {
-        this.events[evt].add(cb);
+        this.events[evt].add(cb as any);
     }
 
     public off<T extends keyof Events>(evt: T, cb: Events[T]) {
-        return this.events[evt].delete(cb);
+        return this.events[evt].delete(cb as any);
     }
 }

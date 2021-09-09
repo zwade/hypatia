@@ -14,38 +14,101 @@ export const Terminal = () => {
     const [sessionId, setSessionId] = useLocalStorage<null | number>("session-id", null);
     const [xterm, setXterm] = React.useState<XTerm | null>(null);
     const { onRun, offRun } = React.useContext(TerminalRunContext);
+    const { current: fitAddon } = React.useRef(new FitAddon());
+    const [conn, setConn] = React.useState<TerminalConnection | null>(null);
+    const [initialized, setInitialized] = React.useState(false);
 
-    React.useEffect(() => {
+    const loadConnection = async () => {
         if (xterm === null) return
-        xterm.terminal.setOption("theme", Material);
 
-        const fitAddon = new FitAddon();
         const conn = new TerminalConnection(
             sessionId,
             xterm.terminal.rows,
             xterm.terminal.cols
         );
+        setConn(conn);
+    }
+
+    React.useEffect(() => {
+        document.fonts.load("12px Iosevka Web").then(() => {
+            if (!initialized) {
+                setInitialized(true);
+            }
+        });
+    }, []);
+
+    React.useEffect(() => {
+        loadConnection();
+    }, [xterm, initialized]);
+
+    React.useEffect(() => {
+        if (xterm === null) return
+        xterm.terminal.setOption("theme", Material);
+
+        const resizeObserver = new ResizeObserver(() => fitAddon.fit());
 
         xterm.terminal.loadAddon(fitAddon);
-        const resizeObserver = new ResizeObserver(() => fitAddon.fit());
         resizeObserver.observe(xterm.terminalRef.current!);
+    }, [xterm]);
 
-        conn.on("finish", (ws, sid) => {
+    React.useEffect(() => {
+        if (xterm === null) return
+        if (conn === null) return
+
+        const onFinish = (ws: WebSocket, sid: number) => {
             setSessionId(sid);
             const attachAddon = new AttachAddon(ws);
             xterm.terminal.loadAddon(attachAddon);
 
             fitAddon.fit();
-        });
+            conn.resize(xterm.terminal.rows, xterm.terminal.cols);
+        }
+        const onClose = () => {
+            setConn(null);
+        }
+        const onResize = ({ cols, rows }: { cols: number, rows: number }) => conn.resize(rows, cols);
+        const onRunHandler = (cmd: string) => conn.write(cmd + "\n");
+
+        conn.on("finish", onFinish);
+        conn.on("close", onClose)
+        onRun(onRunHandler);
+        const disposeResize = xterm.terminal.onResize(onResize);
 
         conn.connect();
 
-        xterm.terminal.onResize(({ rows, cols }) => conn.resize(rows, cols));
+        return () => {
+            conn.off("finish", onFinish);
+            conn.off("close", onClose);
+            offRun(onRunHandler);
+            disposeResize.dispose();
+        }
+    }, [xterm, conn]);
 
-        onRun((cmd) => conn.write(cmd + "\n"));
-    }, [xterm]);
+    if (!initialized) {
+        return (
+             <div
+                className="terminal-screen"
+                style={{ backgroundColor: Material["background"] }}
+            />
+        );
+    }
 
     return (
-        <XTerm ref={setXterm} className="fullscreen"/>
+        <div
+            className="terminal-screen"
+            style={{ backgroundColor: Material["background"] }}
+        >
+            {
+                conn === null ? (
+                    <div
+                        className="terminal-disconnected"
+                        onClick={loadConnection}
+                    >
+                        Lost connection to server. Click to reconnect.
+                    </div>
+                ) : null
+            }
+            <XTerm ref={setXterm} options={{ fontFamily: "Iosevka Web" }} className="terminal-wrapper"/>
+        </div>
     )
 }
