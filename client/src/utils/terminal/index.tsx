@@ -13,7 +13,7 @@ export class TerminalConnection {
     private cancelResize: (() => void) | undefined;
 
     public sessionId: number | null;
-    public rows; 
+    public rows;
     public cols;
 
     private events: { [K in keyof Events]: Set<Events[K]> } = {
@@ -24,6 +24,10 @@ export class TerminalConnection {
         this.sessionId = sessionId;
         this.rows = rows;
         this.cols = cols;
+    }
+
+    public async write(data: string) {
+        this.ws?.send(data);
     }
 
     public async resize(rows: number, cols: number) {

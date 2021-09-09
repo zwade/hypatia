@@ -2,10 +2,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { ModuleProvider } from "../../providers/module-provider";
 import { Divider } from "../divider"
-import { Lesson } from "../lesson"
 import { ModuleBrowser } from "../module-browser";
 import { Terminal } from "../terminal"
 import { Page } from "../page";
+import { TerminalRunProvider } from "../../providers/terminal-run";
 
 const Pages = () => (
     <Router>
@@ -18,11 +18,13 @@ const Pages = () => (
 
 export const App = () => {
     return (
-        <ModuleProvider>
-            <Divider
-                firstChild={<Pages/>}
-                secondChild={<Terminal/>}
-            />
-        </ModuleProvider>
+        <TerminalRunProvider>
+            <ModuleProvider>
+                <Divider
+                    firstChild={<Pages/>}
+                    secondChild={<Terminal/>}
+                />
+            </ModuleProvider>
+        </TerminalRunProvider>
     );
 }

@@ -1,0 +1,35 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .markdown {
+        flex-grow: 1;
+        padding: 16px;
+    }
+
+    .navigation {
+        display: flex;
+        flex-direction: row;
+        min-height: 64px;
+        justify-content: space-between;
+        align-items: center;
+        background: #888888;
+
+        .nav-button {
+            min-width: 128px;
+            padding: 8px;
+            cursor: pointer;
+
+            &.navigation-next {
+                text-align: right;
+            }
+        }
+
+        .navigation-current {
+            display: flex;
+            flex-direction: row;
+            column-gap: 8px;
+        }
+    }
+}

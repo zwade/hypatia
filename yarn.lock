@@ -44,12 +44,14 @@ __metadata:
     react-dom: ^17.0.2
     react-markdown: ^7.0.1
     react-router-dom: ^5.3.0
+    rehype-highlight: ^5.0.0
     sass: ^1.38.2
     sass-loader: ^12.1.0
     source-map-loader: ^3.0.0
     style-loader: ^3.2.1
     ts-loader: ^9.2.5
     typescript: ^4.4.2
+    unist-util-visit: ^4.0.0
     webpack: ^5.51.1
     webpack-cli: ^4.8.0
     webpack-dev-server: ^4.0.0
@@ -1814,6 +1816,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fault@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "fault@npm:2.0.0"
+  dependencies:
+    format: ^0.2.0
+  checksum: 5f228729086daee41769d9397173fcc3c5c769f28f91a6df7ee894ca90c87c6f3a23e5946b0a191f031a409ec25910c28189f8de35e12fe43919a86477d09a2e
+  languageName: node
+  linkType: hard
+
 "faye-websocket@npm:^0.11.3":
   version: 0.11.4
   resolution: "faye-websocket@npm:0.11.4"
@@ -1871,6 +1882,13 @@ __metadata:
   version: 2.0.5
   resolution: "foreach@npm:2.0.5"
   checksum: dab4fbfef0b40b69ee5eab81bcb9626b8fa8b3469c8cfa26480f3e5e1ee08c40eae07048c9a967c65aeda26e774511ccc70b3f10a604c01753c6ef24361f0fc8
+  languageName: node
+  linkType: hard
+
+"format@npm:^0.2.0":
+  version: 0.2.2
+  resolution: "format@npm:0.2.2"
+  checksum: 646a60e1336250d802509cf24fb801e43bd4a70a07510c816fa133aa42cdbc9c21e66e9cc0801bb183c5b031c9d68be62e7fbb6877756e52357850f92aa28799
   languageName: node
   linkType: hard
 
@@ -2095,12 +2113,40 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"hast-util-is-element@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "hast-util-is-element@npm:2.1.1"
+  dependencies:
+    "@types/hast": ^2.0.0
+    "@types/unist": ^2.0.0
+  checksum: fb4dabb5287b6a76ad4ad76b9f4921ce820f8f87fdf6658f6984d37c45fc1baef170befc68a9d11af064e382534b22079246fa4cd07b307a84d6f34b58d8c7c8
+  languageName: node
+  linkType: hard
+
+"hast-util-to-text@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "hast-util-to-text@npm:3.1.0"
+  dependencies:
+    "@types/hast": ^2.0.0
+    hast-util-is-element: ^2.0.0
+    unist-util-find-after: ^4.0.0
+  checksum: c4d144b94bf9077c3aa5ea9ace5330a0cab3fe570e0294b36610c8f87ac8adbbb3d50788e43f1ce22c0c97faa261d7d16747e20893e53fd6b37b205897b4b3a9
+  languageName: node
+  linkType: hard
+
 "he@npm:^1.2.0":
   version: 1.2.0
   resolution: "he@npm:1.2.0"
   bin:
     he: bin/he
   checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:~11.2.0":
+  version: 11.2.0
+  resolution: "highlight.js@npm:11.2.0"
+  checksum: 12bfd562899a6a70d20321460ec40a94456bd8a9cb7deedbb70630c1981b937690fa0c7cf056d8f12c3c39981b400fb1a4f8b784b97399b26bd812460809cc0e
   languageName: node
   linkType: hard
 
@@ -2887,6 +2933,17 @@ fsevents@~2.3.2:
   dependencies:
     tslib: ^2.0.3
   checksum: 83a0a5f159ad7614bee8bf976b96275f3954335a84fad2696927f609ddae902802c4f3312d86668722e668bef41400254807e1d3a7f2e8c3eede79691aa1f010
+  languageName: node
+  linkType: hard
+
+"lowlight@npm:^2.0.0":
+  version: 2.2.1
+  resolution: "lowlight@npm:2.2.1"
+  dependencies:
+    "@types/hast": ^2.0.0
+    fault: ^2.0.0
+    highlight.js: ~11.2.0
+  checksum: b6cd091af89d6cf09654e497a9314c12feaf0a17ba67cf8113c7cfd6fc32b31eb706a52e0073b2f9ed1c1f9e959a4ec18709056f4bbf5c395a97df530480b89d
   languageName: node
   linkType: hard
 
@@ -4291,6 +4348,19 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"rehype-highlight@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "rehype-highlight@npm:5.0.0"
+  dependencies:
+    "@types/hast": ^2.0.0
+    hast-util-to-text: ^3.0.0
+    lowlight: ^2.0.0
+    unified: ^10.0.0
+    unist-util-visit: ^4.0.0
+  checksum: 595d1a58f5e8c4e1aaf6d7073360d24b9a8be2a5a8856bad91391ca08833137a6ab33ee1b44c6f05f85ce516207c16c025593d97d0288bd9bc23bb5a86c72477
+  languageName: node
+  linkType: hard
+
 "relateurl@npm:^0.2.7":
   version: 0.2.7
   resolution: "relateurl@npm:0.2.7"
@@ -5146,6 +5216,16 @@ typescript@^4.4.2:
   dependencies:
     "@types/unist": ^2.0.0
   checksum: 80459ee3c2ece90bbc4f4b4faeed524d144c1a09ee07ff3e9004648d9b71a652e80a3b3ef60311a1e92f6ab915caf27c6f08062b5f8c84fa725bc0d7c5759e84
+  languageName: node
+  linkType: hard
+
+"unist-util-find-after@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "unist-util-find-after@npm:4.0.0"
+  dependencies:
+    "@types/unist": ^2.0.0
+    unist-util-is: ^5.0.0
+  checksum: 8381ef0bad18a0b1fa1c7ee47f94a2578ab6bf572eb126a1f179526b9dca47584fc070976f2d83bbe381161fa33b9164a894d0279a30ec83e65433356d43df57
   languageName: node
   linkType: hard
 
