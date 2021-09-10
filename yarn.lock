@@ -28,9 +28,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@katcode/client@workspace:client":
+"@hypatia/client@workspace:client":
   version: 0.0.0-use.local
-  resolution: "@katcode/client@workspace:client"
+  resolution: "@hypatia/client@workspace:client"
   dependencies:
     "@types/react": ^17
     "@types/react-dom": ^17
@@ -61,9 +61,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@katcode/xtermjs@workspace:xtermjs":
+"@hypatia/xtermjs@workspace:xtermjs":
   version: 0.0.0-use.local
-  resolution: "@katcode/xtermjs@workspace:xtermjs"
+  resolution: "@hypatia/xtermjs@workspace:xtermjs"
   dependencies:
     "@types/express": ^4
     "@types/express-ws": ^3.0.1

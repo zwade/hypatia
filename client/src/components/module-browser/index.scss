@@ -1,0 +1,21 @@
+.module-browser {
+    display: grid;
+    grid-template:
+        "title title title" minmax(max-content, 48px)
+        ".     .     ." 1fr
+        ".     toc   ." max-content
+        ".     .     ." 1fr
+        / 1fr minmax(max-content, 400px) 1fr;
+    height: 100%;
+
+    .title {
+        grid-area: title;
+        justify-self: center;
+        align-self: center;
+        font-size: 24px;
+    }
+
+    .table-of-contents {
+        grid-area: toc;
+    }
+}

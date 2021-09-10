@@ -1,5 +1,5 @@
 {
-    "name": "@katcode/client",
+    "name": "@hypatia/client",
     "license": "unlicensed",
     "devDependencies": {
         "@types/react": "^17",

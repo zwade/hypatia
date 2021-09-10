@@ -1,5 +1,5 @@
 {
-    "name": "@katcode/xtermjs",
+    "name": "@hypatia/xtermjs",
     "dependencies": {
         "@zensors/sheriff": "^2.0.2",
         "express": "^4.17.1",

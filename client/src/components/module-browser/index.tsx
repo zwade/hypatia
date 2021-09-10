@@ -3,6 +3,8 @@ import * as React from "react";
 import { ModuleContext } from "../../providers/module-provider";
 import { ModuleEntry } from "./module-entry";
 
+import "./index.scss";
+
 export interface Props {
 
 }
@@ -29,11 +31,14 @@ export const ModuleBrowser = (props: Props) => {
 
     return (
         <div className="module-browser">
-            {
-                modules.map(([module, lessons]) => (
-                    <ModuleEntry key={module} module={module} lessons={lessons} />
-                ))
-            }
+            <div className="title">Available Modules</div>
+            <div className="table-of-contents">
+                {
+                    modules.map(([module, lessons]) => (
+                        <ModuleEntry key={module} module={module} lessons={lessons} />
+                    ))
+                }
+            </div>
         </div>
     )
 }
