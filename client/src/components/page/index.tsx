@@ -2,6 +2,7 @@ import * as React from "react";
 import { useParams } from "react-router";
 import ReactMarkdown from "react-markdown";
 import RehypeHighlight from "rehype-highlight";
+import RehypeRaw from "rehype-raw";
 
 import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
@@ -33,8 +34,9 @@ export const Page = (props: Props) => {
                 <ReactMarkdown
                     className="markdown"
                     remarkPlugins={[AttrPlugin, QuizPlugin]}
-                    rehypePlugins={[RehypeHighlight]}
+                    rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
                     components={{ code: Code, quiz: Quiz } as any}
+                    skipHtml={false}
                 >
                     { pageContent }
                 </ReactMarkdown>

@@ -6,8 +6,13 @@ const prefix = "__ls_hook";
 export const useLocalStorage = <T extends any>(name: string, def: T) => {
     const itemName = `${prefix}.${name}`;
     const fromLocalStorage = localStorage.getItem(itemName);
+    let stateDefault: T | undefined;
 
-    const stateDefault = fromLocalStorage !== null ? JSON.parse(fromLocalStorage) : def;
+    try {
+        stateDefault = fromLocalStorage !== null ? JSON.parse(fromLocalStorage) : def;
+    } catch {
+        // pass
+    }
 
     const [value, setValue] = React.useState(stateDefault);
 

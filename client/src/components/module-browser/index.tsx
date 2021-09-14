@@ -4,6 +4,7 @@ import { ModuleContext } from "../../providers/module-provider";
 import { ModuleEntry } from "./module-entry";
 
 import "./index.scss";
+import { useLocalStorage } from "../../hooks";
 
 export interface Props {
 
@@ -11,7 +12,7 @@ export interface Props {
 
 export const ModuleBrowser = (props: Props) => {
     const { data } = React.useContext(ModuleContext);
-    const [open, setOpen] = React.useState<number | undefined>(undefined);
+    const [open, setOpen] = useLocalStorage<number | null>("toc-active-module", null);
 
     if (data === undefined) {
         return (
@@ -42,7 +43,7 @@ export const ModuleBrowser = (props: Props) => {
                             lessons={lessons}
                             open={open === idx}
                             onOpen={(open) => {
-                                setOpen(open ? idx : undefined);
+                                setOpen(open ? idx : null);
                             }}
                         />
                     ))

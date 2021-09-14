@@ -8,7 +8,7 @@ export interface Props {
     secondChild: React.ReactNode;
 }
 
-const minCap = 0.2;
+const minCap = 0.33;
 
 
 export const Divider = (props: Props) => {

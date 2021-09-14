@@ -12,9 +12,15 @@ $border-radius: 4px;
         padding: 16px;
         overflow: auto;
 
+        blockquote {
+            margin: 16px 0px;
+            padding: 8px 8px 8px 16px;
+            border-left: 4px solid palette.$color-neutral-05;
+            background-color: palette.$color-neutral-01;
 
-        p {
-            display: content;
+            p {
+                margin: 0px;
+            }
         }
     }
 
@@ -103,11 +109,24 @@ $border-radius: 4px;
 
         &.inline {
             display: inline-flex;
+
+            code {
+                background: palette.$color-neutral-08;
+                color: palette.$color-primary-00;
+                font-weight: 500;
+                padding: 2px 4px;
+            }
         }
 
         &.executable {
             code {
                 border-radius: $border-radius 0px 0px $border-radius;
+            }
+        }
+
+        &:not(.executable) {
+            code {
+                border-radius: $border-radius;
             }
         }
 
