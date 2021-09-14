@@ -7,10 +7,13 @@ import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
 
 import { AttrPlugin } from "./attrs";
-import { Code } from "./custom-components";
+import { Code, Quiz } from "./markdown-components";
 
 import "./page.scss";
 import "./material-dark.scss";
+import { QuizPlugin } from "./quiz";
+import { QuizProvider } from "../../providers/quiz-provider";
+import { QuizNavigation } from "./quiz-navigation";
 
 export interface Props {
 
@@ -26,15 +29,18 @@ export const Page = (props: Props) => {
 
     return (
         <div className="page">
-            <ReactMarkdown
-                className="markdown"
-                remarkPlugins={[AttrPlugin]}
-                rehypePlugins={[RehypeHighlight]}
-                components={{ code: Code }}
-            >
-                { pageContent }
-            </ReactMarkdown>
-            <Navigation/>
+            <QuizProvider page={`${module}/${lesson}/${page}`}>
+                <ReactMarkdown
+                    className="markdown"
+                    remarkPlugins={[AttrPlugin, QuizPlugin]}
+                    rehypePlugins={[RehypeHighlight]}
+                    components={{ code: Code, quiz: Quiz } as any}
+                >
+                    { pageContent }
+                </ReactMarkdown>
+                <QuizNavigation/>
+                <Navigation/>
+            </QuizProvider>
         </div>
     )
 }

@@ -1,3 +1,5 @@
+@use "~react-pwn/palette.scss" as palette;
+
 $border-radius: 4px;
 
 .page {
@@ -9,16 +11,60 @@ $border-radius: 4px;
         flex-grow: 1;
         padding: 16px;
         overflow: auto;
+
+
+        p {
+            display: content;
+        }
     }
 
-    .navigation {
+    .quiz-navigation, .navigation {
         display: flex;
         flex-direction: row;
         min-height: 48px;
         justify-content: space-between;
         align-items: center;
-        background: rgb(44, 44, 43);
-        color: #FFFFFF;
+
+        .nav-button {
+            cursor: pointer;
+            margin: 8px;
+            padding: 8px;
+            border-radius: $border-radius;
+            transition: background-color 100ms ease-in-out;
+            min-width: 128px;
+
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+
+    .quiz-navigation {
+        background: palette.$color-primary-05;
+        color: palette.$color-neutral-00;
+
+        .nav-button {
+            background-color: palette.$color-primary-05;
+
+            &:hover {
+                background-color: palette.$color-primary-03;
+            }
+        }
+
+        .score {
+            display: flex;
+            flex-direction: row;
+            column-gap: 8px;
+
+            .percentage {
+                color: palette.$color-primary-02;
+            }
+        }
+    }
+
+    .navigation {
+        background: palette.$color-neutral-09;
+        color: palette.$color-neutral-00;
 
         .navigation-previous, .navigation-next {
             min-width: 128px;
@@ -29,12 +75,7 @@ $border-radius: 4px;
         }
 
         .nav-button {
-            cursor: pointer;
-            margin: 8px;
-            padding: 8px;
-            border-radius: $border-radius;
             background-color: #FFFFFF00;
-            transition: background-color 100ms ease-in-out;
 
             &:hover {
                 background-color: #FFFFFF30;

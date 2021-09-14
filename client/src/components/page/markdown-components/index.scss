@@ -1,0 +1,57 @@
+@use "~react-pwn/palette.scss" as palette;
+
+.quiz {
+    border: 2px solid var(--color-neutral-05);
+    padding: 17px;
+    border-radius: 4px;
+    background-color: var(--color-neutral-01);
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        h2 {
+            margin: unset;
+            margin-bottom: 24px;
+        }
+
+        .quiz-status {
+            &::before {
+                margin-right: 8px;
+                margin-bottom: -2px;
+                font-family: 'Material Icons';
+
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                width: 20px;
+                height: 20px;
+
+                border: 2px solid currentColor;
+                border-radius: 50%;
+                font-size: 20px;
+
+                color: palette.$color-neutral-05;
+                content: "more_horiz";
+
+                transition: color 100ms ease-in;
+            }
+
+            &[data-correct=incorrect]::before {
+                color: palette.$color-error;
+                content: "close"
+            }
+
+            &[data-correct=correct]::before {
+                color: palette.$color-success;
+                content: "check"
+            }
+        }
+    }
+
+    .extra-error-message {
+        color: palette.$color-error;
+        margin-top: 8px;
+    }
+}

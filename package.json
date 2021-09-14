@@ -16,5 +16,8 @@
       "r:xtermjs:watch",
       "r:client:watch"
     ]
+  },
+  "resolutions": {
+    "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"
   }
 }

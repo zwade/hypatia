@@ -1,0 +1,25 @@
+import { Palette, Palettes } from "react-pwn";
+
+export const BlueGreen: Palette = {
+    ...Palettes.GreenOrange,
+    "primary-00": 0xE8EAF6,
+    "primary-01": 0xC5CAE9,
+    "primary-02": 0x9FA8DA,
+    "primary-03": 0x7986CB,
+    "primary-04": 0x5C6BC0,
+    "primary-05": 0x3F51B5,
+    "primary-06": 0x3949AB,
+    "primary-07": 0x303F9F,
+    "primary-08": 0x283593,
+    "primary-09": 0x1A237E,
+    "secondary-00": 0xE0F2F1,
+    "secondary-01": 0xB2DFDB,
+    "secondary-02": 0x80CBC4,
+    "secondary-03": 0x4DB6AC,
+    "secondary-04": 0x26A69A,
+    "secondary-05": 0x009688,
+    "secondary-06": 0x00897B,
+    "secondary-07": 0x00796B,
+    "secondary-08": 0x00695C,
+    "secondary-09": 0x004D40,
+}

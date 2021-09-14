@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { TerminalRunContext } from "../../providers/terminal-run";
-import { classes, flatten } from "../../utils/utils";
+import { TerminalRunContext } from "../../../providers/terminal-run";
+import { classes, flatten } from "../../../utils/utils";
 
 export interface Props {
     attrs?: string;

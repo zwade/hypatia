@@ -37,6 +37,7 @@ const getPreviousNode = (node: Node, parents: Parent[]): Node | undefined => {
 
 export const AttrPlugin = function (this: any) {
     return (tree: Node) => {
+        console.log(tree);
         visitParents(tree, "text", (node: TextNode, parents) => {
             const attrsRe = /\s*(\{\{([^\}]+)\}\})/g
             const sibling = getPreviousNode(node, parents);
