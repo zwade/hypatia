@@ -1,8 +1,10 @@
+@use "~react-pwn/palette.scss" as palette;
+
 .module-browser {
     display: grid;
     grid-template:
         "title title title" minmax(max-content, 48px)
-        ".     .     ." 1fr
+        ".     .     ." 48px
         ".     toc   ." max-content
         ".     .     ." 1fr
         / 1fr minmax(max-content, 400px) 1fr;
@@ -17,5 +19,83 @@
 
     .table-of-contents {
         grid-area: toc;
+
+        background: palette.$color-neutral-01;
+        border-radius: 4px;
+        box-shadow: inset 0px 0px 0px 2px palette.$color-neutral-06;
+
+        .module-entry {
+            &:first-child {
+                .module-name {
+                    border-radius: 4px 4px 0 0;
+                }
+            }
+
+            &:last-child[data-open=false] {
+                .module-name {
+                    border-radius: 0px 0px 4px 4px;
+                }
+            }
+
+            &:last-child[data-open=true] {
+                .lesson:last-child {
+                    height: 22px;
+                    margin-bottom: 2px;
+                }
+            }
+
+            &[data-open=true] {
+                .module-name::before {
+                    transform: rotate(0deg);
+                }
+
+                .lesson-list {
+                    max-height: var(--max-height);
+                }
+            }
+
+            .module-name {
+                padding: 8px;
+                background-color: palette.$color-primary-05;
+                color: palette.$color-primary-00;
+                cursor: pointer;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                &::before {
+                    font-family: 'Material Icons';
+                    content: "expand_more";
+                    transform: rotate(-90deg);
+                    display: inline-block;
+                    transition: transform 100ms ease-in;
+                    font-size: 20px;
+                    margin-bottom: -2px;
+                }
+            }
+
+            .lesson-list {
+                transition: max-height 100ms ease-in;
+                overflow: auto;
+                max-height: 0;
+
+                .lesson {
+                    height: 24px;
+                    padding-left: 16px;
+                    margin: 0px 2px;
+                    cursor: pointer;
+                    overflow: hidden;
+
+                    &:hover {
+                        background-color: palette.$color-primary-00;
+                    }
+
+                    .pages {
+                        margin-left: 8px;
+                        color: palette.$color-neutral-06;
+                    }
+                }
+            }
+        }
     }
 }

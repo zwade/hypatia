@@ -22,6 +22,7 @@ const getPages = async (module: string, lesson: string) => {
     const lessonBaseDir = path.join(baseDir, module, lesson);
     const files = await fs.readdir(lessonBaseDir);
     const pages = files
+        .filter((f) => !f.startsWith("."))
         .map((f) => {
             const fileNameTest = f.match(/^(\d+).md$/);
             if (fileNameTest === null) {
@@ -42,19 +43,23 @@ const getPages = async (module: string, lesson: string) => {
 
 const getLessons = async (module: string) => {
     const files = await fs.readdir(path.join(baseDir, module));
-    return files.map((f) => ({
-        name: f,
-        path: path.join(baseDir, module, f),
-        module,
-    }));
+    return files
+        .filter((f) => !f.startsWith("."))
+        .map((f) => ({
+            name: f,
+            path: path.join(baseDir, module, f),
+            module,
+        }));
 }
 
 const getModules = async () => {
     const directories = await fs.readdir(baseDir);
-    return directories.map((d) => ({
-        name: d,
-        path: path.join(baseDir, d),
-    }));
+    return directories
+        .filter((d) => !d.startsWith("."))
+        .map((d) => ({
+            name: d,
+            path: path.join(baseDir, d),
+        }));
 }
 
 const getAll = async () => {

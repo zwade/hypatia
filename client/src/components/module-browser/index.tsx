@@ -11,6 +11,7 @@ export interface Props {
 
 export const ModuleBrowser = (props: Props) => {
     const { data } = React.useContext(ModuleContext);
+    const [open, setOpen] = React.useState<number | undefined>(undefined);
 
     if (data === undefined) {
         return (
@@ -34,8 +35,16 @@ export const ModuleBrowser = (props: Props) => {
             <div className="title">Available Modules</div>
             <div className="table-of-contents">
                 {
-                    modules.map(([module, lessons]) => (
-                        <ModuleEntry key={module} module={module} lessons={lessons} />
+                    modules.map(([module, lessons], idx) => (
+                        <ModuleEntry
+                            key={module}
+                            module={module}
+                            lessons={lessons}
+                            open={open === idx}
+                            onOpen={(open) => {
+                                setOpen(open ? idx : undefined);
+                            }}
+                        />
                     ))
                 }
             </div>

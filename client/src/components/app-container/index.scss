@@ -1,3 +1,5 @@
+@use "~react-pwn/palette.scss" as palette;
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -10,8 +12,8 @@
         align-items: center;
         justify-content: start;
         font-variant-caps: small-caps;
-        background-color: var(--color-primary-04);
-        color: #FFFFFF;
+        background-color: palette.$color-primary-05;
+        color: palette.$color-neutral-00;
         padding-left: 16px;
     }
 
