@@ -16,7 +16,7 @@ type Modules = {
     }
 }
 
-const baseDir = path.join(__dirname, "../../../lessons");
+const baseDir = path.join(__dirname, "../../../modules");
 
 const getPages = async (module: string, lesson: string) => {
     const lessonBaseDir = path.join(baseDir, module, lesson);

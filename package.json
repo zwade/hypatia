@@ -23,6 +23,7 @@
     ],
     "start": "r:xtermjs:start"
   },
+  "license": "MIT",
   "resolutions": {
     "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"
   }
