@@ -1,5 +1,5 @@
 {
-    "name": "@hypatia/client",
+    "name": "@hypatia-app/client",
     "license": "unlicensed",
     "devDependencies": {
         "@types/mdast": "^3",

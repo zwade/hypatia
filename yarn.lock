@@ -28,9 +28,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hypatia/client@workspace:client":
+"@hypatia-app/app@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@hypatia/client@workspace:client"
+  resolution: "@hypatia-app/app@workspace:."
+  dependencies:
+    node-gyp: ^8.2.0
+    typescript: ^4.4.2
+  languageName: unknown
+  linkType: soft
+
+"@hypatia-app/client@workspace:client":
+  version: 0.0.0-use.local
+  resolution: "@hypatia-app/client@workspace:client"
   dependencies:
     "@types/mdast": ^3
     "@types/react": ^17
@@ -70,9 +79,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia/xtermjs@workspace:xtermjs":
+"@hypatia-app/xtermjs@workspace:xtermjs":
   version: 0.0.0-use.local
-  resolution: "@hypatia/xtermjs@workspace:xtermjs"
+  resolution: "@hypatia-app/xtermjs@workspace:xtermjs"
   dependencies:
     "@types/express": ^4
     "@types/express-ws": ^3.0.1
@@ -4544,9 +4553,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=root-workspace-0b6124%40workspace%3A.":
+"react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=%40hypatia-app%2Fapp%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=%40hypatia-app%2Fapp%40workspace%3A."
   peerDependencies:
     react: ^17.0.1
     react-dom: ^17.0.1
@@ -4821,15 +4830,6 @@ resolve@^1.9.0:
   checksum: 87f4164e396f0171b0a3386cc1877a817f572148ee13a7e113b238e48e8a9f2f31d009a92ec38a591ff1567d9662c6b67fd8818a2dbbaed74bc26a87a2a4a9a0
   languageName: node
   linkType: hard
-
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    node-gyp: ^8.2.0
-    typescript: ^4.4.2
-  languageName: unknown
-  linkType: soft
 
 "run-parallel@npm:^1.1.9":
   version: 1.2.0

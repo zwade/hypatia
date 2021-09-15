@@ -1,4 +1,6 @@
 {
+  "name": "@hypatia-app/app",
+  "version": "0.0.1",
   "packageManager": "yarn@3.0.1",
   "devDependencies": {
     "typescript": "^4.4.2"
@@ -10,21 +12,18 @@
     "node-gyp": "^8.2.0"
   },
   "r": {
-    "ts:watch": "tsc -b -w xtermjs",
+    "ts:watch": "tsc -b -w backend",
     "watch": [
       "r:ts:watch",
-      "r:xtermjs:watch",
+      "r:backend:watch",
       "r:client:watch"
     ],
-    "ts:build": "tsc -b xtermjs",
+    "ts:build": "tsc -b backend",
     "build": [
       "r:ts:build",
       "r:client:build"
     ],
-    "start": "r:xtermjs:start"
+    "start": "r:backend:start"
   },
-  "license": "MIT",
-  "resolutions": {
-    "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"
-  }
+  "license": "MIT"
 }

@@ -1,5 +1,5 @@
 {
-    "name": "@hypatia/xtermjs",
+    "name": "@hypatia-app/backend",
     "dependencies": {
         "@zensors/sheriff": "^2.0.2",
         "express": "^4.17.1",
@@ -13,12 +13,12 @@
         "@types/fs-extra": "^9.0.12"
     },
     "r": {
-        "xtermjs:watch": {
+        "backend:watch": {
             "watch": [
                 "dist"
             ],
             "script": "node dist/index.js"
         },
-        "xtermjs:start": "node dist/index.js"
+        "backend:start": "node dist/index.js"
     }
 }
