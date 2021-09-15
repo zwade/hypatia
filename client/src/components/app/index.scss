@@ -1,3 +1,5 @@
+@use "~react-pwn/palette.scss" as palette;
+
 @font-face {
     font-family: "Iosevka Web";
     font-style: normal;
@@ -10,4 +12,23 @@
     font-style: normal;
     font-weight: 800;
     src: url(../../fonts/iosevka-custom-heavy.ttf);
+}
+
+i {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-variant: normal;
+    width: 1em;
+    height: 1em;
+
+    &.button {
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 100ms ease-in;
+        padding: 8px;
+
+        &:hover {
+            background-color: #FFFFFF30;
+        }
+    }
 }

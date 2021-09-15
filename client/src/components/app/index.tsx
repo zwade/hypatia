@@ -1,3 +1,4 @@
+import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { PaletteProvider } from "react-pwn";
 
@@ -8,9 +9,10 @@ import { Terminal } from "../terminal"
 import { Page } from "../page";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 import { BlueGreen } from "../../utils/palette";
+import { AppContainer } from "../app-container";
+import { SettingsContext, SettingsProvider } from "../../providers/settings-provider";
 
 import "./index.scss";
-import { AppContainer } from "../app-container";
 
 const Pages = () => (
     <Router>
@@ -21,17 +23,28 @@ const Pages = () => (
     </Router>
 );
 
+const Content = () => {
+    const { settings } = React.useContext(SettingsContext)
+
+    return (
+        <Divider
+            vertical={settings.vertical}
+            firstChild={<Pages/>}
+            secondChild={<Terminal/>}
+        />
+    );
+}
+
 export const App = () => {
     return (
         <TerminalRunProvider>
             <ModuleProvider>
                 <PaletteProvider palette={BlueGreen}>
-                    <AppContainer>
-                        <Divider
-                            firstChild={<Pages/>}
-                            secondChild={<Terminal/>}
-                        />
-                    </AppContainer>
+                    <SettingsProvider>
+                        <AppContainer>
+                            <Content/>
+                        </AppContainer>
+                    </SettingsProvider>
                 </PaletteProvider>
             </ModuleProvider>
         </TerminalRunProvider>

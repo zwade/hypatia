@@ -1,33 +1,63 @@
 import React = require("react");
+import { classes } from "react-pwn";
 import { minmax } from "../../utils/utils";
 
 import "./index.scss";
 
 export interface Props {
+    vertical?: boolean;
+
     firstChild: React.ReactNode;
     secondChild: React.ReactNode;
 }
 
 const minCap = 0.33;
+const deadZone = 50;
 
 
 export const Divider = (props: Props) => {
     const [firstProportion, setFirstProportion] = React.useState(0.5);
+    const [temporaryFirstProportion, setTemporaryFirstProportion] = React.useState(firstProportion);
+    const lastProportionRef = React.useRef(firstProportion);
+
     const [div, setDiv] = React.useState<HTMLDivElement | null>(null);
     const [mouseDown, setMouseDown] = React.useState(false)
+
+    React.useEffect(() => {
+        setFirstProportion(0.5);
+        setTemporaryFirstProportion(0.5);
+        lastProportionRef.current = 0.5;
+    }, [props.vertical])
+
+    const axisOfLocation = props.vertical ? "y" : "x";
+    const axisOfAlignment = props.vertical ? "top" : "left";
+    const axisOfSize = props.vertical ? "height" : "width";
 
     React.useEffect(() => {
         if (mouseDown && div) {
             const divClientRect = div.getClientRects()[0];
 
             const onMouseMove = (e: MouseEvent) => {
-                console.log(e);
-                const proportion = minmax((e.x - divClientRect.x) / divClientRect.width, minCap, 1 - minCap);
-                setFirstProportion(proportion);
+                const axisSize = e[axisOfLocation] - divClientRect[axisOfLocation]
+                const axisMaxSize = divClientRect[axisOfSize];
+
+                const proportion =
+                    axisSize < deadZone ? 0 :
+                    axisSize > axisMaxSize - deadZone ? 1 :
+                    minmax(
+                        (e[axisOfLocation] - divClientRect[axisOfLocation]) / divClientRect[axisOfSize],
+                        minCap,
+                        1 - minCap
+                    );
+
+                setTemporaryFirstProportion(proportion);
+                lastProportionRef.current = proportion;
             }
 
             const onMouseUp = () => {
                 setMouseDown(false);
+                setTemporaryFirstProportion(lastProportionRef.current);
+                setFirstProportion(lastProportionRef.current);
             }
 
             window.addEventListener("mousemove", onMouseMove);
@@ -40,27 +70,40 @@ export const Divider = (props: Props) => {
         }
     }, [mouseDown, div])
 
-    const clientWidth = div?.getClientRects()[0]?.width ?? 0;
+    const clientSize = div?.getClientRects()[0]?.[axisOfSize] ?? 0;
 
-    const firstWidth = clientWidth * firstProportion;
-    const secondWidth = clientWidth - firstWidth;
+    const firstSize = clientSize * firstProportion;
+    const temporaryFirstSize = clientSize * temporaryFirstProportion;
+    const secondSize = clientSize - firstSize;
+
+    const tmpAtCap = temporaryFirstProportion <= minCap || temporaryFirstProportion >= 1 - minCap
+    const tmpAtStart = temporaryFirstProportion === 0;
+    const tmpAtEnd = temporaryFirstProportion === 1;
+    const tmpCollapsed = tmpAtStart || tmpAtEnd;
+
+    const atStart = firstProportion === 0;
+    const atEnd = firstProportion === 1;
 
     return (
-        <div className="divider-container" ref={setDiv}>
+        <div className={classes("divider-container", props.vertical ? "vertical" : "horizontal")} ref={setDiv}>
             <div
-                className="child first-child"
-                style={{ width: firstWidth - 3 }}
+                className={classes("child", "first-child", atStart ? "hidden" : undefined)}
+                style={{ [axisOfSize]: firstSize  - (atEnd ? 16 : 0) + (atStart ? 16 : 0)  }}
             >
                 { props.firstChild }
             </div>
             <div
-                className="divider"
-                onMouseDown={() => setMouseDown(true)}
-                style={{ left: firstWidth - 11 }}
+                className={classes(
+                    "divider",
+                    tmpAtCap && mouseDown ? "limit" : undefined,
+                    tmpCollapsed ? "collapsed" : undefined
+                )}
+                onMouseDown={(e) => { setMouseDown(true); e.preventDefault() }}
+                style={{ [axisOfAlignment]: temporaryFirstSize - 8 - (tmpAtEnd ? 16 : 0) }}
             />
             <div
-                className="child second-child"
-                style={{ width: secondWidth }}
+                className={classes("child", "second-child", atEnd ? "hidden" : undefined)}
+                style={{ [axisOfSize]: secondSize - (atStart ? 16 : 0) + (atEnd ? 16 : 0) }}
             >
                 { props.secondChild }
             </div>

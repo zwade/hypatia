@@ -14,7 +14,11 @@
         font-variant-caps: small-caps;
         background-color: palette.$color-primary-05;
         color: palette.$color-neutral-00;
-        padding-left: 16px;
+        padding: 0px 16px;
+
+        .logo {
+            flex-grow: 1;
+        }
     }
 
     &>.content {
