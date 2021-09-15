@@ -7,11 +7,13 @@ const { app } = expressWs(expressApp);
 
 import { baseRouter, apiRouter, moduleRouter, wsRouter } from "./routes";
 
-app.use("/", baseRouter);
 app.use("/api/", apiRouter);
 // We need this on a different top level path for webpack proxy
 app.use("/ws-api/", wsRouter);
 app.use("/modules/", moduleRouter);
+
+// Has the catch-all route
+app.use("/", baseRouter);
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001,
         host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';

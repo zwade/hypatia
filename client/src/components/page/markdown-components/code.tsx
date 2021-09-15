@@ -62,6 +62,11 @@ export const Code = (props: Props) => {
             return null
         }
 
+        if (process.env.TRUST === "1") {
+            run(code);
+            setHasAutoRun(true);
+        }
+
         return (
             <Modal
                 title="Script Auto Run"
