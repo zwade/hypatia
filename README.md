@@ -35,9 +35,9 @@ Both inline and block code can have tags applied to them. Tags take the followin
 ```
 `inline code` {{ tag1 tag2 }}
 
-\```markdown
+```code
 code block
-\```
+```‍
 {{ tag1 tag2 }}
 ```
 
@@ -69,8 +69,8 @@ Hypatia also supports quizes inline. The formats supported are
 (*) Correct
 ( ) Also Not Correct
 
+```
+
 ## Licence
 
 MIT License, [Zach Wade](https://github.com/zwade)
-
-```
