@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import ReactMarkdown from "react-markdown";
 import RehypeHighlight from "rehype-highlight";
 import RehypeRaw from "rehype-raw";
+import RemarkGFM from "remark-gfm";
 
 import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
@@ -15,6 +16,7 @@ import "./material-dark.scss";
 import { QuizPlugin } from "./quiz";
 import { QuizProvider } from "../../providers/quiz-provider";
 import { QuizNavigation } from "./quiz-navigation";
+import { Modal } from "react-pwn";
 
 export interface Props {
 
@@ -33,7 +35,7 @@ export const Page = (props: Props) => {
             <QuizProvider page={`${module}/${lesson}/${page}`}>
                 <ReactMarkdown
                     className="markdown"
-                    remarkPlugins={[AttrPlugin, QuizPlugin]}
+                    remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM]}
                     rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
                     components={{ code: Code, quiz: Quiz } as any}
                     skipHtml={false}

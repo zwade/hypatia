@@ -5,8 +5,9 @@ import * as os from "os";
 const expressApp = express();
 const { app } = expressWs(expressApp);
 
-import { apiRouter, moduleRouter, wsRouter } from "./routes";
+import { baseRouter, apiRouter, moduleRouter, wsRouter } from "./routes";
 
+app.use("/", baseRouter);
 app.use("/api/", apiRouter);
 // We need this on a different top level path for webpack proxy
 app.use("/ws-api/", wsRouter);

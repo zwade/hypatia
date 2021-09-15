@@ -22,6 +22,26 @@ $border-radius: 4px;
                 margin: 0px;
             }
         }
+
+        table {
+            border-spacing: 0px;
+            margin: 16px 0px;
+
+            thead {
+                background-color: palette.$color-primary-01;
+            }
+
+            th, td {
+                padding: 8px;
+                &:not(:last-child) {
+                    border-right: 1px solid palette.$color-neutral-09;
+                }
+            }
+
+            tr:nth-child(2) {
+                background-color: palette.$color-neutral-02;
+            }
+        }
     }
 
     .quiz-navigation, .navigation {

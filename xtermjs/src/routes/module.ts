@@ -7,7 +7,7 @@ export const moduleRouter = Router();
 
 const allowedLessons =
     new Set(
-        (process.env.MODULE ?? "").split(/,\s+/)
+        (process.env.MODULE ?? "").split(/,\s*/)
     );
 
 type Modules = {
@@ -67,6 +67,7 @@ const getAll = async () => {
     const modules = await getModules();
 
     for (const module of modules) {
+        console.log(module.name, [...allowedLessons]);
         if (!allowedLessons.has(module.name) && !allowedLessons.has("ALL")) {
             continue;
         }

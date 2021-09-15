@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { PaletteProvider } from "react-pwn";
+import { PaletteProvider, ModalProvider } from "react-pwn";
 
 import { ModuleProvider } from "../../providers/module-provider";
 import { Divider } from "../divider"
@@ -41,9 +41,11 @@ export const App = () => {
             <ModuleProvider>
                 <PaletteProvider palette={BlueGreen}>
                     <SettingsProvider>
-                        <AppContainer>
-                            <Content/>
-                        </AppContainer>
+                        <ModalProvider>
+                            <AppContainer>
+                                <Content/>
+                            </AppContainer>
+                        </ModalProvider>
                     </SettingsProvider>
                 </PaletteProvider>
             </ModuleProvider>

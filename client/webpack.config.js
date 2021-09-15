@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { DefinePlugin } = require("webpack");
 
 module.exports = {
-    mode: "development",
+    mode: process.env.MODE ?? "development",
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
@@ -35,7 +35,7 @@ module.exports = {
     },
 
     output: {
-        publicPath: "/",
+        publicPath: "/assets/",
     },
 
     module: {
@@ -74,7 +74,10 @@ module.exports = {
             template: path.resolve(__dirname, "./index.html")
         }),
         new DefinePlugin({
-            "process.env": JSON.stringify({}),
+            "process.env": JSON.stringify({
+                MODE: process.env.MODE ?? "development",
+                TRUST: process.env.TRUST ?? "0"
+            }),
         })
     ],
 

@@ -18,6 +18,7 @@
                 "dist"
             ],
             "script": "node dist/index.js"
-        }
+        },
+        "xtermjs:start": "node dist/index.js"
     }
 }

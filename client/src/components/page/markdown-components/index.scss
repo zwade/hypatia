@@ -20,7 +20,6 @@
             &::before {
                 margin-right: 8px;
                 margin-bottom: -2px;
-                font-family: 'Material Icons';
 
                 display: inline-flex;
                 justify-content: center;
@@ -33,18 +32,20 @@
                 font-size: 20px;
 
                 color: palette.$color-neutral-05;
-                content: "more_horiz";
+                content: "?";
 
                 transition: color 100ms ease-in;
             }
 
             &[data-correct=incorrect]::before {
                 color: palette.$color-error;
+                font-family: 'Material Icons';
                 content: "close"
             }
 
             &[data-correct=correct]::before {
                 color: palette.$color-success;
+                font-family: 'Material Icons';
                 content: "check"
             }
         }
@@ -53,5 +54,39 @@
     .extra-error-message {
         color: palette.$color-error;
         margin-top: 8px;
+    }
+}
+
+.code {
+    &.numbered {
+        code {
+            padding-left: 48px;
+        }
+    }
+
+    code {
+        position: relative;
+
+        .line-numbers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding-top: 16px;
+            counter-reset: line-no;
+            display: flex;
+            flex-direction: column;
+            padding-left: 16px;
+            align-items: flex-end;
+
+            .line-number {
+                color: palette.$color-neutral-05;
+
+                &::before {
+                    counter-increment: line-no;
+                    content: counter(line-no);
+                }
+            }
+        }
     }
 }

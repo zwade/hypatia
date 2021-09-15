@@ -29,7 +29,7 @@
 
             &.collapsed {
                 &::before {
-                    border-right-width: 16px;
+                    border-right-width: var(--full-bar-width);
                 }
             }
 
@@ -53,7 +53,7 @@
 
             &.collapsed {
                 &::before {
-                    border-bottom-width: 16px;
+                    border-bottom-width: var(--full-bar-width);
                 }
             }
             &::before, &::after {

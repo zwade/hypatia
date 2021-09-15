@@ -15,7 +15,13 @@
       "r:ts:watch",
       "r:xtermjs:watch",
       "r:client:watch"
-    ]
+    ],
+    "ts:build": "tsc -b xtermjs",
+    "build": [
+      "r:ts:build",
+      "r:client:build"
+    ],
+    "start": "r:xtermjs:start"
   },
   "resolutions": {
     "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"

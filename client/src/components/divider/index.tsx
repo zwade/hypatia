@@ -13,6 +13,7 @@ export interface Props {
 
 const minCap = 0.33;
 const deadZone = 50;
+const fullBarWidth = 16;
 
 
 export const Divider = (props: Props) => {
@@ -85,10 +86,14 @@ export const Divider = (props: Props) => {
     const atEnd = firstProportion === 1;
 
     return (
-        <div className={classes("divider-container", props.vertical ? "vertical" : "horizontal")} ref={setDiv}>
+        <div
+            className={classes("divider-container", props.vertical ? "vertical" : "horizontal")}
+            ref={setDiv}
+            style={{ "--full-bar-width": `${fullBarWidth}px` } as any}
+        >
             <div
                 className={classes("child", "first-child", atStart ? "hidden" : undefined)}
-                style={{ [axisOfSize]: firstSize  - (atEnd ? 16 : 0) + (atStart ? 16 : 0)  }}
+                style={{ [axisOfSize]: firstSize  - (atEnd ? fullBarWidth : 0) + (atStart ? fullBarWidth : 0)  }}
             >
                 { props.firstChild }
             </div>
@@ -99,11 +104,11 @@ export const Divider = (props: Props) => {
                     tmpCollapsed ? "collapsed" : undefined
                 )}
                 onMouseDown={(e) => { setMouseDown(true); e.preventDefault() }}
-                style={{ [axisOfAlignment]: temporaryFirstSize - 8 - (tmpAtEnd ? 16 : 0) }}
+                style={{ [axisOfAlignment]: temporaryFirstSize - 8 - (tmpAtEnd ? fullBarWidth : 0) }}
             />
             <div
                 className={classes("child", "second-child", atEnd ? "hidden" : undefined)}
-                style={{ [axisOfSize]: secondSize - (atStart ? 16 : 0) + (atEnd ? 16 : 0) }}
+                style={{ [axisOfSize]: secondSize - (atStart ? fullBarWidth : 0) + (atEnd ? fullBarWidth : 0) }}
             >
                 { props.secondChild }
             </div>
