@@ -1,6 +1,8 @@
 {
     "name": "@hypatia-app/client",
+    "version": "0.0.4",
     "license": "unlicensed",
+    "main": "dist/main.js",
     "devDependencies": {
         "@types/mdast": "^3",
         "@types/react": "^17",

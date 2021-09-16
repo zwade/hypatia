@@ -28,16 +28,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hypatia-app/app@workspace:.":
+"@hypatia-app/backend@workspace:*, @hypatia-app/backend@workspace:backend":
   version: 0.0.0-use.local
-  resolution: "@hypatia-app/app@workspace:."
+  resolution: "@hypatia-app/backend@workspace:backend"
   dependencies:
-    node-gyp: ^8.2.0
-    typescript: ^4.4.2
+    "@hypatia-app/client": "*"
+    "@types/express": ^4
+    "@types/express-ws": ^3.0.1
+    "@types/fs-extra": ^9.0.12
+    "@zensors/sheriff": ^2.0.2
+    express: ^4.17.1
+    express-ws: ^5.0.2
+    fs-extra: ^10.0.0
+    node-pty: ^0.10.1
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/client@workspace:client":
+"@hypatia-app/client@workspace:*, @hypatia-app/client@workspace:client":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/client@workspace:client"
   dependencies:
@@ -76,21 +83,6 @@ __metadata:
     xterm-addon-attach: ^0.6.0
     xterm-addon-fit: ^0.5.0
     xterm-for-react: ^1.0.4
-  languageName: unknown
-  linkType: soft
-
-"@hypatia-app/xtermjs@workspace:xtermjs":
-  version: 0.0.0-use.local
-  resolution: "@hypatia-app/xtermjs@workspace:xtermjs"
-  dependencies:
-    "@types/express": ^4
-    "@types/express-ws": ^3.0.1
-    "@types/fs-extra": ^9.0.12
-    "@zensors/sheriff": ^2.0.2
-    express: ^4.17.1
-    express-ws: ^5.0.2
-    fs-extra: ^10.0.0
-    node-pty: ^0.10.1
   languageName: unknown
   linkType: soft
 
@@ -2488,6 +2480,19 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"hypatia-app@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "hypatia-app@workspace:."
+  dependencies:
+    "@hypatia-app/backend": ^0.0.6
+    "@hypatia-app/client": ^0.0.4
+    node-gyp: ^8.2.0
+    typescript: ^4.4.2
+  bin:
+    hypatia: ./index.js
+  languageName: unknown
+  linkType: soft
+
 "iconv-lite@npm:0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -4553,14 +4558,15 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=%40hypatia-app%2Fapp%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=%40hypatia-app%2Fapp%40workspace%3A."
+"react-pwn@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "react-pwn@npm:0.3.0"
   peerDependencies:
     react: ^17.0.1
     react-dom: ^17.0.1
+  checksum: 05e2f9b19ab37764b557961914f6bb78f3e8a0dab1f6dad9505e17415e384d2bbe5eb87acc9900fd1d25cb1938b81d0a8bad09ba907cdd9d7516d7eb0150dc31
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "react-router-dom@npm:^5.3.0":
   version: 5.3.0

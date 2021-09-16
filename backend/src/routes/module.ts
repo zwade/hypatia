@@ -1,4 +1,3 @@
-import { M, marshal } from "@zensors/sheriff";
 import { Router } from "express";
 import * as fs from "fs-extra";
 import * as path from "path";
@@ -16,7 +15,7 @@ type Modules = {
     }
 }
 
-const baseDir = path.join(__dirname, "../../../modules");
+const baseDir = path.join(process.cwd(), "modules");
 
 const getPages = async (module: string, lesson: string) => {
     const lessonBaseDir = path.join(baseDir, module, lesson);
@@ -67,7 +66,6 @@ const getAll = async () => {
     const modules = await getModules();
 
     for (const module of modules) {
-        console.log(module.name, [...allowedLessons]);
         if (!allowedLessons.has(module.name) && !allowedLessons.has("ALL")) {
             continue;
         }
@@ -84,9 +82,13 @@ const getAll = async () => {
     return result;
 }
 
-moduleRouter.get("/", async (req, res) => {
-    const modules = await getAll();
-    res.json(modules);
+moduleRouter.get("/", async (req, res, next) => {
+    try {
+        const modules = await getAll();
+        res.json(modules);
+    } catch (e) {
+        next(e);
+    }
 });
 
 moduleRouter.get("/:module/:lesson/:page.md", async (req, res) => {

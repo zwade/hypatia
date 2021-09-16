@@ -4,7 +4,7 @@ import * as path from "path";
 
 export const baseRouter = Router();
 
-const dist = path.join(__dirname, "../../../client/dist");
+const dist = path.dirname(require.resolve("@hypatia-app/client"));
 
 baseRouter.use("/assets/", expressStatic(dist));
 
