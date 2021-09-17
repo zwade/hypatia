@@ -23,12 +23,12 @@ export const AppContainer = (props: Props) => {
                             ? <i className="button" onClick={() => setSettings({ global: { vertical: false } })}>vertical_split</i>
                             : <i className="button" onClick={() => setSettings({ global: { vertical: true } })}>horizontal_split</i>
                     }
-                    <i className="button" onClick={() => setShowSettings(!showSettings)}>settings</i>
+                    {/* <i className="button" onClick={() => setShowSettings(!showSettings)}>settings</i>
                     {
                         showSettings
                             ? <Settings/>
                             : null
-                    }
+                    } */}
                 </div>
             </div>
             <div className="content">

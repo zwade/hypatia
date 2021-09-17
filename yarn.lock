@@ -28,11 +28,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hypatia-app/backend@workspace:*, @hypatia-app/backend@workspace:backend":
+"@hypatia-app/backend@^0.0.7, @hypatia-app/backend@workspace:backend":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/backend@workspace:backend"
   dependencies:
-    "@hypatia-app/client": "*"
+    "@hypatia-app/client": ^0.0.5
     "@types/express": ^4
     "@types/express-ws": ^3.0.1
     "@types/fs-extra": ^9.0.12
@@ -44,7 +44,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/client@workspace:*, @hypatia-app/client@workspace:client":
+"@hypatia-app/client@^0.0.5, @hypatia-app/client@workspace:client":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/client@workspace:client"
   dependencies:
@@ -65,7 +65,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     react-markdown: ^7.0.1
-    react-pwn: ^0.3.0
+    react-pwn: ^0.3.1
     react-router-dom: ^5.3.0
     rehype-highlight: ^5.0.0
     rehype-raw: ^6.1.0
@@ -2485,8 +2485,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "hypatia-app@workspace:."
   dependencies:
-    "@hypatia-app/backend": ^0.0.6
-    "@hypatia-app/client": ^0.0.4
+    "@hypatia-app/backend": ^0.0.7
+    "@hypatia-app/client": ^0.0.5
     node-gyp: ^8.2.0
     typescript: ^4.4.2
   bin:
@@ -4566,14 +4566,15 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=hypatia-app%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=hypatia-app%40workspace%3A."
+"react-pwn@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "react-pwn@npm:0.3.1"
   peerDependencies:
     react: ^17.0.1
     react-dom: ^17.0.1
+  checksum: 9b661d96b658ac367f72ddac98fe12c54b8293c334cea1d60e6114d5b3347aec1d3e4668cac3e19bd360eda3f595a5bb8596bbb1435d5c33bcedc56e311b4b2c
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "react-router-dom@npm:^5.3.0":
   version: 5.3.0

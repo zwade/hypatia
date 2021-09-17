@@ -1,6 +1,6 @@
 {
   "name": "hypatia-app",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "packageManager": "yarn@3.0.1",
   "devDependencies": {
     "typescript": "^4.4.2"
@@ -9,8 +9,8 @@
     "*"
   ],
   "dependencies": {
-    "@hypatia-app/backend": "^0.0.6",
-    "@hypatia-app/client": "^0.0.4",
+    "@hypatia-app/backend": "^0.0.8",
+    "@hypatia-app/client": "^0.0.6",
     "node-gyp": "^8.2.0"
   },
   "bin": {
@@ -30,10 +30,5 @@
     ],
     "start": "r:backend:start"
   },
-  "license": "MIT",
-  "resolutions": {
-    "@hypatia-app/backend": "workspace:*",
-    "@hypatia-app/client": "workspace:*",
-    "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"
-  }
+  "license": "MIT"
 }
