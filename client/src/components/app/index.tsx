@@ -15,12 +15,10 @@ import { SettingsContext, SettingsProvider } from "../../providers/settings-prov
 import "./index.scss";
 
 const Pages = () => (
-    <Router>
-        <Switch>
-            <Route exact path="/" component={ModuleBrowser} />
-            <Route exact path="/:module/:lesson/:page" component={Page} />
-        </Switch>
-    </Router>
+    <Switch>
+        <Route exact path="/" component={ModuleBrowser} />
+        <Route exact path="/:module/:lesson/:page" component={Page} />
+    </Switch>
 );
 
 const Content = () => {
@@ -28,7 +26,7 @@ const Content = () => {
 
     return (
         <Divider
-            vertical={settings.vertical}
+            vertical={settings.global.vertical}
             firstChild={<Pages/>}
             secondChild={<Terminal/>}
         />
@@ -37,18 +35,20 @@ const Content = () => {
 
 export const App = () => {
     return (
-        <TerminalRunProvider>
-            <ModuleProvider>
-                <PaletteProvider palette={BlueGreen}>
-                    <SettingsProvider>
-                        <ModalProvider>
-                            <AppContainer>
-                                <Content/>
-                            </AppContainer>
-                        </ModalProvider>
-                    </SettingsProvider>
-                </PaletteProvider>
-            </ModuleProvider>
-        </TerminalRunProvider>
+        <Router>
+            <TerminalRunProvider>
+                <ModuleProvider>
+                    <PaletteProvider palette={BlueGreen}>
+                        <SettingsProvider>
+                            <ModalProvider>
+                                <AppContainer>
+                                    <Content/>
+                                </AppContainer>
+                            </ModalProvider>
+                        </SettingsProvider>
+                    </PaletteProvider>
+                </ModuleProvider>
+            </TerminalRunProvider>
+        </Router>
     );
 }

@@ -56,6 +56,7 @@ __metadata:
     assert: ^2.0.0
     css-loader: ^6.2.0
     html-webpack-plugin: ^5.3.2
+    immutable: ^4.0.0-rc.14
     mdast: ^3.0.0
     micromark-core-commonmark: ^1.0.1
     micromark-util-symbol: ^1.0.0
@@ -2527,6 +2528,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"immutable@npm:^4.0.0-rc.14":
+  version: 4.0.0-rc.14
+  resolution: "immutable@npm:4.0.0-rc.14"
+  checksum: 40941a80dd957361471697388019ae09be28d046a2c79d88dc81b215e6f2ed68a8c7356b9d99bb814a2d978c60d0bdf78997f65403f87adca60d7e11993e8c91
+  languageName: node
+  linkType: hard
+
 "import-local@npm:^3.0.2":
   version: 3.0.2
   resolution: "import-local@npm:3.0.2"
@@ -4558,15 +4566,14 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-pwn@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "react-pwn@npm:0.3.0"
+"react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=hypatia-app%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "react-pwn@portal:/Users/zacharywade/Documents/projects/react-pwn::locator=hypatia-app%40workspace%3A."
   peerDependencies:
     react: ^17.0.1
     react-dom: ^17.0.1
-  checksum: 05e2f9b19ab37764b557961914f6bb78f3e8a0dab1f6dad9505e17415e384d2bbe5eb87acc9900fd1d25cb1938b81d0a8bad09ba907cdd9d7516d7eb0150dc31
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "react-router-dom@npm:^5.3.0":
   version: 5.3.0

@@ -15,8 +15,8 @@ app.use("/modules/", moduleRouter);
 // Has the catch-all route
 app.use("/", baseRouter);
 
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001,
-        host = os.platform() === 'win32' ? '127.0.0.1' : '0.0.0.0';
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+const host = process.env.HOST ?? '127.0.0.1';
 
-console.log('App listening to http://127.0.0.1:' + port);
+console.log(`App listening to http://${host}:${port}`);
 app.listen(port, host);

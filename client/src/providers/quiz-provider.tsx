@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Set as ISet, Map as IMap } from "immutable";
 
 export enum QuestionStatus {
     Unchecked = "unchecked",
@@ -7,18 +8,18 @@ export enum QuestionStatus {
 }
 
 export interface QuestionContextData {
-    currentStatus: Map<number, QuestionStatus>;
+    currentStatus: IMap<number, QuestionStatus>;
     setStatus: (questionId: number, status: QuestionStatus) => void;
-    onCheck: (cb: () => void) => () => void;
-    check: () => void;
+    onCheck: (id: number | undefined, cb: () => void) => () => void;
+    check: (id?: number) => void;
     shouldShowHint: boolean;
     showHint: (visible: boolean) => void;
 }
 
 export const QuizContext = React.createContext<QuestionContextData>({
-    currentStatus: new Map(),
+    currentStatus: IMap<number, QuestionStatus>(),
     setStatus: (questionId: number, status: QuestionStatus) => {},
-    onCheck: (cb: () => void) => () => {},
+    onCheck: (id, cb) => () => {},
     check: () => {},
     shouldShowHint: false,
     showHint: () => {},
@@ -30,14 +31,14 @@ export interface Props {
 }
 
 export const QuizProvider = (props: Props) => {
-    const statusRef = React.useRef(new Map<number, QuestionStatus>());
-    const renameRef = React.useRef(new Set<() => void>());
+    const statusRef = React.useRef(IMap<number, QuestionStatus>());
+    const renameRef = React.useRef(IMap<number | undefined, ISet<() => void>>());
     const [shouldShowHint, setShouldShowHint] = React.useState(false);
     const [_, update] = React.useState({});
 
     React.useEffect(() => {
-        statusRef.current = new Map<number, QuestionStatus>();
-        renameRef.current = new Set<() => void>();
+        statusRef.current = IMap<number, QuestionStatus>();
+        renameRef.current = IMap<number | undefined, ISet<() => void>>()
         setShouldShowHint(false);
     }, [props.page])
 
@@ -45,20 +46,31 @@ export const QuizProvider = (props: Props) => {
         currentStatus: statusRef.current,
         setStatus: (questionId: number, s?: QuestionStatus) => {
             if (s === undefined) {
-                statusRef.current.delete(questionId);
+                statusRef.current = statusRef.current.delete(questionId);
             } else {
-                statusRef.current.set(questionId, s);
+                statusRef.current = statusRef.current.set(questionId, s);
             }
             update({});
         },
-        onCheck: (cb: () => void) => {
-            renameRef.current.add(cb);
+        onCheck: (id: number | undefined, cb: () => void) => {
+            renameRef.current = renameRef.current.update(id, (set = ISet()) => set.add(cb));
             return () => {
-                renameRef.current.delete(cb);
+                renameRef.current = renameRef.current.update(id, (set = ISet()) => set.delete(cb));
             };
         },
-        check: () => {
-            for (const cb of renameRef.current) {
+        check: (id: number | undefined) => {
+            const collection =
+                id === undefined
+                    ? renameRef.current
+                        .valueSeq()
+                        .reduce((acc, set) => acc.union(set), ISet<() => void>())
+                    : renameRef.current
+                        .get(id, ISet<() => void>())
+                        .union(renameRef.current
+                            .get(undefined, ISet<() => void>())
+                        );
+
+            for (const cb of collection) {
                 cb();
             }
         },

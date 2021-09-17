@@ -35,7 +35,7 @@ module.exports = {
     },
 
     output: {
-        publicPath: "/assets/",
+        publicPath: process.env.MODE === "production" ? "/assets/" : "/",
     },
 
     module: {

@@ -19,6 +19,18 @@
         .logo {
             flex-grow: 1;
         }
+
+        .settings-holder {
+            width: 0px;
+            height: 0px;
+            position: relative;
+
+            .settings-panel {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+            }
+        }
     }
 
     &>.content {

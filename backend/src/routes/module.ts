@@ -6,7 +6,7 @@ export const moduleRouter = Router();
 
 const allowedLessons =
     new Set(
-        (process.env.MODULE ?? "").split(/,\s*/)
+        (process.env.MODULE ?? "ALL").split(/,\s*/)
     );
 
 type Modules = {

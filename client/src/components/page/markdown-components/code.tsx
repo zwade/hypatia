@@ -1,8 +1,82 @@
 import * as React from "react";
-import { Modal } from "react-pwn";
+import { Checkbox, Modal } from "react-pwn";
+import { useLocalStorage, usePage } from "../../../hooks";
+import { SettingsContext } from "../../../providers/settings-provider";
 
 import { TerminalRunContext } from "../../../providers/terminal-run";
 import { classes, flatten, genArray } from "../../../utils/utils";
+
+
+interface AutoRunModalProps {
+    run: () => void;
+    cancel: () => void;
+    children: React.ReactNode;
+}
+
+const AutoRunModal = (props: AutoRunModalProps) => {
+    const [rememberFlags, setRememberFlags] = React.useState(new Set<"page" | "module">());
+
+    const { settings, setSettings } = React.useContext(SettingsContext);
+
+    const remember = settings.page?.autoRun ?? settings.module?.autoRun;
+
+    if (process.env.TRUST === "1") {
+        props.run();
+        return null;
+    }
+
+    if (remember === true) {
+        props.run();
+        return null;
+    }
+
+    if (remember === false) {
+        props.cancel();
+        return null;
+    }
+
+    const submit = (run: boolean) => () => {
+        if (rememberFlags.has("page")) {
+            setSettings({ page: { autoRun: run } });
+        }
+
+        if (rememberFlags.has("module")) {
+            setSettings({ module: { autoRun: run } });
+        }
+
+        if (run) {
+            props.run();
+        } else {
+            props.cancel();
+        }
+    }
+
+    return (
+        <Modal
+            title="Script Auto Run"
+            onCancel={submit(false)}
+            onContinue={submit(true)}
+            onClose={props.cancel}
+        >
+            This page has asked to run the following script
+
+            <pre>
+                { props.children }
+            </pre>
+
+            <div className="remember-actions">
+                <Checkbox
+                    options={[
+                        { "label": "Remember my choice for this page", value: "page" as const },
+                        { "label": "Remember my choice for this module", value: "module" as const },
+                    ]}
+                    value={rememberFlags}
+                    onChange={setRememberFlags}
+                />
+            </div>
+        </Modal>
+    );
+}
 
 export interface Props {
     attrs?: string;
@@ -62,28 +136,18 @@ export const Code = (props: Props) => {
             return null
         }
 
-        if (process.env.TRUST === "1") {
-            run(code);
-            setHasAutoRun(true);
-        }
-
         return (
-            <Modal
-                title="Script Auto Run"
-                onCancel={() => setHasAutoRun(true)}
-                onContinue={() => {
+            <AutoRunModal
+                cancel={() => setHasAutoRun(true)}
+                run={() => {
                     setHasAutoRun(true);
                     run(code);
                 }}
             >
-                This page has asked to run the following script
-
-                <pre>
-                    <code {...rest}>
-                        { children }
-                    </code>
-                </pre>
-            </Modal>
+                <code {...rest}>
+                    { children }
+                </code>
+            </AutoRunModal>
         )
     } else {
         return codeElements;

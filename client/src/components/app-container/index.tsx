@@ -3,6 +3,7 @@ import * as React from "react";
 import { SettingsContext } from "../../providers/settings-provider";
 
 import "./index.scss";
+import { Settings } from "./settings";
 
 export interface Props {
     children: React.ReactNode;
@@ -10,6 +11,7 @@ export interface Props {
 
 export const AppContainer = (props: Props) => {
     const { settings, setSettings } = React.useContext(SettingsContext);
+    const [showSettings, setShowSettings] = React.useState(false);
 
     return (
         <div className="app-container">
@@ -17,9 +19,15 @@ export const AppContainer = (props: Props) => {
                 <div className="logo">Hypatia</div>
                 <div className="settings">
                     {
-                        settings.vertical
-                            ? <i className="button" onClick={() => setSettings({ vertical: false })}>vertical_split</i>
-                            : <i className="button" onClick={() => setSettings({ vertical: true })}>horizontal_split</i>
+                        settings.global.vertical
+                            ? <i className="button" onClick={() => setSettings({ global: { vertical: false } })}>vertical_split</i>
+                            : <i className="button" onClick={() => setSettings({ global: { vertical: true } })}>horizontal_split</i>
+                    }
+                    <i className="button" onClick={() => setShowSettings(!showSettings)}>settings</i>
+                    {
+                        showSettings
+                            ? <Settings/>
+                            : null
                     }
                 </div>
             </div>

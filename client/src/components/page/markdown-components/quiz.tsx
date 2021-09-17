@@ -18,7 +18,7 @@ const useQuizStatus = (id: number, correct: boolean, value: unknown) => {
     }, []);
 
     React.useEffect(() => {
-        return quiz.onCheck(() => {
+        return quiz.onCheck(id, () => {
             setIsDirty(false)
             quiz.setStatus(id, correct ? QuestionStatus.Correct : QuestionStatus.Incorrect);
         });
@@ -61,6 +61,7 @@ export const QuizEquality = (props: QuizEqualityProps) => {
             value={value}
             onChange={setValue}
             error={errorMessage}
+            onEnter={() => quiz.check(props.id)}
             forceError={true}
         />
     )
@@ -155,7 +156,8 @@ export const Quiz = (props: QuizProps) => {
         <div className="quiz">
             <h2 className="header">
                 <span className="quiz-status" data-correct={status ?? "none"} />
-                <span>{ props.header.text }</span>
+                <span className="quiz-title">{ props.header.text }</span>
+                <span className="check-button" onClick={() => quiz.check(props.id)}/>
             </h2>
             {
                 props.question.kind === "equality" ? <QuizEquality id={props.id} {...props.question} /> :

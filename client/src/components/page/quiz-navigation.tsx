@@ -13,7 +13,7 @@ export const QuizNavigation = (props: Props) => {
     const [correct, setCorrect] = React.useState(0);
 
     React.useEffect(() => {
-        return quiz.onCheck(() => {
+        return quiz.onCheck(undefined, () => {
             refresh({});
         })
     }, [quiz]);

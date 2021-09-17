@@ -33,6 +33,7 @@
   "license": "MIT",
   "resolutions": {
     "@hypatia-app/backend": "workspace:*",
-    "@hypatia-app/client": "workspace:*"
+    "@hypatia-app/client": "workspace:*",
+    "react-pwn": "portal:/Users/zacharywade/Documents/projects/react-pwn"
   }
 }

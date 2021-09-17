@@ -38,7 +38,11 @@ $border-radius: 4px;
                 }
             }
 
-            tr:nth-child(2) {
+            th:empty {
+                padding: 0px;
+            }
+
+            tr:nth-child(2n) {
                 background-color: palette.$color-neutral-02;
             }
         }

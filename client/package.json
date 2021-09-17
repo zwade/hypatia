@@ -12,6 +12,7 @@
         "assert": "^2.0.0",
         "css-loader": "^6.2.0",
         "html-webpack-plugin": "^5.3.2",
+        "immutable": "^4.0.0-rc.14",
         "mdast": "^3.0.0",
         "micromark-core-commonmark": "^1.0.1",
         "micromark-util-symbol": "^1.0.0",

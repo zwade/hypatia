@@ -10,15 +10,13 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-
-        h2 {
-            margin: unset;
-            margin-bottom: 24px;
-        }
+        column-gap: 8px;
+        margin: unset;
+        margin-bottom: 24px;
+        font-size: 18px;
 
         .quiz-status {
             &::before {
-                margin-right: 8px;
                 margin-bottom: -2px;
 
                 display: inline-flex;
@@ -47,6 +45,29 @@
                 color: palette.$color-success;
                 font-family: 'Material Icons';
                 content: "check"
+            }
+        }
+
+        .quiz-title {
+            flex-grow: 1;
+        }
+
+        .check-button {
+            &::before {
+                content: "CHECK";
+                padding: 6px;
+                border-radius: 4px;
+                font-size: 12px;
+                cursor: pointer;
+                background: #00000000;
+                transition: background 100ms ease-in;
+                color: palette.$color-neutral-07;
+            }
+
+            &:hover {
+                &::before {
+                    background: palette.$color-neutral-03;
+                }
             }
         }
     }
