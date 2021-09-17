@@ -108,14 +108,17 @@ export const Code = (props: Props) => {
                 hasClicked ? "clicked" : "",
                 attrSet.has("numbered") ? "numbered" : "",
             )}
-            onClick={() => {
-                if (isExecutable && inline) {
-                    run(code);
-                    setHasClicked(true);
-                }
-            }}
         >
-            <code {...rest} ref={setCodeRef}>
+            <code
+                {...rest}
+                ref={setCodeRef}
+                onClick={() => {
+                    if (isExecutable && inline) {
+                        run(code + "\n");
+                        setHasClicked(true);
+                    }
+                }}
+            >
                 {
                     attrSet.has("numbered") ? (
                         <div className="line-numbers">{ genArray(numLines, (i) => <span key={i} className="line-number"/>) }</div>
@@ -125,8 +128,21 @@ export const Code = (props: Props) => {
             </code>
             {
                 isExecutable
-                    ? <span className="execute-button" onClick={() => (run(code), setHasClicked(true))}>↪</span>
-                    : null
+                    ? (
+                        <span
+                            className="execute-button"
+                            onClick={() => {
+                                if (!inline) {
+                                    run(code);
+                                } else {
+                                    run(code + "\n")
+                                }
+                                setHasClicked(true)
+                            }}
+                        >
+                            ↪
+                        </span>
+                    ) : null
             }
         </span>
     )
