@@ -15,13 +15,20 @@ type Modules = {
     }
 }
 
+const allowedAssets = new Set(["jpg", "jpeg", "png", "gif"]);
+
 const baseDir = path.join(process.cwd(), "modules");
 
 const getPages = async (module: string, lesson: string) => {
     const lessonBaseDir = path.join(baseDir, module, lesson);
     const files = await fs.readdir(lessonBaseDir);
+    const stats = await Promise.all(
+        files.map((f) => fs.stat(path.join(lessonBaseDir, f)))
+    );
+
     const pages = files
         .filter((f) => !f.startsWith("."))
+        .filter((_, i) => stats[i].isFile())
         .map((f) => {
             const fileNameTest = f.match(/^(\d+).md$/);
             if (fileNameTest === null) {
@@ -99,3 +106,14 @@ moduleRouter.get("/:module/:lesson/:page.md", async (req, res) => {
     const data = await fs.readFile(page, "utf-8");
     res.type("text/markdown").send(data);
 });
+
+moduleRouter.get("/:module/:lesson/assets/:file", async (req, res) => {
+    console.log(req.params);
+    const extension = path.extname(req.params.file).slice(1).toLocaleLowerCase();
+    if (allowedAssets.has(extension)) {
+        const file = path.join(baseDir, req.params.module, req.params.lesson, "assets", req.params.file);
+        res.type(extension).sendFile(file);
+    } else{
+        res.status(404).end();
+    }
+})

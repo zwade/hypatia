@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { Checkbox, Radio } from 'react-pwn';
+import { Button, Checkbox, Radio } from 'react-pwn';
 import { usePage } from '../../hooks';
 import { SettingsContext, Settings as SettingsType, description } from '../../providers/settings-provider';
 
 interface SubSettingsProps {
-    key: keyof SettingsType;
+    settingsKey: keyof SettingsType;
     name: string;
 }
 
 const SubSettings = (props: SubSettingsProps) => {
     const { settings, setSettings } = React.useContext(SettingsContext);
 
-    const currentSettings = settings[props.key];
-    const desc = description[props.key];
+    const currentSettings = settings[props.settingsKey];
+    const desc = description[props.settingsKey];
 
-    if (currentSettings === undefined) {
+    if (currentSettings === undefined || desc.length === 0) {
         return null;
     }
 
@@ -28,7 +28,7 @@ const SubSettings = (props: SubSettingsProps) => {
                         value={(currentSettings as any)[d.name] as boolean | undefined}
                         options={[ { label: "Enabled", value: true }, { label: "Disabled", value: false }]}
                         onChange={(value) => {
-                            setSettings({ [props.key]: { [d.name]: value} });
+                            setSettings({ [props.settingsKey]: { [d.name]: value} });
                         }}
                     />
                 );
@@ -38,17 +38,20 @@ const SubSettings = (props: SubSettingsProps) => {
             <div key={d.name} className="settings-item">
                 <div className="settings-desc">
                     { d.description ?? d.name }
-                    {
-                        d.nullable ? (
-                            <div
-                                className="settings-clear"
-                                onClick={() => setSettings({ [props.key]: { [d.name]: undefined } })}
-                            />
-                        ) : null
-                    }
                 </div>
-
-                { twiddler }
+                {
+                    d.nullable ? (
+                        <i
+                            className="button settings-clear"
+                            onClick={() => setSettings({ [props.settingsKey]: { [d.name]: undefined } })}
+                        >
+                            close
+                        </i>
+                    ) : null
+                }
+                <div className="settings-twiddler">
+                    { twiddler }
+                </div>
             </div>
         )
 
@@ -63,21 +66,25 @@ const SubSettings = (props: SubSettingsProps) => {
 }
 
 export interface Props {
-
+    onClose: () => void;
 }
 
 export const Settings = (props: Props) => {
-    const page = usePage();
+    const { page } = React.useContext(SettingsContext);
 
     return (
-        <div className="settings-holder">
-            <div className="settings-panel">
-                <div className="settings-title">Settings</div>
-                <SubSettings key="global" name="Global Settings"/>
-                <SubSettings key="module" name={`Module (${page?.module})`}/>
-                <SubSettings key="lesson" name={`Lesson (${page?.lesson})`}/>
-                <SubSettings key="page" name={`Page (${page?.page})`}/>
+        <>
+            <div className="event-catcher" onClick={props.onClose}/>
+            <div className="settings-holder">
+                <div className="settings-panel">
+                    <div className="settings-title">Settings</div>
+                    <SubSettings settingsKey="global" name="Global Settings"/>
+                    <SubSettings settingsKey="module" name={`Module Settings (${page?.module})`}/>
+                    <SubSettings settingsKey="lesson" name={`Lesson Settings (${page?.lesson})`}/>
+                    <SubSettings settingsKey="page" name={`Page Settings (page ${page?.page})`}/>
+                    <Button label="Close" onClick={props.onClose}/>
+                </div>
             </div>
-        </div>
+        </>
     );
 };

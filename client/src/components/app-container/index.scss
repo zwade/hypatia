@@ -20,15 +20,91 @@
             flex-grow: 1;
         }
 
-        .settings-holder {
-            width: 0px;
-            height: 0px;
-            position: relative;
+        .settings {
+            display: flex;
+            flex-direction: row;
 
-            .settings-panel {
+            .event-catcher {
                 position: absolute;
-                top: 0px;
-                right: 0px;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+            }
+
+            .settings-holder {
+                width: 0px;
+                height: 0px;
+                align-self: end;
+                position: relative;
+                font-size: 16px;
+                font-variant-caps: normal;
+
+                .settings-panel {
+                    position: absolute;
+                    top: 0px;
+                    right: 0px;
+                    z-index: 11;
+
+                    min-width: 400px;
+                    max-height: 600px;
+                    overflow-y: auto;
+
+                    color: palette.$color-neutral-09;
+                    background: palette.$color-neutral-01;
+                    border: 2px solid palette.$color-neutral-09;
+                    border-radius: 4px;
+
+                    padding: 8px;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    .settings-title {
+                        font-size: 24px;
+                        align-self: center;
+                    }
+
+                    .sub-settings {
+                        .name {
+                            font-weight: bold;
+                        }
+
+                        .settings-item {
+                            display: grid;
+                            grid-template:
+                                "title title    close" max-content
+                                ".     twiddler close" 1fr /
+                                16px   1fr      max-content;
+
+                            background: palette.$color-neutral-03;
+                            padding: 8px;
+                            margin: 8px 0px;
+                            border-radius: 4px;
+
+                            .settings-desc {
+                                grid-area: title;
+                            }
+
+                            .settings-clear {
+                                grid-area: close;
+                                padding: 4px;
+                                color: palette.$color-error-02;
+                                transition: color 100ms ease-in, background-color 100ms ease-in;
+
+                                &:hover {
+                                    color: palette.$color-neutral-00;
+                                    background: palette.$color-error-02;
+                                }
+                            }
+
+                            .settings-twiddler {
+                                grid-area: twiddler;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

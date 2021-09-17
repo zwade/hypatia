@@ -46,6 +46,11 @@ $border-radius: 4px;
                 background-color: palette.$color-neutral-02;
             }
         }
+
+        img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
     }
 
     .quiz-navigation, .navigation {

@@ -65,7 +65,7 @@ export const description: Description = {
     global: [
         {
             name: "vertical",
-            description: "Terminal Orientation",
+            description: "Vertical Terminal Orientation",
             nullable: false,
             default: false,
             type: "boolean"
@@ -90,9 +90,13 @@ export const description: Description = {
     ]
 }
 
+export type Page = { module: string, lesson: string, page: number };
+
 export interface SettingsContextData {
     settings: Settings;
     setSettings: (settings: PartialSettings) => void;
+    setPage: (page?: Page) => void;
+    page?: Page;
 }
 
 export const SettingsContext = React.createContext<SettingsContextData>({
@@ -102,6 +106,7 @@ export const SettingsContext = React.createContext<SettingsContextData>({
         },
     },
 
+    setPage: () => {},
     setSettings: () => {},
 });
 
@@ -110,12 +115,12 @@ export interface Props {
 }
 
 export const SettingsProvider = (props: Props) => {
-    const page = usePage() ?? { module: "none", lesson: "none", page: -1 };
+    const [page, setPage] = React.useState<{ module: string, lesson: string, page: number } | undefined>()
 
     const globalKey = "settings";
-    const moduleKey = `settings-module-${page.module}`;
-    const lessonKey = `settings-lesson-${page.module}/${page.lesson}`;
-    const pageKey   = `settings-page-${page.module}/${page.lesson}/${page.page}`;
+    const moduleKey = `settings-module-${page?.module}`;
+    const lessonKey = `settings-lesson-${page?.module}/${page?.lesson}`;
+    const pageKey   = `settings-page-${page?.module}/${page?.lesson}/${page?.page}`;
 
     const [globalSettings, _, mergeGlobalSettings] = useLocalStorage<GlobalSettings>(
         globalKey,
@@ -149,7 +154,7 @@ export const SettingsProvider = (props: Props) => {
     }
 
     return (
-        <SettingsContext.Provider value={{ settings, setSettings }}>
+        <SettingsContext.Provider value={{ settings, setSettings, setPage, page }}>
             { props.children }
         </SettingsContext.Provider>
     )

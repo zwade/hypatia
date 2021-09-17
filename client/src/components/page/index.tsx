@@ -9,7 +9,7 @@ import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
 
 import { AttrPlugin } from "./attrs";
-import { Code, Quiz } from "./markdown-components";
+import { Code, Quiz, Image } from "./markdown-components";
 
 import "./page.scss";
 import "./material-dark.scss";
@@ -17,17 +17,24 @@ import { QuizPlugin } from "./quiz";
 import { QuizProvider } from "../../providers/quiz-provider";
 import { QuizNavigation } from "./quiz-navigation";
 import { Modal } from "react-pwn";
+import { SettingsContext } from "../../providers/settings-provider";
+import { usePage } from "../../hooks";
 
 export interface Props {
 
 }
 
 export const Page = (props: Props) => {
-    const { module, lesson, page } = useParams<{ module: string, lesson: string, page: string }>();
+    const { module, lesson, page } = usePage()!;
     const [pageContent, setPageContent] = React.useState<string>("");
+    const { setPage } = React.useContext(SettingsContext);
 
     React.useEffect(() => {
-        API.Modules.page(module, lesson, parseInt(page, 10)).then(setPageContent);
+        setPage({ module, lesson, page });
+    }, [module, lesson, page]);
+
+    React.useEffect(() => {
+        API.Modules.page(module, lesson, page).then(setPageContent);
     }, [module, lesson, page]);
 
     return (
@@ -37,7 +44,7 @@ export const Page = (props: Props) => {
                     className="markdown"
                     remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM]}
                     rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
-                    components={{ code: Code, quiz: Quiz } as any}
+                    components={{ code: Code, quiz: Quiz, img: Image } as any}
                     skipHtml={false}
                 >
                     { pageContent }

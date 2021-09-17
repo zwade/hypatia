@@ -1,4 +1,5 @@
 import "./index.scss";
 
-export * from "./code";
-export * from "./quiz";
+export { Code } from "./code";
+export { Image } from "./image";
+export { Quiz } from "./quiz";

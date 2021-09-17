@@ -15,12 +15,18 @@ const queryLocalStorage = <T extends any>(name: string) => {
 export const useLocalStorage = <T extends any>(name: string, def: T) => {
     const itemName = `${prefix}.${name}`;
 
-    let stateDefault: T | undefined = queryLocalStorage<T>(itemName);
-    if (stateDefault === undefined) {
-        stateDefault = def;
-    }
+    const lsDefault: T | undefined = queryLocalStorage<T>(itemName);
 
-    const [value, setValue] = React.useState(stateDefault);
+    const [valueRaw, setValue] = React.useState<T | undefined>(undefined);
+    const value =
+        valueRaw !== undefined ? valueRaw :
+        lsDefault !== undefined ? lsDefault :
+        def;
+
+
+    React.useEffect(() => {
+        setValue(undefined);
+    }, [name])
 
     const setFn = (t: T) => {
         localStorage.setItem(itemName, JSON.stringify(t));

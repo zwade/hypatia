@@ -5,6 +5,7 @@ import { ModuleEntry } from "./module-entry";
 
 import "./index.scss";
 import { useLocalStorage } from "../../hooks";
+import { SettingsContext } from "../../providers/settings-provider";
 
 export interface Props {
 
@@ -13,6 +14,11 @@ export interface Props {
 export const ModuleBrowser = (props: Props) => {
     const { data } = React.useContext(ModuleContext);
     const [open, setOpen] = useLocalStorage<number | null>("toc-active-module", null);
+    const { setPage } = React.useContext(SettingsContext);
+
+    React.useEffect(() => {
+        setPage(undefined);
+    }, []);
 
     if (data === undefined) {
         return (
