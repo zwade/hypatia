@@ -1,10 +1,17 @@
 @use "~react-pwn/palette.scss" as palette;
 
 .quiz {
-    border: 2px solid var(--color-neutral-05);
+    box-shadow: 0px 0px 0px 2px palette.$color-neutral-05;
     padding: 17px;
     border-radius: 4px;
-    background-color: var(--color-neutral-01);
+    background-color: palette.$color-neutral-01;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+
+    p {
+        display: contents;
+    }
 
     .header {
         display: flex;
@@ -12,7 +19,6 @@
         align-items: center;
         column-gap: 8px;
         margin: unset;
-        margin-bottom: 24px;
         font-size: 18px;
 
         .quiz-status {
@@ -75,6 +81,60 @@
     .extra-error-message {
         color: palette.$color-error;
         margin-top: 8px;
+    }
+}
+
+.quiz-hint {
+    display: block;
+    min-width: 400px;
+    position: relative;
+    padding: 8px;
+    border-radius: 4px;
+    background: palette.$color-neutral-00;
+    box-shadow: 0px 0px 0px 2px palette.$color-neutral-04;
+
+    & > p {
+        display: block;
+        margin: unset;
+    }
+
+    &::after {
+        content: "Click to Show";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        color: palette.$color-primary-05;
+        font-weight: bold;
+        background-color: palette.$color-neutral-04;
+        opacity: 1;
+        transition: opacity 100ms ease-in, background-color 100ms ease-in;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    &:hover {
+        &::after {
+            background-color: palette.$color-neutral-03;
+        }
+    }
+
+    &.shown {
+        &::after {
+            opacity: 0;
+        }
+    }
+
+    &.as-answer {
+        &::after {
+            content: "Click to Show Solution";
+        }
     }
 }
 

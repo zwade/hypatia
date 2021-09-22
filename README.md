@@ -52,20 +52,20 @@ The supported tags are:
 Hypatia also supports quizes inline. The formats supported are
 
 ```markdown
-<<Q1: Exact Equality>>
-=== answer
+??  Q1: Exact Equality
+?:  === answer
 
-<<Q2: Regex Equality>>
-=~= ^.*answer.*$
+??  Q2: Regex Equality
+?:  =~= ^.*answer.*$
 
-<<Q3: Multiple Choice, Multiple Answer>>
-[*] Correct
+??  Q3: Multiple Choice, Multiple Answer
+?:  [*] Correct
 [ ] Not Correct
 [*] Also Correct
 [ ] Also Not Correct
 
-<<Q4: Multple Choice, Single Answer>>
-( ) Not Correct
+??  Q4: Multple Choice, Single Answer
+?:  ( ) Not Correct
 (*) Correct
 ( ) Also Not Correct
 

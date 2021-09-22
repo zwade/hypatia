@@ -7,18 +7,16 @@ import RemarkGFM from "remark-gfm";
 
 import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
-
-import { AttrPlugin } from "./attrs";
-import { Code, Quiz, Image } from "./markdown-components";
+import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint } from "./markdown-components";
+import { AttrPlugin, QuizPlugin } from "./parsers";
+import { QuizProvider } from "../../providers/quiz-provider";
+import { QuizNavigation } from "./quiz-navigation";
+import { SettingsContext } from "../../providers/settings-provider";
+import { usePage } from "../../hooks";
 
 import "./page.scss";
 import "./material-dark.scss";
-import { QuizPlugin } from "./quiz";
-import { QuizProvider } from "../../providers/quiz-provider";
-import { QuizNavigation } from "./quiz-navigation";
-import { Modal } from "react-pwn";
-import { SettingsContext } from "../../providers/settings-provider";
-import { usePage } from "../../hooks";
+import { QuizElements } from "./parsers/quiz";
 
 export interface Props {
 
@@ -44,7 +42,16 @@ export const Page = (props: Props) => {
                     className="markdown"
                     remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM]}
                     rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
-                    components={{ code: Code, quiz: Quiz, img: Image } as any}
+                    components={{
+                        code: Code,
+                        img: Image,
+                        [QuizElements.Quiz]: Quiz,
+                        [QuizElements.QuizQuestion]: QuizQuestion,
+                        [QuizElements.QuizCheckboxInput]: QuizCheckbox,
+                        [QuizElements.QuizRadioInput]: QuizRadio,
+                        [QuizElements.QuizTextInput]: QuizTextInput,
+                        [QuizElements.QuizHint]: QuizHint,
+                    } as any}
                     skipHtml={false}
                 >
                     { pageContent }

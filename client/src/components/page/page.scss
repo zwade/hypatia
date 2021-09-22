@@ -12,6 +12,10 @@ $border-radius: 4px;
         padding: 16px;
         overflow: auto;
 
+        & > div, & > p {
+            margin: 16px 0px;
+        }
+
         blockquote {
             margin: 16px 0px;
             padding: 8px 8px 8px 16px;
@@ -42,7 +46,7 @@ $border-radius: 4px;
                 padding: 0px;
             }
 
-            tr:nth-child(2n) {
+            tbody tr:nth-child(2n+1) {
                 background-color: palette.$color-neutral-02;
             }
         }
