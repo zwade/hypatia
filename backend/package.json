@@ -1,9 +1,9 @@
 {
     "name": "@hypatia-app/backend",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "main": "./dist/index.js",
     "dependencies": {
-        "@hypatia-app/client": "^0.0.8",
+        "@hypatia-app/client": "^0.0.9",
         "@zensors/sheriff": "^2.0.2",
         "express": "^4.17.1",
         "express-ws": "^5.0.2",

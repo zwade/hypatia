@@ -1,6 +1,6 @@
 {
   "name": "hypatia-app",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "packageManager": "yarn@3.0.1",
   "devDependencies": {
     "typescript": "^4.4.2"
@@ -9,8 +9,8 @@
     "*"
   ],
   "dependencies": {
-    "@hypatia-app/backend": "^0.0.10",
-    "@hypatia-app/client": "^0.0.8",
+    "@hypatia-app/backend": "^0.0.11",
+    "@hypatia-app/client": "^0.0.9",
     "node-gyp": "^8.2.0"
   },
   "bin": {
