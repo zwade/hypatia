@@ -28,12 +28,16 @@ export const useLocalStorage = <T extends any>(name: string, def: T) => {
         setValue(undefined);
     }, [name])
 
+    const updateLocalStorage = useRateLimit((t: T) => {
+        localStorage.setItem(itemName, JSON.stringify(t))
+    }, 500, [name]);
+
     const setFn = (t: T) => {
-        localStorage.setItem(itemName, JSON.stringify(t));
+        updateLocalStorage(t);
         setValue(t);
     }
 
-    const mergeFn = (t: Partial<T>) => {
+    const mergeFn = (t: T extends {} ? Partial<T> : never) => {
         if (typeof t !== "object") {
             console.warn("Cannot call [useLocalStorage.merge] on non-object");
             return setFn(t as T);
@@ -74,5 +78,35 @@ export const usePage = () => {
         module: params.module,
         page: pageNo,
         path: `${params.module}/${params.lesson}/${params.page}`
+    }
+}
+
+export const useRateLimit = <A extends unknown[]>(cb: (...args: A) => void, timeout = 100, flushEvents?: unknown[]): (...args: A) => void => {
+    const thunkRef = React.useRef<(() => void) | undefined>();
+    const timeoutRef = React.useRef<NodeJS.Timeout | undefined>();
+
+    React.useEffect(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = undefined;
+        }
+        if (thunkRef.current) {
+            thunkRef.current();
+            thunkRef.current = undefined;
+        }
+    }, flushEvents);
+
+    return (...args) => {
+        if (timeoutRef.current !== undefined) {
+            thunkRef.current = () => cb(...args);
+        } else {
+            timeoutRef.current = setTimeout(() => {
+                timeoutRef.current = undefined;
+                const toCall = thunkRef.current;
+                thunkRef.current = undefined;
+                toCall?.();
+            }, timeout)
+            cb(...args);
+        }
     }
 }

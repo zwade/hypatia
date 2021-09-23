@@ -29,9 +29,12 @@ declare module 'mdast' {
 type NotesToken = {
     kind: "inline" | "text-area";
     big: boolean;
+    id: number;
 } & Token;
 
 const TokenizeNotesInput = (): Tokenizer => {
+    let noteId = 0;
+
     return function (effects, ok, nok) {
         const utils = genUtils(this, effects);
         let kind: "text-area" | "inline" = "inline";
@@ -42,6 +45,8 @@ const TokenizeNotesInput = (): Tokenizer => {
             (t: NotesToken) => {
                 t.kind = kind;
                 t.big = count >= 6;
+                t.id = noteId;
+                noteId++;
             },
             utils.expect("["),
             utils.branch({
@@ -84,6 +89,7 @@ const fromMarkdown = (): MdastExtension => {
                         hProperties: {
                             kind: token.kind,
                             big: token.big,
+                            id: token.id,
                         }
                     }
                 }, token);

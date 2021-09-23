@@ -31,6 +31,10 @@
                 &::before {
                     border-right-width: var(--full-bar-width);
                 }
+
+                &::after {
+                    display: none;
+                }
             }
 
             &::before, &::after {
@@ -54,6 +58,10 @@
             &.collapsed {
                 &::before {
                     border-bottom-width: var(--full-bar-width);
+                }
+
+                &::after {
+                    display: none;
                 }
             }
             &::before, &::after {
