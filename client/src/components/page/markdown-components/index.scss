@@ -171,3 +171,63 @@
         }
     }
 }
+
+.notes-input {
+    border-radius: 4px;
+    background-color: #00000000;
+    transition: background-color 100ms ease-in;
+
+    &:hover {
+        background: palette.$color-neutral-01;
+    }
+
+    &:focus-within {
+        background: palette.$color-neutral-01;
+
+        input {
+            border-bottom-color: palette.$color-primary-03;
+        }
+
+        textarea {
+            border-color: palette.$color-primary-03;
+        }
+    }
+
+    &.inline {
+        display: inline-block;
+        width: 150px;
+
+        &.big {
+            width: 450px;
+        }
+    }
+
+    &:not(.inline) {
+        display: block;
+        width: 450px;
+        height: 80px;
+    }
+
+    input, textarea {
+        border: unset;
+        font-family: 'Lato';
+        font-size: 1em;
+        background: #00000000;
+        outline: none;
+        padding: 2px;
+        width: 100%;
+    }
+
+    input {
+        border-bottom: 2px solid palette.$color-neutral-08;
+        transition: border-color 100ms ease-in;
+    }
+
+    textarea {
+        height: 100%;
+        border-radius: 4px;
+        resize: none;
+        border: 2px solid palette.$color-neutral-08;
+        transition: border-color 100ms ease-in;
+    }
+}

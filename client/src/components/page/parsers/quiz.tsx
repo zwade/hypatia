@@ -47,7 +47,7 @@ export enum QuizElements {
 }
 
 declare module 'mdast' {
-    type BCM = {
+    type _quiz_BCM = {
         [K in
             | QuizElements.QuizHeader
             | QuizElements.QuizQuestion
@@ -55,7 +55,7 @@ declare module 'mdast' {
         ]: MdastQuiz<QuizElements>;
     }
 
-    interface BlockContentMap extends BCM { }
+    interface BlockContentMap extends _quiz_BCM { }
 }
 
 const quizParser = (): Extension => {

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useParams } from "react-router";
 import ReactMarkdown from "react-markdown";
 import RehypeHighlight from "rehype-highlight";
 import RehypeRaw from "rehype-raw";
@@ -7,16 +6,17 @@ import RemarkGFM from "remark-gfm";
 
 import { API } from "../../api/lessons";
 import { Navigation } from "./navigation";
-import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint } from "./markdown-components";
-import { AttrPlugin, QuizPlugin } from "./parsers";
+import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint, Notes } from "./markdown-components";
+import { AttrPlugin, NotesPlugin, QuizPlugin } from "./parsers";
 import { QuizProvider } from "../../providers/quiz-provider";
 import { QuizNavigation } from "./quiz-navigation";
 import { SettingsContext } from "../../providers/settings-provider";
 import { usePage } from "../../hooks";
+import { QuizElements } from "./parsers/quiz";
+import { NotesElements } from "./parsers/notes-input";
 
 import "./page.scss";
 import "./material-dark.scss";
-import { QuizElements } from "./parsers/quiz";
 
 export interface Props {
 
@@ -40,7 +40,7 @@ export const Page = (props: Props) => {
             <QuizProvider page={`${module}/${lesson}/${page}`}>
                 <ReactMarkdown
                     className="markdown"
-                    remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM]}
+                    remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM, NotesPlugin]}
                     rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
                     components={{
                         code: Code,
@@ -51,6 +51,7 @@ export const Page = (props: Props) => {
                         [QuizElements.QuizRadioInput]: QuizRadio,
                         [QuizElements.QuizTextInput]: QuizTextInput,
                         [QuizElements.QuizHint]: QuizHint,
+                        [NotesElements.Notes]: Notes,
                     } as any}
                     skipHtml={false}
                 >

@@ -82,6 +82,8 @@ export const runImmediately = (t: TokenStep): TokenStep => {
 
 export const genUtils = (context: TokenizeContext, effects: Effects) => {
     const consume = (c: Code) => {
+        // Uncomment to help trace the parser
+        // console.log("Consuming", c === null || c < 0 ? c : String.fromCharCode(c));
         if (c !== null) {
             effects.consume(c);
         }
@@ -115,17 +117,27 @@ export const genUtils = (context: TokenizeContext, effects: Effects) => {
         return fn;
     };
 
-    const expect = (str: string, cb?: (c: Code) => void): TokenStep => (ok, nok) => (code) => {
-        const toCheck = str.charCodeAt(0);
-        if (toCheck === code || (toCheck === 10 && isEOL(code)) || (toCheck === 0 && code === null)) {
+    const expect = (cond: string | ((c: Code) => boolean), cb?: (c: Code) => void): TokenStep => (ok, nok) => (code) => {
+        const checkFn =
+            typeof cond !== "string" ? cond :
+            (c: Code) => {
+                const toCheck = cond.charCodeAt(0);
+                return (
+                    toCheck === code
+                    || (toCheck === 10 && isEOL(code))
+                    || (toCheck === 0 && code === null)
+                );
+            }
+
+        if (checkFn(code)) {
             consume(code)
-            if (str.length > 1) {
+            if (typeof cond === "string" && cond.length > 1) {
                 if (code === null) {
                     // If it's null, then we fail, because null always signals the end of a block;
                     return nok(code);
                 }
 
-                return expect(str.slice(1), cb)(ok, nok);
+                return expect(cond.slice(1), cb)(ok, nok);
             }
 
             cb?.(code);
@@ -135,7 +147,7 @@ export const genUtils = (context: TokenizeContext, effects: Effects) => {
         return nok(code)
     }
 
-    const readUntil = (strs: string[], cb?: (c: Code) => void): TokenStep => (ok, nok) => (code) => {
+    const readUntil = (conds: (string | TokenStep)[], cb?: (c: Code) => void): TokenStep => (ok, nok) => (code) => {
         consume(code);
         cb?.(code);
 
@@ -145,14 +157,23 @@ export const genUtils = (context: TokenizeContext, effects: Effects) => {
         }
 
         return effects.check(
-            strs.map((str) => (
-                { tokenize: (_effects, ok, nok) => apply(expect(str), ok, nok) }
+            conds.map((cond) => (
+                {
+                    tokenize: (_effects, ok, nok) => {
+                        if (typeof cond === "string") {
+                            return apply(expect(cond), ok, nok);
+                        } else {
+                            return apply(cond, ok, nok);
+                        }
+                    }
+                }
             )),
             (c) => {
+                console.log("Hit ok", c)
                 return ok(c, false);
             },
             (c) => {
-                return readUntil(strs, cb)(ok, nok)(c);
+                return readUntil(conds, cb)(ok, nok)(c);
             }
         ) as FullState
     }
