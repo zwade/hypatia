@@ -1,8 +1,7 @@
-import { Router } from "express";
+import { marshalParams, Router } from "@hypatia-app/common";
+import { M } from "@zensors/sheriff";
 import * as fs from "fs-extra";
 import * as path from "path";
-
-export const moduleRouter = Router();
 
 const allowedLessons =
     new Set(
@@ -89,31 +88,30 @@ const getAll = async () => {
     return result;
 }
 
-moduleRouter.get("/", async (req, res, next) => {
-    try {
-        const modules = await getAll();
-        res.json(modules);
-    } catch (e) {
-        next(e);
-    }
-});
+export const moduleRouter = Router()
+    .get("/", (leaf) => leaf
+        .return(() => getAll())
+    )
+    .get("/:module/:lesson/:page.md", (leaf) => leaf
+        .then(marshalParams(M.obj({ module: M.str, lesson: M.str, page: M.str })))
+        .return(async (req) => {
+            const pages = await getPages(req.params.module, req.params.lesson);
+            const pageNo = parseInt(req.params.page, 10);
+            const page = pages[pageNo];
 
-moduleRouter.get("/:module/:lesson/:page.md", async (req, res) => {
-    const pages = await getPages(req.params.module, req.params.lesson);
-    const pageNo = parseInt(req.params.page, 10);
-    const page = pages[pageNo];
-
-    const data = await fs.readFile(page, "utf-8");
-    res.type("text/markdown").send(data);
-});
-
-moduleRouter.get("/:module/:lesson/assets/:file", async (req, res) => {
-    console.log(req.params);
-    const extension = path.extname(req.params.file).slice(1).toLocaleLowerCase();
-    if (allowedAssets.has(extension)) {
-        const file = path.join(baseDir, req.params.module, req.params.lesson, "assets", req.params.file);
-        res.type(extension).sendFile(file);
-    } else{
-        res.status(404).end();
-    }
-})
+            const data = await fs.readFile(page, "utf-8");
+            return data;
+        })
+    )
+    .get("/:module/:lesson/assets/:file", (leaf) => leaf
+        .then(marshalParams(M.obj({ module: M.str, lesson: M.str, file: M.str })))
+        .finish(async (req, res) => {
+            const extension = path.extname(req.params.file).slice(1).toLocaleLowerCase();
+            if (allowedAssets.has(extension)) {
+                const file = path.join(baseDir, req.params.module, req.params.lesson, "assets", req.params.file);
+                res.type(extension).sendFile(file);
+            } else {
+                res.status(404).end();
+            }
+        })
+    )

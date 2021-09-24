@@ -1,0 +1,15 @@
+{
+  "name": "@hypatia-app/common",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "version": "0.0.1",
+  "packageManager": "yarn@3.0.1",
+  "license": "MIT",
+  "peerDependencies": {
+    "express": "*",
+    "pg": "*"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.6.1"
+  }
+}

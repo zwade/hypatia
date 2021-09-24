@@ -1,17 +1,15 @@
-import { Router, static as expressStatic } from "express";
-import * as fs from "fs-extra";
+import { NextFunction, Response, static as expressStatic } from "express";
+import { Router, UnknownRequest } from "@hypatia-app/common";
 import * as path from "path";
-
-export const baseRouter = Router();
 
 const dist = path.dirname(require.resolve("@hypatia-app/client"));
 
-baseRouter.use("/assets/", expressStatic(dist));
+export const baseRouter = Router()
+    .use("/assets/", expressStatic(dist))
+    .use("/", (req: UnknownRequest, res: Response, next: NextFunction) => {
+        if (req.method !== "GET") {
+            return next();
+        }
 
-baseRouter.use("/", (req, res, next) => {
-    if (req.method !== "GET") {
-        return next();
-    }
-
-    res.sendFile(path.join(dist, "index.html"));
-})
+        res.sendFile(path.join(dist, "index.html"));
+    });

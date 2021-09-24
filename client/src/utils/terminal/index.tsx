@@ -1,12 +1,10 @@
+import { moduleClient } from "@hypatia-app/backend/src/client";
+
+const client = moduleClient(window.location.href);
+
 type Events = {
     "finish": ((ws: WebSocket, sessionId: number) => void);
     "close": () => void;
-}
-
-interface ApiTerminal {
-    rows: number;
-    cols: number;
-    pid: number;
 }
 
 export class TerminalConnection {
@@ -45,6 +43,7 @@ export class TerminalConnection {
         const abortController = new AbortController();
         this.cancelResize = () => abortController.abort();
 
+        // We don't use the client right now since it has no way of handling an interrupt
         const request = await fetch(uri, {
             method: "POST",
             signal: abortController.signal,
@@ -56,8 +55,11 @@ export class TerminalConnection {
     public async queryTerminal() {
         if (this.sessionId === null) return null;
 
-        const request = await fetch(`/api/terminals/${this.sessionId}`);
-        const terminal: ApiTerminal | null = await request.json();
+        const terminal = await client["/api/terminals/:pid/"].get(
+            undefined,
+            undefined,
+            { pid: this.sessionId.toString() }
+        );
 
         return terminal;
     }
@@ -69,10 +71,9 @@ export class TerminalConnection {
         if (existingSession !== null) {
             sessionId = existingSession.pid;
         } else {
-            const request = await fetch(`/api/terminals?rows=${this.rows}&cols=${this.cols}`, {
-                "method": "POST"
-            });
-            sessionId = await request.json();
+            sessionId = await client["/api/terminals"].post(
+                { cols: this.cols.toString(), rows: this.rows.toString() }
+            )
         }
 
         this.resize(this.rows, this.cols);

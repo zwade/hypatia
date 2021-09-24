@@ -7,6 +7,7 @@
 import * as express from "express";
 import * as os from "os";
 import * as pty from "node-pty";
+import { marshalParams, marshalQuery, Router } from "@hypatia-app/common";
 import { M, marshal } from "@zensors/sheriff";
 
 import * as WebSocket from "ws";
@@ -14,7 +15,6 @@ import * as WebSocket from "ws";
 // Whether to use binary transport.
 const USE_BINARY = os.platform() !== "win32";
 
-export const apiRouter = express.Router()
 
 const terminals: Record<number, pty.IPty> = {};
 const logs: Record<number, string> = {};
@@ -57,68 +57,70 @@ const scheduleTermination = (session: number, timeout = 30 * 60 * 1000) => {
 }
 
 
-apiRouter.get("/", (req, res) => res.send("Ok"));
+export const apiRouter = Router()
+    .post("/terminals", (leaf) => leaf
+        .then(marshalQuery(M.obj({ cols: M.str, rows: M.str })))
+        .return((req) => {
+            const env = Object.assign({}, process.env as Record<string, string>);
+            env['COLORTERM'] = 'truecolor';
+            const cols = parseInt(req.query.cols, 10);
+            const rows = parseInt(req.query.rows, 10);
+            const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+                name: 'xterm-256color',
+                cols: cols || 80,
+                rows: rows || 24,
+                cwd: process.platform === 'win32' ? undefined : env.PWD,
+                env: env,
+                encoding: USE_BINARY ? null : 'utf8'
+            });
 
-apiRouter.post('/terminals', (req, res) => {
-    marshal(req.query, M.obj({cols: M.str, rows: M.str}));
-    const env = Object.assign({}, process.env as Record<string, string>);
-    env['COLORTERM'] = 'truecolor';
-    const cols = parseInt(req.query.cols, 10);
-    const rows = parseInt(req.query.rows, 10);
-    const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
-        name: 'xterm-256color',
-        cols: cols || 80,
-        rows: rows || 24,
-        cwd: process.platform === 'win32' ? undefined : env.PWD,
-        env: env,
-        encoding: USE_BINARY ? null : 'utf8'
-    });
+            const pid = term.pid
+            term.onExit(() => {
+                deleteSession(pid)();
+            })
 
-    const pid = term.pid
-    term.onExit(() => {
-        deleteSession(pid)();
-    })
+            console.log('Created terminal with PID: ' + term.pid);
+            terminals[term.pid] = term;
+            logs[term.pid] = '';
+            term.on('data', function(data) {
+                logs[term.pid] += data;
+            });
+            scheduleTermination(term.pid);
 
-    console.log('Created terminal with PID: ' + term.pid);
-    terminals[term.pid] = term;
-    logs[term.pid] = '';
-    term.on('data', function(data) {
-        logs[term.pid] += data;
-    });
-    scheduleTermination(term.pid);
+            return term.pid;
+        })
+    )
+    .get("/terminals/:pid/", (leaf) => leaf
+        .then(marshalParams(M.obj({ pid: M.str })))
+        .return((req) => {
+            const pid = parseInt(req.params.pid, 10);
 
-    res.send(term.pid.toString());
-    res.end();
-});
+            const term = terminals[pid];
+            if (term === undefined) {
+                return null;
+            } else {
+                return {
+                    pid,
+                    row: term.rows,
+                    cols: term.cols,
+                };
+            }
+        })
+    )
+    .post("/terminals/:pid/size", (leaf) => leaf
+        .then(marshalParams(M.obj({ pid: M.str })))
+        .then(marshalQuery(M.obj({ cols: M.str, rows: M.str })))
+        .finish((req) => {
+            const pid = parseInt(req.params.pid);
+            const cols = parseInt(req.query.cols);
+            const rows = parseInt(req.query.rows);
+            const term = terminals[pid];
 
-apiRouter.get('/terminals/:pid/', (req, res) => {
-    marshal(req.params, M.obj({pid: M.str}))
-    const pid = parseInt(req.params.pid, 10);
-
-    const term = terminals[pid];
-    if (term === undefined) {
-        res.json(null);
-    } else {
-        res.json({
-            pid,
-            row: term.rows,
-            cols: term.cols,
-        });
-    }
-})
-
-apiRouter.post('/terminals/:pid/size', (req, res) => {
-    marshal(req.query, M.obj({cols: M.str, rows: M.str}));
-    marshal(req.params, M.obj({pid: M.str}))
-    const pid = parseInt(req.params.pid);
-    const cols = parseInt(req.query.cols);
-    const rows = parseInt(req.query.rows);
-    const term = terminals[pid];
-
-    term.resize(cols, rows);
-    console.log('Resized terminal ' + pid + ' to ' + cols + ' cols and ' + rows + ' rows.');
-    res.end();
-});
+            term.resize(cols, rows);
+            console.log('Resized terminal ' + pid + ' to ' + cols + ' cols and ' + rows + ' rows.');
+            return;
+        })
+    )
 
 export const wsRouter = express.Router();
 

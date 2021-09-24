@@ -1,35 +1,11 @@
-const get = async <T extends any>(url: string) => {
-    const req = await fetch(url);
-    if (req.ok) {
-        const result = await req.json();
-        return result as T;
-    }
+import { moduleClient } from "@hypatia-app/backend/dist/client";
 
-    const error = await req.text();
-    throw new Error(error);
-}
-
-const getText = async (url: string) => {
-    const req = await fetch(url);
-    if (req.ok) {
-        const result = await req.text();
-        return result;
-    }
-
-    const error = await req.text();
-    throw new Error(error);
-}
-
-export type Modules = {
-    [module: string]: {
-        [lesson: string]: number;
-    }
-}
-
+const client = moduleClient(window.location.origin);
 
 export namespace API {
     export namespace Modules {
-        export const modules = () => get<Modules>("/modules");
-        export const page = (module: string, lesson: string, page: number) => getText(`/modules/${module}/${lesson}/${page}.md`);
+        export const modules = () => client["/modules/"].get();
+        export const page = (module: string, lesson: string, page: number) =>
+            client["/modules/:module/:lesson/:page.md"].get(undefined, undefined, { module, lesson, page: page.toString() });
     }
 }

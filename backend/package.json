@@ -4,6 +4,7 @@
     "main": "./dist/index.js",
     "dependencies": {
         "@hypatia-app/client": "^0.0.9",
+        "@hypatia-app/common": "^0.0.1",
         "@zensors/sheriff": "^2.0.2",
         "express": "^4.17.1",
         "express-ws": "^5.0.2",
@@ -28,6 +29,7 @@
         "backend:start": "node dist/index.js"
     },
     "resolutions": {
-        "@hypatia-app/client": "workspace:*"
+        "@hypatia-app/client": "workspace:*",
+        "@hypatia-app/common": "workspace:*"
     }
 }
