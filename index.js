@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("@hypatia-app/backend");
+require("@hypatia-app/backend").start();

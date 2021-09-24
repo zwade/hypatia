@@ -3,6 +3,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { DefinePlugin } = require("webpack");
 
+const proxyHost = process.env.PROXY_HOST || "http://localhost:3001";
+
 module.exports = {
     mode: process.env.MODE ?? "development",
 
@@ -23,13 +25,13 @@ module.exports = {
         hot: true,
         historyApiFallback: true,
         proxy: {
-            "/api": "http://localhost:3001/",
+            "/api": proxyHost,
             "/ws-api": {
-                "target": "http://localhost:3001",
+                "target":proxyHost,
                 "ws": true
             },
             "/module": {
-                "target": "http://localhost:3001",
+                "target":proxyHost,
             }
         },
     },

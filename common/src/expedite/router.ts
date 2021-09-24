@@ -253,12 +253,11 @@ export class RouterScope<S extends UnknownRequest = UnknownRequest, T extends Un
     }
 
     /**
-     * Consumes this `Router` and converts it into an `ExpressRouter`.
+     * Converts it into an `ExpressRouter`.
      *
      * @returns an `ExpressRouter` built from this `Router`
      */
     public toExpress(): ExpressRouter {
-        this.consume();
         return this.router;
     }
 }
@@ -424,3 +423,23 @@ export const marshalBody =
         marshal(req.body, description);
         return req as R & Request<unknown, unknown, T, unknown>;
     };
+
+
+export type RemoveTrue<T> = T extends true ? never : T;
+export type IsJustTrue<T> = (T | true) extends true ? true : RemoveTrue<T>;
+
+export type RouterIsAssignable<R1, R2> =
+    R1 extends RouterScope<any, any, infer Rt1> ?
+    R2 extends RouterScope<any, any, infer Rt2> ?
+        IsJustTrue<
+            {
+                [K in keyof Rt2]:
+                    K extends keyof Rt1 ?
+                        Rt1[K] extends Rt2[K] ?
+                            true
+                        : [Error: "Bad assignablility", Key: K, From: Rt1[K], To: Rt2[K]]
+                    : [Error: "Missing Key", Key: K]
+            }[keyof Rt2]
+        >
+    : [Error: "Router 2 is not a Router"]
+    : [Error: "Router 1 is not a Router"]

@@ -110,7 +110,7 @@ export const apiRouter = Router()
     .post("/terminals/:pid/size", (leaf) => leaf
         .then(marshalParams(M.obj({ pid: M.str })))
         .then(marshalQuery(M.obj({ cols: M.str, rows: M.str })))
-        .finish((req) => {
+        .return((req) => {
             const pid = parseInt(req.params.pid);
             const cols = parseInt(req.query.cols);
             const rows = parseInt(req.query.rows);
@@ -118,7 +118,7 @@ export const apiRouter = Router()
 
             term.resize(cols, rows);
             console.log('Resized terminal ' + pid + ' to ' + cols + ' cols and ' + rows + ' rows.');
-            return;
+            return true;
         })
     )
 

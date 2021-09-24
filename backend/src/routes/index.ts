@@ -17,3 +17,5 @@ export const AppRouter = Router()
 
 
 export type AppRouterType = typeof AppRouter;
+
+export { apiRouter, wsRouter, moduleRouter, baseRouter };
