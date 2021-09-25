@@ -41,6 +41,13 @@ export class Queue<T, U = undefined> {
     private status: Status<T, U> = { kind: "alive" };
 
     /**
+     * Returns whether the current queue is closed
+     */
+    public get closed() {
+        return this.status.kind === "dead";
+    }
+
+    /**
      * Constructs a new queue out of an iterable or async iterable
      */
     public static async from<T, U = undefined>(iterable: Iterable<T> | AsyncIterable<T>): Promise<Queue<T, U>> {
@@ -64,36 +71,50 @@ export class Queue<T, U = undefined> {
     }
 
     /**
+     * Internal helper to get a single item off the queue
+     */
+    private async next(): Promise<IteratorResult<T, U | undefined>> {
+        if (this.status.kind === "piped") {
+            throw new Error("This queue is being piped to elsewhere");
+        }
+
+        if (this.queue.length >= 1) {
+            return {
+                done: false,
+                value: this.queue.pop()!,
+            };
+        }
+
+        if (this.status.kind === "dead") {
+            return {
+                done: true,
+                value: this.status.value,
+            }
+        }
+
+        await new Promise<void>(async (resolve) => {
+            this.resolver = () => { this.resolver = undefined; resolve(); };
+        });
+
+        return this.next();
+    };
+
+    /**
+     * Get a single item from the queue.
+     */
+    public async dequeue(): Promise<T> {
+        const data = await this.next();
+        if (data.done) {
+            throw new Error("Queue is closed");
+        }
+        return data.value;
+    }
+
+    /**
      * The main iteration loop. Can be used in a `for await` loop.
      */
     public [Symbol.asyncIterator]() {
-        const next = async (): Promise<IteratorResult<T, U | undefined>> => {
-            if (this.status.kind === "piped") {
-                throw new Error("This queue is being piped to elsewhere");
-            }
-
-            if (this.queue.length >= 1) {
-                return {
-                    done: false,
-                    value: this.queue.pop()!,
-                };
-            }
-
-            if (this.status.kind === "dead") {
-                return {
-                    done: true,
-                    value: this.status.value,
-                }
-            }
-
-            await new Promise<void>(async (resolve) => {
-                this.resolver = () => { this.resolver = undefined; resolve(); };
-            });
-
-            return next();
-        };
-
-        return { next };
+        return { next: () => this.next() };
     }
 
     /**

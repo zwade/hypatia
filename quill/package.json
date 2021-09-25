@@ -1,4 +1,14 @@
 {
   "name": "@hypatia-app/quill",
-  "packageManager": "yarn@3.0.1"
+  "version": "0.0.1",
+  "packageManager": "yarn@3.0.1",
+  "main": "./dist/exports.js",
+  "types": "./dist/exports.d.ts",
+  "dependencies": {
+    "@hypatia-app/common": "*",
+    "node-pty": "^0.10.1"
+  },
+  "resolutions": {
+    "@hypatia-app/common": "workspace:*"
+  }
 }

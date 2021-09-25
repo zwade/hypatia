@@ -18,7 +18,7 @@
     "hypatia": "./index.js"
   },
   "r": {
-    "ts:watch": "tsc -b -w common backend",
+    "ts:watch": "tsc -b -w common quill backend",
     "watch": [
       "r:ts:watch",
       "r:backend:watch",

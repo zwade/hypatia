@@ -52,6 +52,7 @@ __metadata:
     "@hypatia-app/backend": "*"
     "@hypatia-app/client": "*"
     "@hypatia-app/common": "*"
+    "@hypatia-app/quill": "*"
     "@types/express": ^4
     "@types/express-ws": ^3.0.1
     "@zensors/sheriff": ^2.0.2
@@ -114,6 +115,15 @@ __metadata:
   peerDependencies:
     express: "*"
     pg: "*"
+  languageName: unknown
+  linkType: soft
+
+"@hypatia-app/quill@*, @hypatia-app/quill@workspace:quill":
+  version: 0.0.0-use.local
+  resolution: "@hypatia-app/quill@workspace:quill"
+  dependencies:
+    "@hypatia-app/common": "*"
+    node-pty: ^0.10.1
   languageName: unknown
   linkType: soft
 
