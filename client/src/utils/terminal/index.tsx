@@ -1,4 +1,4 @@
-import { moduleClient } from "@hypatia-app/backend/src/client";
+import { moduleClient } from "@hypatia-app/backend/dist/client";
 
 const client = moduleClient(window.location.href);
 
@@ -61,7 +61,7 @@ export class TerminalConnection {
             { pid: this.sessionId.toString() }
         );
 
-        return terminal;
+        return terminal?.value;
     }
 
     public async connect() {
@@ -71,9 +71,10 @@ export class TerminalConnection {
         if (existingSession !== null) {
             sessionId = existingSession.pid;
         } else {
-            sessionId = await client["/api/terminals"].post(
+            const { value } = await client["/api/terminals"].post(
                 { cols: this.cols.toString(), rows: this.rows.toString() }
-            )
+            );
+            sessionId = value;
         }
 
         this.resize(this.rows, this.cols);

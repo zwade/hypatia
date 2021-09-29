@@ -424,6 +424,18 @@ export const marshalBody =
         return req as R & Request<unknown, unknown, T, unknown>;
     };
 
+export class SafeError extends Error {
+    public status;
+
+    public constructor(status: number, message: string) {
+        super(message);
+        this.status = status;
+    }
+
+    public toString() {
+        return `[${this.status}] ${this.message}`;
+    }
+}
 
 export type RemoveTrue<T> = T extends true ? never : T;
 export type IsJustTrue<T> = (T | true) extends true ? true : RemoveTrue<T>;

@@ -1,36 +1,27 @@
 import * as React from "react";
-import { API } from "../api/lessons";
+import type { Module } from "@hypatia-app/backend/dist/client";
+import { Loadable } from "@hypatia-app/common";
 
-export type ModuleData = Map<string, Map<string, number>>;
+import { API } from "../api";
+import { TheGreatLie } from "react-pwn";
 
-export const ModuleContext = React.createContext<{ data?: ModuleData, reload: () => void }>({
-    data: undefined,
-    reload: () => {},
-});
+export const ModuleContext = React.createContext<{ data: Loadable<Module.AsWire[]>, reload: () => void }>(TheGreatLie());
 
 export const ModuleProvider = (props: { children: React.ReactNode }) => {
-    const [module, setModule] = React.useState<ModuleData>(new Map());
-
-    const reload = async () => {
-        const data = await API.Modules.modules();
-        const mapData: ModuleData = new Map();
-
-        for (const module of Object.keys(data)) {
-            const lessons: Map<string, number> = new Map();
-
-            for (const lesson of Object.keys(data[module])) {
-                lessons.set(lesson, data[module][lesson]);
-            }
-
-            mapData.set(module, lessons);
-        }
-
-        setModule(mapData);
-    }
+    const [module, setModule] = React.useState<Loadable<Module.AsWire[]>>(API.Modules.modules());
 
     React.useEffect(() => {
-        reload();
+        if (module.kind !== "loading") return;
+        module.then(setModule);
     }, []);
+
+    const reload = async () => {
+        console.log("reloading");
+        if (module.kind !== "value") return
+        const reloading = module.reload();
+        setModule(reloading);
+        setModule(await reloading);
+    }
 
     return (
         <ModuleContext.Provider value={{ data: module, reload }}>

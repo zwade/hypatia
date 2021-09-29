@@ -4,7 +4,7 @@ import RehypeHighlight from "rehype-highlight";
 import RehypeRaw from "rehype-raw";
 import RemarkGFM from "remark-gfm";
 
-import { API } from "../../api/lessons";
+import { API } from "../../api";
 import { Navigation } from "./navigation";
 import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint, Notes } from "./markdown-components";
 import { AttrPlugin, NotesPlugin, QuizPlugin } from "./parsers";
@@ -14,9 +14,11 @@ import { SettingsContext } from "../../providers/settings-provider";
 import { usePage } from "../../hooks";
 import { QuizElements } from "./parsers/quiz";
 import { NotesElements } from "./parsers/notes-input";
+import type { Page as PageType } from "@hypatia-app/backend/dist/client";
 
 import "./page.scss";
 import "./material-dark.scss";
+import { Loadable } from "@hypatia-app/common";
 
 export interface Props {
 
@@ -24,16 +26,27 @@ export interface Props {
 
 export const Page = (props: Props) => {
     const { module, lesson, page } = usePage()!;
-    const [pageContent, setPageContent] = React.useState<string>("");
+    const [pageContent, setPageContent] = React.useState<Loadable<readonly [PageType.AsWire, string]>>(() => API.Modules.page(module, lesson, page));
     const { setPage } = React.useContext(SettingsContext);
+
+    React.useEffect(() => {
+        if (pageContent.kind === "loading") {
+            pageContent.then(setPageContent);
+        }
+    }, []);
 
     React.useEffect(() => {
         setPage({ module, lesson, page });
     }, [module, lesson, page]);
 
     React.useEffect(() => {
+        console.log("Loading new data", module, lesson, page)
         API.Modules.page(module, lesson, page).then(setPageContent);
     }, [module, lesson, page]);
+
+    if (!pageContent.value) {
+        return <div className="page">Loading...</div>;
+    }
 
     return (
         <div className="page">
@@ -55,7 +68,7 @@ export const Page = (props: Props) => {
                     } as any}
                     skipHtml={false}
                 >
-                    { pageContent }
+                    { pageContent.value[1] }
                 </ReactMarkdown>
                 <QuizNavigation/>
                 <Navigation/>

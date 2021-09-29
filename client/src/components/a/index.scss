@@ -1,0 +1,13 @@
+@use "~react-pwn/palette.scss" as palette;
+
+.anchor {
+    display: inline;
+    color: palette.$color-secondary-07;
+    transition: color 100ms ease-in;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        color: palette.$color-secondary-05;
+    }
+}

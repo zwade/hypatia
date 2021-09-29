@@ -13,24 +13,49 @@ import { AppContainer } from "../app-container";
 import { SettingsContext, SettingsProvider } from "../../providers/settings-provider";
 
 import "./index.scss";
+import { UserContext, UserProvider } from "../../providers/user-provider";
+import { Login, Register } from "../auth";
+import { useNav } from "../../hooks";
+
+const TopLevelPages = (props: { children: React.ReactNode }) => (
+    <Switch>
+        <Route exact path="/user/login" component={Login} />
+        <Route exact path="/user/register" component={Register} />
+        { props.children }
+    </Switch>
+);
 
 const Pages = () => (
-    <Switch>
+    <>
         <Route exact path="/" component={ModuleBrowser} />
         <Route exact path="/:module/:lesson/:page" component={Page} />
-    </Switch>
+    </>
 );
 
 const Content = () => {
     const { settings } = React.useContext(SettingsContext)
+    const { user } = React.useContext(UserContext);
+    const nav = useNav();
 
-    return (
-        <Divider
-            vertical={settings.global.vertical}
-            firstChild={<Pages/>}
-            secondChild={<Terminal/>}
-        />
-    );
+    switch (user.kind) {
+        case "error": {
+            nav("/user/login")();
+            return null;
+        }
+        case "loading": {
+            return <h1>Loading</h1>;
+        }
+        case "reloading":
+        case "value": {
+            return (
+                <Divider
+                    vertical={settings.global.vertical}
+                    firstChild={<Pages/>}
+                    secondChild={<Terminal/>}
+                />
+            );
+        }
+    }
 }
 
 export const App = () => {
@@ -42,7 +67,11 @@ export const App = () => {
                         <SettingsProvider>
                             <ModalProvider>
                                 <AppContainer>
-                                    <Content/>
+                                    <UserProvider>
+                                        <TopLevelPages>
+                                            <Content/>
+                                        </TopLevelPages>
+                                    </UserProvider>
                                 </AppContainer>
                             </ModalProvider>
                         </SettingsProvider>

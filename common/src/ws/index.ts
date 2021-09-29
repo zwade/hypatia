@@ -10,11 +10,28 @@ export class ProtocolWebSocket<Tx, Rx> {
     private ws;
     private buffer: Buffer = Buffer.from([]);
     private closeHandlers = new Set<() => void>();
+    private onOpen?: () => void;
+    private onError?: (err: any) => void;
+
+    public ready: Promise<void>;
 
     constructor(ws: WebSocket) {
         this.ws = ws;
         this.queue = new Queue<Rx, Error | undefined>();
         this.outgoingQueue = new Queue<Tx>();
+
+        this.ready = new Promise<void>((resolve, reject) => {
+            this.onOpen = () => {
+                resolve();
+                this.onOpen = undefined;
+                this.onError = undefined;
+            };
+            this.onError = (err) => {
+                reject(err);
+                this.onOpen = undefined;
+                this.onError = undefined;
+            }
+        });
 
         this.ws.addEventListener("message", (ev) => {
             this.buffer = Buffer.concat([this.buffer, Buffer.from(ev.data)]);
@@ -31,7 +48,7 @@ export class ProtocolWebSocket<Tx, Rx> {
         });
 
         this.ws.addEventListener("error", (ev) => {
-            console.error("Websocket error", ev);
+            this.onError?.(ev);
             this.queue.close(new Error("Websocket failed"));
         });
 
@@ -43,6 +60,7 @@ export class ProtocolWebSocket<Tx, Rx> {
         });
 
         const onOpen = async () => {
+            this.onOpen?.();
             for await (const tx of this.outgoingQueue) {
                 console.log("Sending", tx);
                 const msg = JSON.stringify(tx);

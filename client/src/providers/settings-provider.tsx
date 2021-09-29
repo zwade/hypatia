@@ -90,7 +90,7 @@ export const description: Description = {
     ]
 }
 
-export type Page = { module: string, lesson: string, page: number };
+export type Page = { module: string, lesson: string, page: string };
 
 export interface SettingsContextData {
     settings: Settings;
@@ -115,7 +115,7 @@ export interface Props {
 }
 
 export const SettingsProvider = (props: Props) => {
-    const [page, setPage] = React.useState<{ module: string, lesson: string, page: number } | undefined>()
+    const [page, setPage] = React.useState<{ module: string, lesson: string, page: string } | undefined>()
 
     const globalKey = "settings";
     const moduleKey = `settings-module-${page?.module}`;

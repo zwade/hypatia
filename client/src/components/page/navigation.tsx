@@ -10,34 +10,45 @@ export interface Props {
 }
 
 export const Navigation = () => {
-    const { module, lesson, page: pageStr } = useParams<{ module: string, lesson: string, page: string }>();
+    const { module: modulePath, lesson: lessonPath, page: pageStr } = useParams<{ module: string, lesson: string, page: string }>();
     const { data } = React.useContext(ModuleContext);
     const navigate = useNav();
 
-    if (!data) {
+    if (!data.value) {
         return <div className="navigation"/>;
     }
 
-    const lessonList = [...data.get(module)?.keys() ?? []]
-        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    const module = data.value.find(({ path }) => path === modulePath)
+    const lessonIdx = module?.lessons.findIndex(({ path }) => path === lessonPath);
+
+    if (module === undefined || lessonIdx === undefined) {
+        return (<div className="navigation"/>);
+    }
 
     const page = parseInt(pageStr, 10);
-    const pagesInLesson = data.get(module)?.get(lesson) ?? 0;
-    const lessonIdx = lessonList.indexOf(lesson);
+    const lesson = module.lessons[lessonIdx];
+    const pagesInLesson = lesson.pages.length;
+
+    const getPath = (lIdx: number, pIdx: number) => {
+        const lesson = lIdx >= 0 ? module.lessons[lIdx] : module.lessons[module.lessons.length + lIdx];
+        const page = pIdx >= 0 ? lesson.pages[pIdx] : lesson.pages[lesson.pages.length + pIdx];
+
+        return `/${module.path}/${lesson.path}/${page.path}`;
+    }
 
     const nextPage =
-        page < pagesInLesson - 1 ? `/${module}/${lesson}/${page + 1}` :
-        lessonIdx < lessonList.length - 1 ? `/${module}/${lessonList[lessonIdx + 1]}/0` :
+        page < pagesInLesson - 1 ? getPath(lessonIdx, page + 1) :
+        lessonIdx < module.lessons.length - 1 ? getPath(lessonIdx + 1, 0) :
         "/";
 
     const nextPageName =
         page < pagesInLesson - 1 ? "Next Page" :
-        lessonIdx < lessonList.length - 1 ? "Next Lesson" :
+        lessonIdx < module.lessons.length - 1 ? "Next Lesson" :
         "Table of Contents";
 
     const prevPage =
-        page > 0 ? `/${module}/${lesson}/${page - 1}` :
-        lessonIdx > 0 ? `/${module}/${lessonList[lessonIdx - 1]}/${data.get(module)!.get(lessonList[lessonIdx - 1])! - 1}` :
+        page > 0 ? getPath(lessonIdx, page - 1) :
+        lessonIdx > 0 ? getPath(lessonIdx - 1, -1) :
         "/";
 
     const prevPageName =
@@ -54,8 +65,8 @@ export const Navigation = () => {
                 { prevPageName }
             </div>
             <div className="navigation-current nav-button" onClick={navigate("/")}>
-                <div className="module">{ module }</div>
-                <div className="lesson">{ lesson }</div>
+                <div className="module">{ modulePath }</div>
+                <div className="lesson">{ lessonPath }</div>
                 <div className="pageno">{ `${page + 1}/${pagesInLesson}` }</div>
             </div>
             <div

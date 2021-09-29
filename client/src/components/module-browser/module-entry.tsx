@@ -1,10 +1,12 @@
+import { Lesson } from "@hypatia-app/backend/dist/client";
 import * as React from "react";
 
 import { useNav } from "../../hooks"
 
 export interface Props {
-    module: string;
-    lessons: [string, number][];
+    moduleName: string;
+    modulePath: string;
+    lessons: Lesson.AsWire[];
     open: boolean;
     onOpen: (open: boolean) => void;
 }
@@ -22,18 +24,18 @@ export const ModuleEntry = (props: Props) => {
                 className={"module-name"}
                 onClick={() => props.onOpen(!props.open)}
             >
-                { props.module }
+                { props.moduleName }
             </div>
             <div className={"lesson-list"}>
                 {
-                    props.lessons.map(([lesson, pages]) => (
+                    props.lessons.map((lesson) => (
                         <div
                             className="lesson"
-                            key={lesson}
-                            onClick={navigate(`/${props.module}/${lesson}/0`)}
+                            key={lesson.path}
+                            onClick={navigate(`/${props.modulePath}/${lesson.path}/${lesson.pages[0].path}`)}
                         >
-                            { lesson }
-                            <span className="pages">{ `(${pages} pages)` }</span>
+                            { lesson.name }
+                            <span className="pages">{ `(${lesson.pages.length} pages)` }</span>
                         </div>
                     ))
                 }

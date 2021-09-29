@@ -41,6 +41,9 @@ export const start = async (baseUrl: URL) => {
     const rawWs = new WebSocket(url);
     const ws = new ProtocolWebSocket<ControlProtocol.FromClient, ControlProtocol.FromServer>(rawWs);
 
+    await ws.ready;
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     ws.send({ kind: "register", capabilities: {}, token: "" })
     for await (const msg of ws.queue) {
         switch (msg.kind) {

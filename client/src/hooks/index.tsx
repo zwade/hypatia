@@ -71,12 +71,10 @@ export const usePage = () => {
         return undefined;
     }
 
-    const pageNo = parseInt(params.page, 10);
-
     return {
         lesson: params.lesson,
         module: params.module,
-        page: pageNo,
+        page: params.page,
         path: `${params.module}/${params.lesson}/${params.page}`
     }
 }

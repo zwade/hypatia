@@ -20,7 +20,7 @@ export const ModuleBrowser = (props: Props) => {
         setPage(undefined);
     }, []);
 
-    if (data === undefined) {
+    if (data.value === undefined) {
         return (
             <div className="module-browser">
                 <div className="loading-message">Loading Modules</div>
@@ -28,13 +28,8 @@ export const ModuleBrowser = (props: Props) => {
         );
     }
 
-    const modules = [...data.entries()]
-        .sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([name, lessons]) => ([
-            name,
-            [...lessons.entries()]
-                .sort((a, b) => a[0].localeCompare(b[0]))
-        ] as const))
+    const modules = data.value
+        .sort((a, b) => a.name.localeCompare(b.name));
 
 
     return (
@@ -42,11 +37,12 @@ export const ModuleBrowser = (props: Props) => {
             <div className="title">Available Modules</div>
             <div className="table-of-contents">
                 {
-                    modules.map(([module, lessons], idx) => (
+                    modules.map((module, idx) => (
                         <ModuleEntry
-                            key={module}
-                            module={module}
-                            lessons={lessons}
+                            key={module.path}
+                            moduleName={module.name}
+                            modulePath={module.path}
+                            lessons={module.lessons}
                             open={open === idx}
                             onOpen={(open) => {
                                 setOpen(open ? idx : null);
