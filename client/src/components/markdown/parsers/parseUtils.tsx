@@ -169,7 +169,6 @@ export const genUtils = (context: TokenizeContext, effects: Effects) => {
                 }
             )),
             (c) => {
-                console.log("Hit ok", c)
                 return ok(c, false);
             },
             (c) => {

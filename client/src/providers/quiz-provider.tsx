@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Set as ISet, Map as IMap } from "immutable";
+import { TheGreatLie } from "react-pwn";
 
 export enum QuestionStatus {
     Unchecked = "unchecked",
@@ -16,14 +17,7 @@ export interface QuestionContextData {
     showHint: (visible: boolean) => void;
 }
 
-export const QuizContext = React.createContext<QuestionContextData>({
-    currentStatus: IMap<number, QuestionStatus>(),
-    setStatus: (questionId: number, status: QuestionStatus) => {},
-    onCheck: (id, cb) => () => {},
-    check: () => {},
-    shouldShowHint: false,
-    showHint: () => {},
-});
+export const QuizContext = React.createContext<QuestionContextData>(TheGreatLie());
 
 export interface Props {
     children: React.ReactNode;
@@ -37,9 +31,11 @@ export const QuizProvider = (props: Props) => {
     const [_, update] = React.useState({});
 
     React.useEffect(() => {
-        statusRef.current = IMap<number, QuestionStatus>();
-        renameRef.current = IMap<number | undefined, ISet<() => void>>()
-        setShouldShowHint(false);
+        return () => {
+            statusRef.current = IMap<number, QuestionStatus>();
+            renameRef.current = IMap<number | undefined, ISet<() => void>>()
+            setShouldShowHint(false);
+        }
     }, [props.page])
 
     const data = {

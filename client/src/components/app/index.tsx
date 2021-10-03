@@ -3,19 +3,17 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { PaletteProvider, ModalProvider } from "react-pwn";
 
 import { ModuleProvider } from "../../providers/module-provider";
-import { Divider } from "../divider"
 import { ModuleBrowser } from "../module-browser";
-import { Terminal } from "../terminal"
-import { Page } from "../page";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 import { BlueGreen } from "../../utils/palette";
 import { AppContainer } from "../app-container";
 import { SettingsContext, SettingsProvider } from "../../providers/settings-provider";
-
-import "./index.scss";
 import { UserContext, UserProvider } from "../../providers/user-provider";
 import { Login, Register } from "../auth";
 import { useNav } from "../../hooks";
+import { Page } from "../page";
+
+import "./index.scss";
 
 const TopLevelPages = (props: { children: React.ReactNode }) => (
     <Switch>
@@ -48,11 +46,7 @@ const Content = () => {
         case "reloading":
         case "value": {
             return (
-                <Divider
-                    vertical={settings.global.vertical}
-                    firstChild={<Pages/>}
-                    secondChild={<Terminal/>}
-                />
+                <Pages/>
             );
         }
     }

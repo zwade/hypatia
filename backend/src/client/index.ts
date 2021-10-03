@@ -4,7 +4,8 @@ import type { AppRouterType } from "../routes";
 export const moduleClient = makeClient<AppRouterType>();
 export type {
     User,
-    Command,
+    Connection,
+    Service,
     Lesson,
     Module,
     Page,

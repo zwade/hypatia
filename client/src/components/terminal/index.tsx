@@ -10,8 +10,13 @@ import { TerminalRunContext } from "../../providers/terminal-run";
 
 import "./index.scss";
 
-export const Terminal = () => {
-    const [sessionId, setSessionId] = useLocalStorage<null | number>("session-id", null);
+export interface Props {
+    module: string;
+    lesson: string;
+    connection: string;
+}
+
+export const Terminal = (props: Props) => {
     const [xterm, setXterm] = React.useState<XTerm | null>(null);
     const { onRun, offRun } = React.useContext(TerminalRunContext);
     const { current: fitAddon } = React.useRef(new FitAddon());
@@ -22,7 +27,9 @@ export const Terminal = () => {
         if (xterm === null) return
 
         const conn = new TerminalConnection(
-            sessionId,
+            props.module,
+            props.lesson,
+            props.connection,
             xterm.terminal.rows,
             xterm.terminal.cols
         );
@@ -30,11 +37,13 @@ export const Terminal = () => {
     }
 
     React.useEffect(() => {
-        document.fonts.load("12px Iosevka Web").then(() => {
-            if (!initialized) {
-                setInitialized(true);
-            }
-        });
+        document.fonts.load("12px Iosevka Web")
+            .then(() => document.fonts.load("Bold 12px Iosevka Web"))
+            .then(() => {
+                if (!initialized) {
+                    setInitialized(true);
+                }
+            });
     }, []);
 
     React.useEffect(() => {
@@ -55,8 +64,7 @@ export const Terminal = () => {
         if (xterm === null) return
         if (conn === null) return
 
-        const onFinish = (ws: WebSocket, sid: number) => {
-            setSessionId(sid);
+        const onFinish = (ws: WebSocket) => {
             const attachAddon = new AttachAddon(ws);
             xterm.terminal.loadAddon(attachAddon);
 

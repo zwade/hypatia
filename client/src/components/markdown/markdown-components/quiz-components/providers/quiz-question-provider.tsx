@@ -44,7 +44,8 @@ export const useQuizStatus = (id: number, correct: boolean, value: unknown) => {
 
     React.useEffect(() => {
         quiz.setStatus(id, QuestionStatus.Unchecked);
-    }, []);
+        console.log("Set status", id, quiz, quiz.currentStatus)
+    }, [id]);
 
     React.useEffect(() => {
         return quiz.onCheck(id, () => {

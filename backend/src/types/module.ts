@@ -1,6 +1,6 @@
 import { M, Marshaller } from "@zensors/sheriff";
 
-import { Command } from "./command"
+import { Service } from "./service"
 
 export namespace View {
     export type Markdown = {
@@ -10,13 +10,15 @@ export namespace View {
 
     export type Terminal = {
         kind: "terminal",
-        command: Command.t,
-        requests?: {
-            features?: string[];
-        }
+        connection: string,
     }
 
-    export type t = Markdown | Terminal | [t, t];
+    export type Http = {
+        kind: "http",
+        connection: string,
+    }
+
+    export type t = Markdown | Terminal | Http | [t, t];
 
     export const MMarkdown: Marshaller<Markdown> = M.obj({
         kind: M.lit("markdown"),
@@ -25,16 +27,19 @@ export namespace View {
 
     export const MTerminal: Marshaller<Terminal> = M.obj({
         kind: M.lit("terminal"),
-        command: Command.MCommand,
-        requests: M.opt(M.obj({
-            features: M.opt(M.arr(M.str))
-        }))
+        connection: M.str,
+    });
+
+    export const MHttp: Marshaller<Http> = M.obj({
+        kind: M.lit("http"),
+        connection: M.str,
     });
 
     export const MView: Marshaller<t> = M.rec((self) =>
         M.union(
             MMarkdown,
             MTerminal,
+            MHttp,
             M.tup(self, self)
         )
     );
@@ -43,7 +48,7 @@ export namespace View {
 export namespace Page {
     export type AsBundle = {
         name: string;
-        view: View.t
+        view: View.t;
     }
 
     export type AsInline = {
@@ -99,27 +104,32 @@ export namespace Lesson {
 export namespace Module {
     export type AsBundle = {
         name: string;
-        lessons: Lesson.AsBundle[]
+        lessons: Lesson.AsBundle[];
+        services: Service.t[];
     }
 
     export type AsInline = {
         name?: string;
         lessons?: string[];
+        services?: Service.t[];
     }
 
     export type AsWire = {
         name: string;
         path: string;
         lessons: Lesson.AsWire[];
+        services: Service.t[];
     }
 
     export const MAsInline: Marshaller<AsInline> = M.obj({
         name: M.opt(M.str),
         lessons: M.opt(M.arr(M.str)),
+        services: M.opt(M.arr(Service.MService)),
     });
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
         name: M.str,
         lessons: M.arr(Lesson.MAsBundle),
+        services: M.arr(Service.MService),
     });
 }

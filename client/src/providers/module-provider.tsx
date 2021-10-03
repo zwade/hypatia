@@ -16,7 +16,6 @@ export const ModuleProvider = (props: { children: React.ReactNode }) => {
     }, []);
 
     const reload = async () => {
-        console.log("reloading");
         if (module.kind !== "value") return
         const reloading = module.reload();
         setModule(reloading);

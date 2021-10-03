@@ -3,7 +3,7 @@ import { moduleClient } from "@hypatia-app/backend/dist/client";
 const client = moduleClient(window.location.href);
 
 type Events = {
-    "finish": ((ws: WebSocket, sessionId: number) => void);
+    "finish": ((ws: WebSocket) => void);
     "close": () => void;
 }
 
@@ -11,7 +11,9 @@ export class TerminalConnection {
     private ws: WebSocket | undefined;
     private cancelResize: (() => void) | undefined;
 
-    public sessionId: number | null;
+    public module: string;
+    public lesson: string;
+    public connection: string;
     public rows;
     public cols;
 
@@ -20,8 +22,10 @@ export class TerminalConnection {
         close: new Set(),
     }
 
-    public constructor(sessionId: number | null, rows: number, cols: number) {
-        this.sessionId = sessionId;
+    public constructor(module: string, lesson: string, connection: string, rows: number, cols: number) {
+        this.connection = connection;
+        this.module = module;
+        this.lesson = lesson;
         this.rows = rows;
         this.cols = cols;
     }
@@ -31,59 +35,26 @@ export class TerminalConnection {
     }
 
     public async resize(rows: number, cols: number) {
-        if (this.sessionId === null) return;
-        this.cancelResize?.();
-
-        const search = new URLSearchParams([
-            ["rows", rows.toString()],
-            ["cols", cols.toString()]
-        ]).toString();
-        const uri = `/api/terminals/${this.sessionId}/size?${search}`;
-
-        const abortController = new AbortController();
-        this.cancelResize = () => abortController.abort();
-
-        // We don't use the client right now since it has no way of handling an interrupt
-        const request = await fetch(uri, {
-            method: "POST",
-            signal: abortController.signal,
-        });
-
-        this.cancelResize = undefined;
+        this.rows = rows;
+        this.cols = cols;
+        await this.upsertTerminal();
     }
 
-    public async queryTerminal() {
-        if (this.sessionId === null) return null;
-
-        const terminal = await client["/api/terminals/:pid/"].get(
+    public async upsertTerminal() {
+        const terminal = await client["/api/:module/:lesson/service"].post(
+            { rows: this.rows.toString(), cols: this.cols.toString(), connection: this.connection },
             undefined,
-            undefined,
-            { pid: this.sessionId.toString() }
+            { module: this.module, lesson: this.lesson },
         );
 
         return terminal?.value;
     }
 
     public async connect() {
-        const existingSession = await this.queryTerminal();
-        let sessionId: number;
+        const connectionUri = await this.upsertTerminal();
 
-        if (existingSession !== null) {
-            sessionId = existingSession.pid;
-        } else {
-            const { value } = await client["/api/terminals"].post(
-                { cols: this.cols.toString(), rows: this.rows.toString() }
-            );
-            sessionId = value;
-        }
-
-        this.resize(this.rows, this.cols);
-
-        this.sessionId = sessionId;
-
-        const wsUri = new URL(window.location.toString());
+        const wsUri = new URL(connectionUri, window.location.href);
         wsUri.protocol = "ws";
-        wsUri.pathname = "/ws-api/terminals/" + this.sessionId;
         const ws = new WebSocket(wsUri);
         this.ws = ws
 
@@ -96,7 +67,7 @@ export class TerminalConnection {
         }
 
         this.ws.onopen = () => {
-            this.trigger("finish", ws, sessionId);
+            this.trigger("finish", ws);
         }
     }
 

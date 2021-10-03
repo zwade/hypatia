@@ -2,7 +2,7 @@ import { marshalParams, Router } from "@hypatia-app/common";
 import { M } from "@zensors/sheriff";
 import * as fs from "fs-extra";
 import * as path from "path";
-import { getPage, getAllModuleCaches, baseDir } from "../modules";
+import { getPageData, getAllModuleCaches, baseDir, getPageFile } from "../modules";
 
 const allowedAssets = new Set(["jpg", "jpeg", "png", "gif"]);
 
@@ -10,9 +10,13 @@ export const moduleRouter = Router()
     .get("/", (leaf) => leaf
         .return(() => getAllModuleCaches())
     )
-    .get("/:module/:lesson/:page", (leaf) => leaf
+    .get("/:module/:lesson/:page/data", (leaf) => leaf
         .then(marshalParams(M.obj({ module: M.str, lesson: M.str, page: M.str })))
-        .return(async (req) => getPage(req.params.module, req.params.lesson, req.params.page))
+        .return((req) => getPageData(req.params.module, req.params.lesson, req.params.page))
+    )
+    .get("/:module/:lesson/:filename/file", (leaf) => leaf
+        .then(marshalParams(M.obj({ module: M.str, lesson: M.str, filename: M.str })))
+        .return((req) => getPageFile(req.params.module, req.params.lesson, req.params.filename))
     )
     .get("/:module/:lesson/assets/:file", (leaf) => leaf
         .then(marshalParams(M.obj({ module: M.str, lesson: M.str, file: M.str })))

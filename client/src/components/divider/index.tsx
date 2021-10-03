@@ -21,6 +21,7 @@ export const Divider = (props: Props) => {
     const [temporaryFirstProportion, setTemporaryFirstProportion] = React.useState(firstProportion);
     const lastProportionRef = React.useRef(firstProportion);
 
+    const [_, rerender] = React.useState({});
     const [div, setDiv] = React.useState<HTMLDivElement | null>(null);
     const [mouseDown, setMouseDown] = React.useState(false)
 
@@ -33,6 +34,20 @@ export const Divider = (props: Props) => {
     const axisOfLocation = props.vertical ? "y" : "x";
     const axisOfAlignment = props.vertical ? "top" : "left";
     const axisOfSize = props.vertical ? "height" : "width";
+
+    React.useEffect(() => {
+        if (!div) return;
+
+        const observer = new ResizeObserver((cb) => {
+            rerender({});
+        });
+
+        observer.observe(div);
+
+        return () => {
+            observer.disconnect();
+        }
+    }, [div])
 
     React.useEffect(() => {
         if (mouseDown && div) {

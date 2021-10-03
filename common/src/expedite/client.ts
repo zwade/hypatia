@@ -47,7 +47,6 @@ export const makeClient = <T>(subpath: string = "") => (baseUri: string): GetCli
                 if (method in obj) return obj[method];
 
                 return obj[method] = (q, b, p) => {
-                    console.log("New reqiest", method, q, b, p)
                     const thunk = () => {
                         const url = new URL(endpointUrl);
                         const encodedQuery = qs.stringify(q);

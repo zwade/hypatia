@@ -5,8 +5,14 @@ const client = moduleClient(window.location.origin);
 export namespace API {
     export namespace Modules {
         export const modules = () => client["/modules/"].get();
-        export const page = (module: string, lesson: string, page: string) =>
-            client["/modules/:module/:lesson/:page"].get(undefined, undefined, { module, lesson, page });
+        export const pageData = (module: string, lesson: string, page: string) =>
+            client["/modules/:module/:lesson/:page/data"].get(undefined, undefined, { module, lesson, page });
+        export const pageContent = (module: string, lesson: string, filename: string) =>
+            client["/modules/:module/:lesson/:filename/file"].get(undefined, undefined, { module, lesson, filename });
+    }
+
+    export namespace Service {
+        export const connect = (module: string, lesson: string, connection: string) => client["/api/:module/:lesson/service"].post({ connection }, undefined, { module, lesson });
     }
 
     export namespace User {

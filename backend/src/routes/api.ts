@@ -1,202 +1,258 @@
-/**
- * WARNING: This demo is a barebones implementation designed for development and evaluation
- * purposes only. It is definitely NOT production ready and does not aim to be so. Exposing the
- * demo to the public as is would introduce security risks for the host.
- **/
-
 import * as express from "express";
 import * as os from "os";
 import * as pty from "node-pty";
-import { marshalParams, marshalQuery, Router } from "@hypatia-app/common";
+import { marshalParams, marshalQuery, Router, SafeError } from "@hypatia-app/common";
 import { M, marshal } from "@zensors/sheriff";
+import { v4 as uuid } from "uuid";
 
 import * as WebSocket from "ws";
+import { getModuleByPath } from "../modules";
+import { ProxyManager } from "./proxy";
+import { hostname, port, withSubdomain } from "../net-utils";
 
-// Whether to use binary transport.
-const USE_BINARY = os.platform() !== "win32";
+interface ActiveService {
+    process: pty.IPty;
+    ptyLogs: string;
+    timeout?: NodeJS.Timeout;
+    sockets: Map<string, Set<WebSocket>>;
+    proxys: Map<string, ProxyManager>;
+}
 
+const processes: Map<string, ActiveService> = new Map();
 
-const terminals: Record<number, pty.IPty> = {};
-const logs: Record<number, string> = {};
-const timeouts: Record<number, NodeJS.Timeout> = {};
-const sockets: Record<number, Set<WebSocket>> = {};
+const deleteSession = (session: string) => () => {
+    const proc = processes.get(session);
 
-const deleteSession = (session: number) => () => {
-    const term = terminals[session] as pty.IPty | undefined;
+    if (!proc) {
+        return;
+    }
 
     try {
-        term?.kill();
+        proc.process.kill();
         console.log('Closed terminal ' + session);
     } catch {
         // pass
     }
 
-    for (const socket of sockets[session] ?? []) {
-        try {
-            socket.close();
-        } catch {
-            // pass
+    for (const serviceConns of proc.sockets.values()) {
+        for (const conn of serviceConns) {
+            try {
+                conn.close();
+            } catch {
+                // pass
+            }
         }
     }
 
-    // Clean things up
-    delete terminals[session];
-    delete logs[session];
-    delete sockets[session];
+    for (const proxy of proc.proxys.values()) {
+        proxy.kill();
+    }
+
+    processes.delete(session);
 }
 
-const clearTermination = (session: number) => {
-    if (session in timeouts) {
-        clearTimeout(timeouts[session]);
+const clearTermination = (session: string) => {
+    const proc = processes.get(session);
+    if (proc?.timeout !== undefined) {
+        clearTimeout(proc.timeout);
+        proc.timeout = undefined;
     }
 }
 
-const scheduleTermination = (session: number, timeout = 30 * 60 * 1000) => {
+const scheduleTermination = (session: string, timeout = 30 * 60 * 1000) => {
     clearTermination(session);
-    timeouts[session] = setTimeout(deleteSession(session), timeout);
+    const proc = processes.get(session);
+    if (!proc) {
+        console.warn("Trying to schedule termination for non-existant process");
+        return;
+    }
+
+    proc.timeout = setTimeout(deleteSession(session), timeout);
 }
 
 
 export const apiRouter = Router()
-    .post("/terminals", (leaf) => leaf
-        .then(marshalQuery(M.obj({ cols: M.str, rows: M.str })))
-        .return((req) => {
+    .post("/:module/:lesson/service", (leaf) => leaf
+        .then(marshalParams(M.obj({ module: M.str, lesson: M.str })))
+        .then(marshalQuery(M.union(
+            M.obj({ cols: M.opt(M.undef), rows: M.opt(M.undef), connection: M.str }),
+            M.obj({ cols: M.str,          rows: M.str,          connection: M.str }))
+        ))
+        .return(async (req) => {
+            const moduleCache = await getModuleByPath(req.params.module);
+            const service = moduleCache.services.find((s) => s.connections?.some((c) => c.name === req.query.connection));
+            if (!service) {
+                throw new SafeError(404, "Connection not found");
+            }
+
+            const connection = service.connections!.find((c) => c.name === req.query.connection);
+            if (!connection) {
+                throw new SafeError(404, "Connection not found");
+            }
+
+            const sessionId = `${req.params.module}/${service.name}`;
+
+            let rows: number;
+            let cols: number;
+
+            if (req.query.rows !== undefined && connection.kind === "pty") {
+                rows = parseInt(req.query.rows, 10);
+                cols = parseInt(req.query.cols, 10);
+            } else {
+                rows = 24;
+                cols = 80;
+            }
+
+            const wsUri =
+            `/ws-api/${
+                encodeURIComponent(req.params.module)
+            }/${
+                encodeURIComponent(req.params.lesson)
+            }/terminal?connection=${
+                encodeURIComponent(req.query.connection)
+            }`;
+
+            if (processes.has(sessionId)) {
+                const proc = processes.get(sessionId)!;
+                if (connection.kind === "pty") {
+                    proc.process.resize(cols, rows);
+                }
+
+                const proxy = proc.proxys.get(req.query.connection);
+                if (proxy) {
+                    return `http://${proxy.origin}.${hostname}:${port}`;
+                }
+                return wsUri;
+            }
+
             const env = Object.assign({}, process.env as Record<string, string>);
             env['COLORTERM'] = 'truecolor';
-            const cols = parseInt(req.query.cols, 10);
-            const rows = parseInt(req.query.rows, 10);
-            const term = pty.spawn(process.platform === 'win32' ? 'cmd.exe' : 'bash', [], {
+            const term = pty.spawn(service.command ?? "bash", [], {
                 name: 'xterm-256color',
-                cols: cols || 80,
-                rows: rows || 24,
+                cols,
+                rows,
                 cwd: process.platform === 'win32' ? undefined : env.PWD,
                 env: env,
-                encoding: USE_BINARY ? null : 'utf8'
+                encoding: 'utf8'
             });
 
-            const pid = term.pid
             term.onExit(() => {
-                deleteSession(pid)();
+                deleteSession(sessionId)();
             })
 
-            console.log('Created terminal with PID: ' + term.pid);
-            terminals[term.pid] = term;
-            logs[term.pid] = '';
-            term.on('data', function(data) {
-                logs[term.pid] += data;
-            });
-            scheduleTermination(term.pid);
+            console.log('Created terminal for session: ' + sessionId);
 
-            return term.pid;
-        })
-    )
-    .get("/terminals/:pid/", (leaf) => leaf
-        .then(marshalParams(M.obj({ pid: M.str })))
-        .return((req) => {
-            const pid = parseInt(req.params.pid, 10);
+            let uri = wsUri;
+            const proxys = new Map<string, ProxyManager>();
+            for (const conn of service.connections ?? []) {
+                if (conn.kind === "http") {
+                    const origin = `${uuid()}.proxy`;
+                    proxys.set(conn.name, new ProxyManager(req.app, conn.port, origin));
+                    console.log(origin);
 
-            const term = terminals[pid];
-            if (term === undefined) {
-                return null;
-            } else {
-                return {
-                    pid,
-                    row: term.rows,
-                    cols: term.cols,
-                };
+                    if (conn.name === req.query.connection) {
+                        uri = withSubdomain(req, origin).toString();
+                    }
+                }
             }
-        })
-    )
-    .post("/terminals/:pid/size", (leaf) => leaf
-        .then(marshalParams(M.obj({ pid: M.str })))
-        .then(marshalQuery(M.obj({ cols: M.str, rows: M.str })))
-        .return((req) => {
-            const pid = parseInt(req.params.pid);
-            const cols = parseInt(req.query.cols);
-            const rows = parseInt(req.query.rows);
-            const term = terminals[pid];
 
-            term.resize(cols, rows);
-            console.log('Resized terminal ' + pid + ' to ' + cols + ' cols and ' + rows + ' rows.');
-            return true;
+            const proc: ActiveService = {
+                process: term,
+                ptyLogs: "",
+                sockets: new Map(),
+                timeout: undefined,
+                proxys,
+            }
+            processes.set(sessionId, proc);
+
+            term.onData((d) => {
+                proc.ptyLogs += d;
+            });
+
+            scheduleTermination(sessionId);
+
+            return uri;
         })
     )
 
 export const wsRouter = express.Router();
 
-wsRouter.ws('/terminals/:pid', function (ws, req) {
-    const pid = parseInt(req.params.pid, 10);
-    if (isNaN(pid)) {
-        ws.send("Invalid terminal pid");
+wsRouter.ws('/:module/:lesson/terminal', async (ws, req) => {
+    marshal(req.params, M.obj({ module: M.str, lesson: M.str }));
+    marshal(req.query, M.obj({ connection: M.str }));
+
+    const moduleCache = await getModuleByPath(req.params.module);
+    const service = moduleCache.services.find((s) => s.connections?.some((c) => c.name === req.query.connection));
+    if (!service) {
+        throw new SafeError(404, "Connection not found");
+    }
+
+    const connection = service.connections!.find((c) => c.name === req.query.connection);
+    if (!connection) {
+        throw new SafeError(404, "Connection not found");
+    }
+
+    const sessionId = `${req.params.module}/${service.name}`;
+
+    const proc = processes.get(sessionId);
+    if (!proc) {
+        ws.send("Connection Not Found");
+        ws.close();
         return;
     }
 
-    const socketSet = sockets[pid] ??= new Set();
+    const socketSet = proc.sockets.get(req.query.connection) ?? new Set();
+    proc.sockets.set(req.query.connection, socketSet);
     socketSet.add(ws);
 
-    const term = terminals[pid];
-    if (term === undefined) {
-        ws.send("Connection Closed\n");
-        return;
-    }
+    clearTermination(sessionId);
 
-    clearTermination(pid);
+    console.log('Connected to terminal ' + proc.process.pid);
 
-    console.log('Connected to terminal ' + term.pid);
-    ws.send(logs[term.pid]);
+    if (connection.kind === "pty") {
+        ws.send(proc.ptyLogs);
 
-    // string message buffering
-    function buffer(socket: WebSocket, timeout: number) {
-        let s = '';
-        let sender: NodeJS.Timeout | null = null;
-        return (data: string) => {
-            s += data;
-            if (!sender) {
-                sender = setTimeout(() => {
-                    socket.send(s);
-                    s = '';
-                    sender = null;
-                }, timeout);
-            }
-        };
-    }
-    // binary message buffering
-    function bufferUtf8(socket: WebSocket, timeout: number) {
-        let buffer: Buffer[] = [];
-        let sender: NodeJS.Timeout | null = null;
-        let length = 0;
-        return (data: string) => {
-            buffer.push(Buffer.from(data, "utf-8"));
-            length += data.length;
-            if (!sender) {
-                sender = setTimeout(() => {
-                    socket.send(Buffer.concat(buffer, length));
-                    buffer = [];
-                    sender = null;
-                    length = 0;
-                }, timeout);
-            }
-        };
-    }
-    const send = USE_BINARY ? bufferUtf8(ws, 5) : buffer(ws, 5);
-
-    term.onData(function(data) {
-        try {
-            send(data);
-        } catch (ex) {
-            // The WebSocket is not open, ignore
+        const bufferUtf8 = (socket: WebSocket, timeout: number) => {
+            let buffer: Buffer[] = [];
+            let sender: NodeJS.Timeout | null = null;
+            let length = 0;
+            return (data: string) => {
+                buffer.push(Buffer.from(data, "utf-8"));
+                length += data.length;
+                if (!sender) {
+                    sender = setTimeout(() => {
+                        socket.send(Buffer.concat(buffer, length));
+                        buffer = [];
+                        sender = null;
+                        length = 0;
+                    }, timeout);
+                }
+            };
         }
-    });
-    ws.on('message', function(msg) {
-        const msgAsBuffer =
-            Array.isArray(msg) ? Buffer.concat(msg) :
-            Buffer.from(msg as string, "utf-8");
-        term.write(msgAsBuffer.toString("utf-8"));
-    });
-    ws.on('close', function () {
-        socketSet.delete(ws);
-        if (socketSet.size === 0) {
-            scheduleTermination(term.pid);
-        }
-    });
+        const send = bufferUtf8(ws, 5);
+
+        const onDataHandler = proc.process.onData((data) => {
+            try {
+                send(data);
+            } catch (ex) {
+                // The WebSocket is not open, ignore
+            }
+        });
+
+        ws.on('message', function(msg) {
+            const msgAsBuffer =
+                Array.isArray(msg) ? Buffer.concat(msg) :
+                Buffer.from(msg as string, "utf-8");
+            proc.process.write(msgAsBuffer.toString("utf-8"));
+        });
+
+        ws.on('close', function () {
+            socketSet.delete(ws);
+            onDataHandler.dispose();
+
+            if (socketSet.size === 0) {
+                scheduleTermination(sessionId);
+            }
+        });
+    }
 });

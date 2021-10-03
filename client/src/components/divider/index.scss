@@ -22,7 +22,7 @@
     &.horizontal {
         flex-direction: row;
 
-        .divider {
+        &>.divider {
             height: 100%;
             cursor: ew-resize;
             flex-direction: row;
@@ -50,7 +50,7 @@
     &.vertical {
         flex-direction: column;
 
-        .divider {
+        &>.divider {
             width: 100%;
             cursor: ns-resize;
             flex-direction: column;
