@@ -1,5 +1,6 @@
 import type { Request } from "express";
 export * from "./trie"
+export * from "./routers";
 
 export const hostname = process.env.HOSTNAME ?? "localhost";
 export const port = parseInt(process.env.PORT ?? "3001");

@@ -125,6 +125,10 @@ export const apiRouter = Router()
                 return wsUri;
             }
 
+            if (service.kind !== "command") {
+                throw new SafeError(500, "Service kind not supported");
+            }
+
             const env = Object.assign({}, process.env as Record<string, string>);
             env['COLORTERM'] = 'truecolor';
             const term = pty.spawn(service.command ?? "bash", [], {

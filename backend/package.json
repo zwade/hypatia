@@ -2,6 +2,7 @@
     "name": "@hypatia-app/backend",
     "version": "0.0.11",
     "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "dependencies": {
         "@hypatia-app/client": "^0.0.9",
         "@hypatia-app/common": "^0.0.1",
@@ -28,9 +29,9 @@
             "watch": [
                 "dist"
             ],
-            "script": "node dist/index.js"
+            "script": "node dist/start.js"
         },
-        "backend:start": "node dist/index.js"
+        "backend:start": "node dist/start.js"
     },
     "resolutions": {
         "@hypatia-app/client": "workspace:*",

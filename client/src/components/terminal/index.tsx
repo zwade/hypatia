@@ -31,7 +31,7 @@ export const Terminal = (props: Props) => {
             props.lesson,
             props.connection,
             xterm.terminal.rows,
-            xterm.terminal.cols
+            xterm.terminal.cols,
         );
         setConn(conn);
     }

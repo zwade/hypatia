@@ -2,7 +2,6 @@ import * as http from "http";
 import * as internal from "stream";
 import { Request, Response, NextFunction, Application } from "express";
 import * as proxy from "http-proxy";
-import { splitDomain } from "./utils";
 
 const ProxyServer = proxy.createProxyServer({});
 
@@ -28,29 +27,7 @@ export class ProxyManager {
 }
 
 export const ProxyTestWs = (target: string) => (req: http.IncomingMessage, socket: internal.Duplex, head: Buffer) => {
-    console.log("hit upgrade path");
     return ProxyServer.ws(req, socket, head, { target });
-}
-
-class SillyAgent extends http.Agent {
-    public createConnection(options: any, callback: (err: unknown, socket: any) => void) {
-        const socket = new internal.Duplex({
-            read(d) {
-                console.log(d.toString())
-                this.push(`
-HTTP/1.1 200 Ok\r
-Content-Length: 11\r
-Content-Type: text/html\r
-\r
-Hello World`);
-                this.push(null);
-            },
-            write(d) {
-                console.log(d.toString())
-            }
-        });
-        callback(null, socket)
-    }
 }
 
 export const ProxyTest = (target: string) => (req: Request, res: Response, next: NextFunction) => {

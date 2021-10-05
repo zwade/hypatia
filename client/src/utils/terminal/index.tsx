@@ -51,10 +51,9 @@ export class TerminalConnection {
     }
 
     public async connect() {
-        const connectionUri = await this.upsertTerminal();
-
-        const wsUri = new URL(connectionUri, window.location.href);
+        const wsUri = new URL(await this.upsertTerminal(), window.location.href);
         wsUri.protocol = "ws";
+
         const ws = new WebSocket(wsUri);
         this.ws = ws
 

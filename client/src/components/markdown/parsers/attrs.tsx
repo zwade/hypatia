@@ -42,9 +42,6 @@ export const AttrPlugin = function (this: any) {
             const sibling = getPreviousNode(node, parents);
             const match = attrsRe.exec(node.value as string);
 
-            if (match) {
-                console.log(node, parent)
-            }
             if (match && sibling) {
                 node.value = (node.value as string).slice(match[0].length)
 

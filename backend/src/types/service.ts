@@ -41,42 +41,41 @@ export namespace Connection {
 }
 
 export namespace Service {
-    export type t =
+    export type t = (
         | {
             kind: "command",
-            name: string,
             command: string,
             args?: string[],
-            connections?: Connection.t[],
         }
         | {
             kind: "docker",
-            name: string,
             image: string,
-            command?: string,
-            connections?: Connection.t[],
+            command?: string[],
         }
+    ) & {
+        name: string;
+        connections?: Connection.t[];
+        requests?: string[];
+    }
 
-    const MPorts = M.custom(M.record(Connection.MSocket), (ports) => {
-        if (Object.keys(ports).some((p) => (isNaN as (p: number | string) => boolean)(p))) {
-            throw new Error("Ports must be numbers");
-        }
-    });
+    const common = {
+        name: M.str,
+        connections: M.opt(M.arr(Connection.MConnection)),
+        requests: M.opt(M.arr(M.str)),
+    };
 
     export const MService: Marshaller<t> = M.union(
         M.obj({
+            ...common,
             kind: M.lit("command"),
-            name: M.str,
             command: M.str,
             args: M.opt(M.arr(M.str)),
-            connections: M.opt(M.arr(Connection.MConnection)),
         }),
         M.obj({
+            ...common,
             kind: M.lit("docker"),
-            name: M.str,
             image: M.str,
-            command: M.opt(M.str),
-            connections: M.opt(M.arr(Connection.MConnection)),
+            command: M.opt(M.arr(M.str)),
         })
     );
 }

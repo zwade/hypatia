@@ -2,7 +2,7 @@ import * as http from "http";
 import * as internal from "stream";
 import * as express from "express";
 
-import { hostname, Trie } from "../net-utils";
+import { hostname, Trie } from ".";
 import { SafeError } from "@hypatia-app/common";
 
 export type UpgradeHandler = (req: http.IncomingMessage, socket: internal.Duplex, head: Buffer) => void;
