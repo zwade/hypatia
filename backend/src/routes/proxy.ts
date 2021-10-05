@@ -4,6 +4,9 @@ import { Request, Response, NextFunction, Application } from "express";
 import * as proxy from "http-proxy";
 
 const ProxyServer = proxy.createProxyServer({});
+ProxyServer.on("error", (err) => {
+    console.error(err);
+})
 
 export class ProxyManager {
     public app;
