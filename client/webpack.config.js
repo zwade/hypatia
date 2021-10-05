@@ -1,7 +1,7 @@
 const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { DefinePlugin } = require("webpack");
+const { DefinePlugin, webpack, NormalModuleReplacementPlugin } = require("webpack");
 
 const proxyHost = process.env.PROXY_HOST || "http://localhost:3001";
 
@@ -73,6 +73,7 @@ module.exports = {
         ]
     },
     plugins: [
+        new NormalModuleReplacementPlugin(/power-assert/, "assert"),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "./index.html")
         }),

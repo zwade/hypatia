@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import { getPageData, getAllModuleCaches, baseDir, getPageFile } from "../modules";
 
-const allowedAssets = new Set(["jpg", "jpeg", "png", "gif"]);
+const allowedAssets = new Set(["jpg", "jpeg", "png", "gif", "svg"]);
 
 export const moduleRouter = Router()
     .get("/", (leaf) => leaf
