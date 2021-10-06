@@ -235,8 +235,6 @@ wsRouter.ws('/:module/:lesson/terminal', async (ws, req) => {
 
         const onDataHandler = proc.process.onData((data) => {
             try {
-                console.log(data);
-                console.log(Buffer.from(data, "utf-8").toString("base64"))
                 send(data);
             } catch (ex) {
                 // The WebSocket is not open, ignore
