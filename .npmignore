@@ -4,3 +4,6 @@ node_modules
 .yarn/install-state.gz
 client
 backend
+quill
+common
+scripts

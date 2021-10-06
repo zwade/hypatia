@@ -9,6 +9,9 @@
     "express": "*",
     "pg": "*"
   },
+  "scripts": {
+    "prepublish": "yarn r ts:build"
+  },
   "devDependencies": {
     "@types/pg": "^8.6.1"
   }

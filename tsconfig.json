@@ -4,6 +4,7 @@
         "module": "CommonJS",
         "target": "ES2020",
         "declaration": true,
+        "incremental": true,
         "sourceMap": true
     }
 }

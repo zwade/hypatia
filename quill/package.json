@@ -13,6 +13,9 @@
   "resolutions": {
     "@hypatia-app/common": "workspace:*"
   },
+  "scripts": {
+    "prepublish": "yarn r ts:build"
+  },
   "r": {
     "quill:watch-ts": "tsc -w",
     "quill:watch-node": {

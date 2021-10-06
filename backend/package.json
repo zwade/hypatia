@@ -22,7 +22,7 @@
     "@types/yaml": "^1"
   },
   "scripts": {
-    "prepublish": "rm -rf ./dist && yarn r ts:build"
+    "prepublish": "yarn r ts:build"
   },
   "r": {
     "backend:watch": {

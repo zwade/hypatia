@@ -35,7 +35,8 @@
       "r:client:build"
     ],
     "start": "r:backend:start",
-    "set-version": "ts-node scripts/set-version/index.ts"
+    "set-version": "ts-node scripts/set-version/index.ts",
+    "publish": "for i in backend client common quill ; do echo \"Publishing @hypatia-app/${i}\"; yarn workspace \"@hypatia-app/${i}\" npm publish --access public --tolerate-republish; done; echo \"Publishing hypatia-app\"; yarn npm publish --access public --tolerate-republish"
   },
   "license": "MIT"
 }
