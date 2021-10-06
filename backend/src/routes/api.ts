@@ -131,6 +131,7 @@ export const apiRouter = Router()
 
             const env = Object.assign({}, process.env as Record<string, string>);
             env['COLORTERM'] = 'truecolor';
+            env["TERM"] = "xterm-256color";
             const term = pty.spawn(service.command ?? "bash", [], {
                 name: 'xterm-256color',
                 cols,
@@ -219,16 +220,13 @@ wsRouter.ws('/:module/:lesson/terminal', async (ws, req) => {
         const bufferUtf8 = (socket: WebSocket, timeout: number) => {
             let buffer: Buffer[] = [];
             let sender: NodeJS.Timeout | null = null;
-            let length = 0;
             return (data: string) => {
                 buffer.push(Buffer.from(data, "utf-8"));
-                length += data.length;
                 if (!sender) {
                     sender = setTimeout(() => {
-                        socket.send(Buffer.concat(buffer, length));
+                        socket.send(Buffer.concat(buffer));
                         buffer = [];
                         sender = null;
-                        length = 0;
                     }, timeout);
                 }
             };
@@ -237,6 +235,8 @@ wsRouter.ws('/:module/:lesson/terminal', async (ws, req) => {
 
         const onDataHandler = proc.process.onData((data) => {
             try {
+                console.log(data);
+                console.log(Buffer.from(data, "utf-8").toString("base64"))
                 send(data);
             } catch (ex) {
                 // The WebSocket is not open, ignore

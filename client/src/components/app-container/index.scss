@@ -5,102 +5,117 @@
     flex-direction: column;
     height: 100%;
 
-    &>.header {
-        min-height: 64px;
-        font-size: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: start;
-        font-variant-caps: small-caps;
-        background-color: palette.$color-primary-05;
-        color: palette.$color-neutral-00;
-        padding: 0px 16px;
+    &>.header-container {
+        position: relative;
+        height: 100%;
+        transition: max-height 100ms ease-in;
 
-        .logo {
-            flex-grow: 1;
-        }
+        &>.header {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
 
-        .settings {
+            min-height: 64px;
+            font-size: 32px;
             display: flex;
-            flex-direction: row;
+            align-items: center;
+            justify-content: start;
+            font-variant-caps: small-caps;
+            background-color: palette.$color-primary-05;
+            color: palette.$color-neutral-00;
+            padding: 0px 16px;
 
-            .event-catcher {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 10;
+            transition: bottom 100ms ease-in;
+
+            .logo {
+                flex-grow: 1;
+                cursor: pointer;
             }
 
-            .settings-holder {
-                width: 0px;
-                height: 0px;
-                align-self: end;
-                position: relative;
-                font-size: 16px;
-                font-variant-caps: normal;
+            .settings {
+                display: flex;
+                flex-direction: row;
 
-                .settings-panel {
+                .event-catcher {
                     position: absolute;
-                    top: 0px;
-                    right: 0px;
-                    z-index: 11;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 10;
+                }
 
-                    min-width: 400px;
-                    max-height: 600px;
-                    overflow-y: auto;
+                .settings-holder {
+                    width: 0px;
+                    height: 0px;
+                    align-self: end;
+                    position: relative;
+                    font-size: 16px;
+                    font-variant-caps: normal;
 
-                    color: palette.$color-neutral-09;
-                    background: palette.$color-neutral-01;
-                    border: 2px solid palette.$color-neutral-09;
-                    border-radius: 4px;
+                    .settings-panel {
+                        position: absolute;
+                        top: 0px;
+                        right: 0px;
+                        z-index: 11;
 
-                    padding: 8px;
+                        min-width: 400px;
+                        max-height: 600px;
+                        overflow-y: auto;
 
-                    display: flex;
-                    flex-direction: column;
+                        color: palette.$color-neutral-09;
+                        background: palette.$color-neutral-01;
+                        border: 2px solid palette.$color-neutral-09;
+                        border-radius: 4px;
 
-                    .settings-title {
-                        font-size: 24px;
-                        align-self: center;
-                    }
+                        padding: 8px;
 
-                    .sub-settings {
-                        .name {
-                            font-weight: bold;
+                        display: flex;
+                        flex-direction: column;
+
+                        .settings-title {
+                            font-size: 24px;
+                            align-self: center;
                         }
 
-                        .settings-item {
-                            display: grid;
-                            grid-template:
-                                "title title    close" max-content
-                                ".     twiddler close" 1fr /
-                                16px   1fr      max-content;
-
-                            background: palette.$color-neutral-03;
-                            padding: 8px;
-                            margin: 8px 0px;
-                            border-radius: 4px;
-
-                            .settings-desc {
-                                grid-area: title;
+                        .sub-settings {
+                            .name {
+                                font-weight: bold;
                             }
 
-                            .settings-clear {
-                                grid-area: close;
-                                padding: 4px;
-                                color: palette.$color-error-02;
-                                transition: color 100ms ease-in, background-color 100ms ease-in;
+                            .settings-item {
+                                display: grid;
+                                grid-template:
+                                    "title title    close" max-content
+                                    ".     twiddler close" 1fr /
+                                    16px   1fr      max-content;
 
-                                &:hover {
-                                    color: palette.$color-neutral-00;
-                                    background: palette.$color-error-02;
+                                background: palette.$color-neutral-03;
+                                padding: 8px;
+                                margin: 8px 0px;
+                                border-radius: 4px;
+
+                                .settings-desc {
+                                    grid-area: title;
                                 }
-                            }
 
-                            .settings-twiddler {
-                                grid-area: twiddler;
+                                .settings-clear {
+                                    grid-area: close;
+                                    padding: 4px;
+                                    color: palette.$color-error-02;
+                                    transition: color 100ms ease-in, background-color 100ms ease-in;
+
+                                    &:hover {
+                                        color: palette.$color-neutral-00;
+                                        background: palette.$color-error-02;
+                                    }
+                                }
+
+                                .settings-twiddler {
+                                    grid-area: twiddler;
+                                }
                             }
                         }
                     }

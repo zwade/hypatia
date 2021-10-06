@@ -116,7 +116,7 @@ export const Terminal = (props: Props) => {
                     </div>
                 ) : null
             }
-            <XTerm ref={setXterm} options={{ fontFamily: "Iosevka Web" }} className="terminal-wrapper"/>
+            <XTerm ref={setXterm} options={{ convertEol: true, fontFamily: "Iosevka Web" }} className="terminal-wrapper"/>
         </div>
     )
 }

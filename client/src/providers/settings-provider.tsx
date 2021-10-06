@@ -26,6 +26,7 @@ export type SettingsDescriptions<T extends Record<string, any>> =
 
 export interface GlobalSettings {
     vertical: boolean;
+    lockHeader: boolean;
 }
 
 export interface ModuleSettings {
@@ -63,6 +64,13 @@ export type Description = {
 
 export const description: Description = {
     global: [
+        {
+            name: "lockHeader",
+            description: "Lock Header",
+            nullable: false,
+            default: false,
+            type: "boolean",
+        },
         {
             name: "vertical",
             description: "Vertical Terminal Orientation",
@@ -102,6 +110,7 @@ export interface SettingsContextData {
 export const SettingsContext = React.createContext<SettingsContextData>({
     settings: {
         global: {
+            lockHeader: true,
             vertical: false
         },
     },
@@ -125,6 +134,7 @@ export const SettingsProvider = (props: Props) => {
     const [globalSettings, _, mergeGlobalSettings] = useLocalStorage<GlobalSettings>(
         globalKey,
         {
+            lockHeader: false,
             vertical: false,
         }
     );
