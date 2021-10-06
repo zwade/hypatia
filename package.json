@@ -5,6 +5,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5",
     "@types/pg": "^8",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   },
   "workspaces": [
@@ -33,7 +34,8 @@
       "r:ts:build",
       "r:client:build"
     ],
-    "start": "r:backend:start"
+    "start": "r:backend:start",
+    "set-version": "ts-node scripts/set-version/index.ts"
   },
   "license": "MIT"
 }
