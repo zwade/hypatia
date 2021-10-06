@@ -1,5 +1,8 @@
 @use "~react-pwn/palette.scss" as palette;
 
+$totalHeight: 64px;
+$minHeight: 32px;
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -8,7 +11,35 @@
     &>.header-container {
         position: relative;
         height: 100%;
+        max-height: $minHeight;
         transition: max-height 100ms ease-in;
+
+        &[data-locked=true], &[data-show=true] {
+            .header {
+                .logo {
+                    font-size: 32px;
+                    padding-bottom: 16px;
+                }
+
+                .settings {
+                    font-size: 32px;
+
+                    i {
+                        margin: 8px 0px;
+                    }
+                }
+            }
+        }
+
+        &[data-locked=true] {
+            max-height: $totalHeight;
+        }
+
+        &[data-show=true]:not([data-locked=true]) {
+            &>.header {
+                bottom: -($totalHeight - $minHeight);
+            }
+        }
 
         &>.header {
             position: absolute;
@@ -22,7 +53,6 @@
             display: flex;
             align-items: center;
             justify-content: start;
-            font-variant-caps: small-caps;
             background-color: palette.$color-primary-05;
             color: palette.$color-neutral-00;
             padding: 0px 16px;
@@ -32,11 +62,25 @@
             .logo {
                 flex-grow: 1;
                 cursor: pointer;
+                font-size: 24px;
+                align-self: flex-end;
+                padding-bottom: 4px;
+
+                transition: font-size 100ms ease-in, padding-bottom 100ms ease-in;
             }
 
             .settings {
                 display: flex;
                 flex-direction: row;
+                align-self: flex-end;
+                font-size: 16px;
+
+                transition: font-size 100ms ease-in;
+
+                i {
+                    margin: 0px 8px;
+                    transition: margin 100ms ease-in;
+                }
 
                 .event-catcher {
                     position: absolute;

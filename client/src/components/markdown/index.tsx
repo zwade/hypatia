@@ -7,7 +7,7 @@ import { Loadable } from "@hypatia-app/common";
 
 import { API } from "../../api";
 import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint, Notes } from "./markdown-components";
-import { AttrPlugin, NotesPlugin, QuizPlugin } from "./parsers";
+import { AllowedHtmlPlugin, AttrPlugin, NotesPlugin, QuizPlugin } from "./parsers";
 import { QuizProvider } from "../../providers/quiz-provider";
 import { QuizNavigation } from "./quiz-navigation";
 import { QuizElements } from "./parsers/quiz";
@@ -45,8 +45,8 @@ export const Markdown = (props: Props) => {
             <QuizProvider page={`${module}/${lesson}/${file}`}>
                 <ReactMarkdown
                     className="markdown"
-                    remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM, NotesPlugin]}
-                    rehypePlugins={[RehypeHighlight, [RehypeRaw, { passThrough: ["element"] }]]}
+                    remarkPlugins={[AttrPlugin, QuizPlugin, RemarkGFM, NotesPlugin, AllowedHtmlPlugin({ singleTags: ["br"], tags: ["u", "b", "i"], stripComments: true })]}
+                    rehypePlugins={[RehypeHighlight]}
                     components={{
                         code: Code,
                         img: Image,

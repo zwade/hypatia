@@ -13,7 +13,7 @@ export interface Props {
 
 const totalHeight = 64;
 const approachDistance = 32;
-const minHeight = 16;
+const minHeight = 32;
 
 export const AppContainer = (props: Props) => {
     const isShowing = React.useRef(false);
@@ -51,11 +51,20 @@ export const AppContainer = (props: Props) => {
         lockHeader ? 0 :
         shouldShow ? -(totalHeight - minHeight) : 0;
 
+    const fontSize = (lockHeader || shouldShow) ? 32 : (totalHeight - minHeight - 8);
+
     return (
         <div className="app-container">
-            <div className="header-container" style={{ maxHeight: containerMaxHeight }}>
-                <div className="header" style={{ bottom }}>
-                    <div className="logo" onClick={nav("/")}>Hypatia</div>
+            <div className="header-container"
+                data-locked={lockHeader}
+                data-show={shouldShow}
+                style={{
+                    "--total-height": `${totalHeight}px`,
+                    "--min-height": `${minHeight}px`,
+                } as any}
+            >
+                <div className="header">
+                    <div className="logo" onClick={nav("/")}>hypatia</div>
                     <div className="settings">
                         {
                             settings.global.lockHeader
