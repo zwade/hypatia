@@ -1,17 +1,18 @@
 {
   "name": "@hypatia-app/backend",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@hypatia-app/client": "^0.0.14",
-    "@hypatia-app/common": "^0.0.14",
+    "@hypatia-app/client": "^0.0.15",
+    "@hypatia-app/common": "^0.0.15",
     "@zensors/sheriff": "^2.0.2",
     "express": "^4.17.1",
     "express-ws": "^5.0.2",
     "fs-extra": "^10.0.0",
     "http-proxy": "^1.18.1",
     "node-pty": "^0.10.1",
+    "uuid": "^8.3.2",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "@types/express-ws": "^3.0.1",
     "@types/fs-extra": "^9.0.12",
     "@types/http-proxy": "^1",
+    "@types/uuid": "^8",
     "@types/yaml": "^1"
   },
   "scripts": {
