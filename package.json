@@ -1,6 +1,6 @@
 {
   "name": "hypatia-app",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "packageManager": "yarn@3.0.1",
   "devDependencies": {
     "@types/bcrypt": "^5",
@@ -13,8 +13,8 @@
     "private/*"
   ],
   "dependencies": {
-    "@hypatia-app/backend": "^0.0.13",
-    "@hypatia-app/client": "^0.0.13",
+    "@hypatia-app/backend": "^0.0.14",
+    "@hypatia-app/client": "^0.0.14",
     "bcrypt": "^5.0.1",
     "node-gyp": "^8.2.0",
     "pg": "^8.7.1"
