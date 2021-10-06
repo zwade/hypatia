@@ -1,10 +1,10 @@
 {
   "name": "@hypatia-app/client",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "license": "MIT",
   "main": "dist/main.js",
   "devDependencies": {
-    "@hypatia-app/backend": "^0.0.15",
+    "@hypatia-app/backend": "^0.0.16",
     "@types/mdast": "^3",
     "@types/react": "^17",
     "@types/react-dom": "^17",
