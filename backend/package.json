@@ -1,40 +1,40 @@
 {
-    "name": "@hypatia-app/backend",
-    "version": "0.0.11",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "dependencies": {
-        "@hypatia-app/client": "^0.0.9",
-        "@hypatia-app/common": "^0.0.1",
-        "@zensors/sheriff": "^2.0.2",
-        "express": "^4.17.1",
-        "express-ws": "^5.0.2",
-        "fs-extra": "^10.0.0",
-        "http-proxy": "^1.18.1",
-        "node-pty": "^0.10.1",
-        "yaml": "^1.10.2"
+  "name": "@hypatia-app/backend",
+  "version": "0.0.13",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@hypatia-app/client": "^0.0.13",
+    "@hypatia-app/common": "^0.0.13",
+    "@zensors/sheriff": "^2.0.2",
+    "express": "^4.17.1",
+    "express-ws": "^5.0.2",
+    "fs-extra": "^10.0.0",
+    "http-proxy": "^1.18.1",
+    "node-pty": "^0.10.1",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4",
+    "@types/express-ws": "^3.0.1",
+    "@types/fs-extra": "^9.0.12",
+    "@types/http-proxy": "^1",
+    "@types/yaml": "^1"
+  },
+  "scripts": {
+    "prepublish": "rm -rf ./dist && yarn r ts:build"
+  },
+  "r": {
+    "backend:watch": {
+      "watch": [
+        "dist"
+      ],
+      "script": "node dist/start.js"
     },
-    "devDependencies": {
-        "@types/express": "^4",
-        "@types/express-ws": "^3.0.1",
-        "@types/fs-extra": "^9.0.12",
-        "@types/http-proxy": "^1",
-        "@types/yaml": "^1"
-    },
-    "scripts": {
-        "prepublish": "rm -rf ./dist && yarn r ts:build"
-    },
-    "r": {
-        "backend:watch": {
-            "watch": [
-                "dist"
-            ],
-            "script": "node dist/start.js"
-        },
-        "backend:start": "node dist/start.js"
-    },
-    "resolutions": {
-        "@hypatia-app/client": "workspace:*",
-        "@hypatia-app/common": "workspace:*"
-    }
+    "backend:start": "node dist/start.js"
+  },
+  "resolutions": {
+    "@hypatia-app/client": "workspace:*",
+    "@hypatia-app/common": "workspace:*"
+  }
 }

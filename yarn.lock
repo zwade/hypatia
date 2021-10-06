@@ -44,12 +44,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hypatia-app/backend@*, @hypatia-app/backend@^0.0.11, @hypatia-app/backend@workspace:backend":
+"@hypatia-app/backend@^0.0.13, @hypatia-app/backend@workspace:backend":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/backend@workspace:backend"
   dependencies:
-    "@hypatia-app/client": ^0.0.9
-    "@hypatia-app/common": ^0.0.1
+    "@hypatia-app/client": ^0.0.13
+    "@hypatia-app/common": ^0.0.13
     "@types/express": ^4
     "@types/express-ws": ^3.0.1
     "@types/fs-extra": ^9.0.12
@@ -69,10 +69,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hypatia-app/campus@workspace:private/campus"
   dependencies:
-    "@hypatia-app/backend": "*"
-    "@hypatia-app/client": "*"
-    "@hypatia-app/common": "*"
-    "@hypatia-app/quill": "*"
+    "@hypatia-app/backend": ^0.0.13
+    "@hypatia-app/client": ^0.0.13
+    "@hypatia-app/common": ^0.0.13
+    "@hypatia-app/quill": ^0.0.13
     "@types/body-parser": ^1
     "@types/cookie-parser": ^1
     "@types/express": ^4
@@ -85,11 +85,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/client@*, @hypatia-app/client@^0.0.9, @hypatia-app/client@workspace:client":
+"@hypatia-app/client@^0.0.13, @hypatia-app/client@workspace:client":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/client@workspace:client"
   dependencies:
-    "@hypatia-app/backend": "*"
+    "@hypatia-app/backend": ^0.0.13
     "@types/mdast": ^3
     "@types/react": ^17
     "@types/react-dom": ^17
@@ -131,7 +131,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/common@*, @hypatia-app/common@^0.0.1, @hypatia-app/common@workspace:common":
+"@hypatia-app/common@^0.0.13, @hypatia-app/common@workspace:common":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/common@workspace:common"
   dependencies:
@@ -142,11 +142,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/quill@*, @hypatia-app/quill@workspace:quill":
+"@hypatia-app/quill@^0.0.13, @hypatia-app/quill@workspace:quill":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/quill@workspace:quill"
   dependencies:
-    "@hypatia-app/common": "*"
+    "@hypatia-app/common": ^0.0.13
     "@types/dockerode": ^3
     dockerode: ^3.3.1
     node-pty: ^0.10.1
@@ -2928,8 +2928,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "hypatia-app@workspace:."
   dependencies:
-    "@hypatia-app/backend": ^0.0.11
-    "@hypatia-app/client": ^0.0.9
+    "@hypatia-app/backend": ^0.0.13
+    "@hypatia-app/client": ^0.0.13
     "@types/bcrypt": ^5
     "@types/pg": ^8
     bcrypt: ^5.0.1

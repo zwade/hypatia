@@ -38,6 +38,10 @@ const updatePackage = async (workspaces: Set<string>, version: string, pkg: Pack
     updated.version = version;
 
     for (const prefix of ["d", "devD", "peerD", "optionalD"] as const) {
+        if (updated[`${prefix}ependencies`] === undefined) {
+            continue;
+        }
+
         const deps = { ...updated[`${prefix}ependencies`] };
         for (const dep of Object.keys(deps)) {
             if (workspaces.has(dep)) {
@@ -52,7 +56,7 @@ const updatePackage = async (workspaces: Set<string>, version: string, pkg: Pack
 }
 
 const savePackageJson = async (workspace: Workspace, pkg: PackageJson) => {
-    await fs.writeFile(path.join(workspace.location, "package.json"), JSON.stringify(pkg, null, 4));
+    await fs.writeFile(path.join(workspace.location, "package.json"), JSON.stringify(pkg, null, 2));
 }
 
 const main = async() => {
@@ -67,8 +71,7 @@ const main = async() => {
     for (const workspace of workspaces) {
         const pkg = await getPackageJson(workspace);
         const updated = await updatePackage(workspaceSet, version, pkg);
-        console.log(updated);
-        // await savePackageJson(workspace, updated);
+        await savePackageJson(workspace, updated);
     }
 }
 
