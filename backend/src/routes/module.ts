@@ -1,8 +1,9 @@
 import { marshalParams, Router } from "@hypatia-app/common";
 import { M } from "@zensors/sheriff";
-import * as fs from "fs-extra";
 import * as path from "path";
-import { getPageData, getAllModuleCaches, baseDir, getPageFile } from "../modules";
+
+import { getPageData, getAllModuleCaches, getPageFile } from "../modules";
+import { Options } from "../options";
 
 const allowedAssets = new Set(["jpg", "jpeg", "png", "gif", "svg"]);
 
@@ -23,7 +24,7 @@ export const moduleRouter = Router()
         .finish(async (req, res) => {
             const extension = path.extname(req.params.file).slice(1).toLocaleLowerCase();
             if (allowedAssets.has(extension)) {
-                const file = path.join(baseDir, req.params.module, req.params.lesson, "assets", req.params.file);
+                const file = path.join(Options.moduleDir, req.params.module, req.params.lesson, "assets", req.params.file);
                 res.type(extension).sendFile(file);
             } else {
                 res.status(404).end();

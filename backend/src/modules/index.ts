@@ -2,23 +2,11 @@ import * as yaml from "yaml";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { marshal, MarshalError, Marshaller } from "@zensors/sheriff";
-
-import { Lesson, Module, Page, View } from "../types";
 import { SafeError } from "@hypatia-app/common";
 
-type Modules = {
-    [module: string]: {
-        [lesson: string]: number;
-    }
-}
+import { Lesson, Module, Page, View } from "../types";
+import { Options } from "../options"
 
-const allowedLessons =
-    new Set(
-        (process.env.MODULE ?? "ALL").split(/,\s*/)
-    );
-
-
-export const baseDir = path.join(process.cwd(), "modules");
 
 const isConfig = (f: string) => f === "config.yml" || f === "config.yaml" || f === "config.json";
 const parseConfig = <T>(data: string, m: Marshaller<T>): T => {
@@ -85,17 +73,17 @@ export const getConfig = async <T>(pathName: string, m: Marshaller<T>) => {
 }
 
 export const getPageFile = async (module: string, lesson: string, fileName: string) => {
-    const fullName = path.join(baseDir, module, lesson, fileName);
+    const fullName = path.join(Options.moduleDir, module, lesson, fileName);
     const [_config, pageData] = await readPage(fullName);
     return pageData;
 }
 
 export const getPageData = async (module: string, lesson: string, page: string) => {
     const pageAsNumber = parseInt(page, 10);
-    const lessonConfig = await getConfig(path.join(baseDir, module, lesson), Lesson.MAsInline);
+    const lessonConfig = await getConfig(path.join(Options.moduleDir, module, lesson), Lesson.MAsInline);
 
-    const pages = lessonConfig?.pages ?? await listPages(path.join(baseDir, module, lesson));
-    const fileName = path.join(baseDir, module, lesson, pages[pageAsNumber]);
+    const pages = lessonConfig?.pages ?? await listPages(path.join(Options.moduleDir, module, lesson));
+    const fileName = path.join(Options.moduleDir, module, lesson, pages[pageAsNumber]);
 
     const [config, _pageData] = await readPage(fileName);
     const baseView: View.t = { kind: "markdown", fileName: pages[pageAsNumber] };
@@ -160,16 +148,17 @@ const getModuleCache = async (name: string, pathName: string) => {
 }
 
 export const getModuleByPath = (modulePath: string) => {
-    return getModuleCache(modulePath, path.join(baseDir, modulePath));
+    return getModuleCache(modulePath, path.join(Options.moduleDir, modulePath));
 }
 
 export const getAllModuleCaches = async () => {
-    const files = await fs.readdir(baseDir);
-    const stats = await Promise.all(files.map((f) => fs.stat(path.join(baseDir, f))));
+    const files = await fs.readdir(Options.moduleDir);
+    const stats = await Promise.all(files.map((f) => fs.stat(path.join(Options.moduleDir, f))));
     const directories = files
         .filter((f, i) => !f.startsWith(".") && stats[i].isDirectory());
 
-    const modules = await Promise.all(directories.map((d) => getModuleCache(d, path.join(baseDir, d))));
+    const modules = await Promise.all(directories.map((d) => getModuleCache(d, path.join(Options.moduleDir, d))));
 
-    return modules.filter((m) => m.lessons.length > 0 && (allowedLessons.has(m.name) || allowedLessons.has("ALL")));
+    const enabledModules = new Set(Options.enabledModules);
+    return modules.filter((m) => m.lessons.length > 0 && (enabledModules.has(m.name) || enabledModules.has("ALL")));
 }

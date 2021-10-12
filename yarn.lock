@@ -44,18 +44,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hypatia-app/backend@^0.0.14, @hypatia-app/backend@workspace:backend":
+"@hypatia-app/backend@^0.0.16, @hypatia-app/backend@workspace:backend":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/backend@workspace:backend"
   dependencies:
-    "@hypatia-app/client": ^0.0.14
-    "@hypatia-app/common": ^0.0.14
+    "@hypatia-app/client": ^0.0.16
+    "@hypatia-app/common": ^0.0.16
     "@types/express": ^4
     "@types/express-ws": ^3.0.1
     "@types/fs-extra": ^9.0.12
     "@types/http-proxy": ^1
     "@types/uuid": ^8
     "@types/yaml": ^1
+    "@types/yargs": ^17
     "@zensors/sheriff": ^2.0.2
     express: ^4.17.1
     express-ws: ^5.0.2
@@ -64,6 +65,7 @@ __metadata:
     node-pty: ^0.10.1
     uuid: ^8.3.2
     yaml: ^1.10.2
+    yargs: ^17.2.1
   languageName: unknown
   linkType: soft
 
@@ -71,10 +73,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hypatia-app/campus@workspace:private/campus"
   dependencies:
-    "@hypatia-app/backend": ^0.0.14
-    "@hypatia-app/client": ^0.0.14
-    "@hypatia-app/common": ^0.0.14
-    "@hypatia-app/quill": ^0.0.14
+    "@hypatia-app/backend": ^0.0.16
+    "@hypatia-app/client": ^0.0.16
+    "@hypatia-app/common": ^0.0.16
+    "@hypatia-app/quill": ^0.0.16
     "@types/body-parser": ^1
     "@types/cookie-parser": ^1
     "@types/express": ^4
@@ -87,11 +89,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/client@^0.0.14, @hypatia-app/client@workspace:client":
+"@hypatia-app/client@^0.0.16, @hypatia-app/client@workspace:client":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/client@workspace:client"
   dependencies:
-    "@hypatia-app/backend": ^0.0.14
+    "@hypatia-app/backend": ^0.0.16
     "@types/mdast": ^3
     "@types/react": ^17
     "@types/react-dom": ^17
@@ -133,7 +135,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/common@^0.0.14, @hypatia-app/common@workspace:common":
+"@hypatia-app/common@^0.0.16, @hypatia-app/common@workspace:common":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/common@workspace:common"
   dependencies:
@@ -144,11 +146,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hypatia-app/quill@^0.0.14, @hypatia-app/quill@workspace:quill":
+"@hypatia-app/quill@^0.0.16, @hypatia-app/quill@workspace:quill":
   version: 0.0.0-use.local
   resolution: "@hypatia-app/quill@workspace:quill"
   dependencies:
-    "@hypatia-app/common": ^0.0.14
+    "@hypatia-app/common": ^0.0.16
     "@types/dockerode": ^3
     dockerode: ^3.3.1
     node-pty: ^0.10.1
@@ -633,6 +635,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/yargs-parser@npm:*":
+  version: 20.2.1
+  resolution: "@types/yargs-parser@npm:20.2.1"
+  checksum: 1d039e64494a7a61ddd278349a3dc60b19f99ff0517425696e796f794e4252452b9d62178e69755ad03f439f9dc0c8c3d7b3a1201b3a24e134bac1a09fa11eaa
+  languageName: node
+  linkType: hard
+
+"@types/yargs@npm:^17":
+  version: 17.0.3
+  resolution: "@types/yargs@npm:17.0.3"
+  dependencies:
+    "@types/yargs-parser": "*"
+  checksum: 8c4e01f893f0b372a37efb2da2191b63793a25126e0b468c7eb8886176fec2a10f063d9718fa75f1fa00e82fbed4a614bb06661d968e4233be8a00468b94ac60
+  languageName: node
+  linkType: hard
+
 "@webassemblyjs/ast@npm:1.11.1":
   version: 1.11.1
   resolution: "@webassemblyjs/ast@npm:1.11.1"
@@ -977,6 +995,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansi-regex@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "ansi-regex@npm:5.0.1"
+  checksum: 2aa4bb54caf2d622f1afdad09441695af2a83aa3fe8b8afa581d205e57ed4261c183c4d3877cee25794443fde5876417d859c108078ab788d6af7e4fe52eb66b
+  languageName: node
+  linkType: hard
+
 "ansi-regex@npm:^6.0.0":
   version: 6.0.0
   resolution: "ansi-regex@npm:6.0.0"
@@ -984,7 +1009,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-styles@npm:^4.1.0":
+"ansi-styles@npm:^4.0.0, ansi-styles@npm:^4.1.0":
   version: 4.3.0
   resolution: "ansi-styles@npm:4.3.0"
   dependencies:
@@ -1426,6 +1451,17 @@ __metadata:
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
   checksum: 2ac8cd2b2f5ec986a3c743935ec85b07bc174d5421a5efc8017e1f146a1cf5f781ae962618f416352103b32c9cd7e203276e8c28241bbe946160cab16149fb68
+  languageName: node
+  linkType: hard
+
+"cliui@npm:^7.0.2":
+  version: 7.0.4
+  resolution: "cliui@npm:7.0.4"
+  dependencies:
+    string-width: ^4.2.0
+    strip-ansi: ^6.0.0
+    wrap-ansi: ^7.0.0
+  checksum: ce2e8f578a4813806788ac399b9e866297740eecd4ad1823c27fd344d78b22c5f8597d548adbcc46f0573e43e21e751f39446c5a5e804a12aace402b7a315d7f
   languageName: node
   linkType: hard
 
@@ -1950,6 +1986,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emoji-regex@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "emoji-regex@npm:8.0.0"
+  checksum: d4c5c39d5a9868b5fa152f00cada8a936868fd3367f33f71be515ecee4c803132d11b31a6222b2571b1e5f7e13890156a94880345594d0ce7e3c9895f560f192
+  languageName: node
+  linkType: hard
+
 "empower-core@npm:^1.2.0":
   version: 1.2.0
   resolution: "empower-core@npm:1.2.0"
@@ -2458,6 +2501,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"get-caller-file@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "get-caller-file@npm:2.0.5"
+  checksum: b9769a836d2a98c3ee734a88ba712e62703f1df31b94b784762c433c27a386dd6029ff55c2a920c392e33657d80191edbf18c61487e198844844516f843496b9
+  languageName: node
+  linkType: hard
+
 "get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.0, get-intrinsic@npm:^1.1.1":
   version: 1.1.1
   resolution: "get-intrinsic@npm:1.1.1"
@@ -2930,8 +2980,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "hypatia-app@workspace:."
   dependencies:
-    "@hypatia-app/backend": ^0.0.14
-    "@hypatia-app/client": ^0.0.14
+    "@hypatia-app/backend": ^0.0.16
+    "@hypatia-app/client": ^0.0.16
     "@types/bcrypt": ^5
     "@types/pg": ^8
     bcrypt: ^5.0.1
@@ -3244,6 +3294,13 @@ fsevents@~2.3.2:
   version: 2.0.0
   resolution: "is-fullwidth-code-point@npm:2.0.0"
   checksum: eef9c6e15f68085fec19ff6a978a6f1b8f48018fd1265035552078ee945573594933b09bbd6f562553e2a241561439f1ef5339276eba68d272001343084cfab8
+  languageName: node
+  linkType: hard
+
+"is-fullwidth-code-point@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "is-fullwidth-code-point@npm:3.0.0"
+  checksum: 44a30c29457c7fb8f00297bce733f0a64cd22eca270f83e58c105e0d015e45c019491a4ab2faef91ab51d4738c670daff901c799f6a700e27f7314029e99e348
   languageName: node
   linkType: hard
 
@@ -5561,6 +5618,13 @@ remark-parse@^10.0.0:
   languageName: node
   linkType: hard
 
+"require-directory@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "require-directory@npm:2.1.1"
+  checksum: fb47e70bf0001fdeabdc0429d431863e9475e7e43ea5f94ad86503d918423c1543361cc5166d713eaa7029dd7a3d34775af04764bebff99ef413111a5af18c80
+  languageName: node
+  linkType: hard
+
 "requires-port@npm:^1.0.0":
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
@@ -6078,6 +6142,17 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
+"string-width@npm:^4.1.0, string-width@npm:^4.2.0":
+  version: 4.2.3
+  resolution: "string-width@npm:4.2.3"
+  dependencies:
+    emoji-regex: ^8.0.0
+    is-fullwidth-code-point: ^3.0.0
+    strip-ansi: ^6.0.1
+  checksum: e52c10dc3fbfcd6c3a15f159f54a90024241d0f149cf8aed2982a2d801d2e64df0bf1dc351cf8e95c3319323f9f220c16e740b06faecd53e2462df1d2b5443fb
+  languageName: node
+  linkType: hard
+
 "string.prototype.trimend@npm:^1.0.4":
   version: 1.0.4
   resolution: "string.prototype.trimend@npm:1.0.4"
@@ -6142,6 +6217,15 @@ resolve@^1.9.0:
   dependencies:
     ansi-regex: ^3.0.0
   checksum: d9186e6c0cf78f25274f6750ee5e4a5725fb91b70fdd79aa5fe648eab092a0ec5b9621b22d69d4534a56319f75d8944efbd84e3afa8d4ad1b9a9491f12c84eca
+  languageName: node
+  linkType: hard
+
+"strip-ansi@npm:^6.0.0, strip-ansi@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "strip-ansi@npm:6.0.1"
+  dependencies:
+    ansi-regex: ^5.0.1
+  checksum: f3cd25890aef3ba6e1a74e20896c21a46f482e93df4a06567cebf2b57edabb15133f1f94e57434e0a958d61186087b1008e89c94875d019910a213181a14fc8c
   languageName: node
   linkType: hard
 
@@ -7000,6 +7084,17 @@ typescript@^4.4.2:
   languageName: node
   linkType: hard
 
+"wrap-ansi@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "wrap-ansi@npm:7.0.0"
+  dependencies:
+    ansi-styles: ^4.0.0
+    string-width: ^4.1.0
+    strip-ansi: ^6.0.0
+  checksum: a790b846fd4505de962ba728a21aaeda189b8ee1c7568ca5e817d85930e06ef8d1689d49dbf0e881e8ef84436af3a88bc49115c2e2788d841ff1b8b5b51a608b
+  languageName: node
+  linkType: hard
+
 "wrappy@npm:1":
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
@@ -7082,6 +7177,13 @@ typescript@^4.4.2:
   languageName: node
   linkType: hard
 
+"y18n@npm:^5.0.5":
+  version: 5.0.8
+  resolution: "y18n@npm:5.0.8"
+  checksum: 54f0fb95621ee60898a38c572c515659e51cc9d9f787fb109cef6fde4befbe1c4602dc999d30110feee37456ad0f1660fa2edcfde6a9a740f86a290999550d30
+  languageName: node
+  linkType: hard
+
 "yallist@npm:^4.0.0":
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
@@ -7093,6 +7195,28 @@ typescript@^4.4.2:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
+  languageName: node
+  linkType: hard
+
+"yargs-parser@npm:^20.2.2":
+  version: 20.2.9
+  resolution: "yargs-parser@npm:20.2.9"
+  checksum: 8bb69015f2b0ff9e17b2c8e6bfe224ab463dd00ca211eece72a4cd8a906224d2703fb8a326d36fdd0e68701e201b2a60ed7cf81ce0fd9b3799f9fe7745977ae3
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^17.2.1":
+  version: 17.2.1
+  resolution: "yargs@npm:17.2.1"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.0
+    y18n: ^5.0.5
+    yargs-parser: ^20.2.2
+  checksum: 451aac46f82da776f436018feed0244bc0e7b4355f7e397bcb53d34c691b177c0d71db3dda9653760e1bc240254d8b763a252ff918ef9e235a8d202e2909c4eb
   languageName: node
   linkType: hard
 
