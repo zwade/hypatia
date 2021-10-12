@@ -136,7 +136,7 @@ export const apiRouter = Router()
                 name: 'xterm-256color',
                 cols,
                 rows,
-                cwd: process.platform === 'win32' ? undefined : env.PWD,
+                cwd: process.platform === 'win32' ? undefined : process.cwd(),
                 env: env,
                 encoding: 'utf8'
             });

@@ -52,12 +52,16 @@ export const parseArgs = () => {
 export const start = async () => {
     const args = await parseArgs();
 
+    const initialCwd = process.cwd();
+
     if (args.cwd !== undefined) {
-        process.chdir(args.cwd);
+        process.chdir(path.resolve(initialCwd, args.cwd));
     }
 
     const enabledModules = args.enable ?? legacyModules;
-    const moduleDir = args.modules ?? path.join(process.cwd(), "modules");
+    const moduleDir =
+        args.modules ? path.resolve(initialCwd, args.modules) :
+        path.join(process.cwd(), "modules");
     const port = args.port;
     const host = args.host;
 
