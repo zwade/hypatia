@@ -1,11 +1,11 @@
 {
   "name": "@hypatia-app/backend",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@hypatia-app/client": "^0.0.16",
-    "@hypatia-app/common": "^0.0.16",
+    "@hypatia-app/client": "^0.0.17",
+    "@hypatia-app/common": "^0.0.17",
     "@zensors/sheriff": "^2.0.2",
     "express": "^4.17.1",
     "express-ws": "^5.0.2",
