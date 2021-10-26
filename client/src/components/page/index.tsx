@@ -9,8 +9,9 @@ import { View } from "./view";
 import { Navigation } from "./navigation";
 
 import "./index.scss";
+import { withVerification } from "../verification";
 
-export const Page = () => {
+export const Page = withVerification(() => {
     const { module, lesson, page, path } = usePage()!;
     const [pageData, setPageData] = React.useState<Loadable<PageType.AsWire>>(() => API.Modules.pageData(module, lesson, page));
     const { setPage } = React.useContext(SettingsContext);
@@ -41,4 +42,4 @@ export const Page = () => {
             <Navigation/>
         </div>
     );
-}
+});

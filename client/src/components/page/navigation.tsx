@@ -11,22 +11,22 @@ export interface Props {
 
 export const Navigation = () => {
     const { module: modulePath, lesson: lessonPath, page: pageStr } = useParams<{ module: string, lesson: string, page: string }>();
-    const { data } = React.useContext(ModuleContext);
+    const { subscriptions: data } = React.useContext(ModuleContext);
     const navigate = useNav();
 
     if (!data.value) {
         return <div className="navigation"/>;
     }
 
-    const module = data.value.find(({ path }) => path === modulePath)
+    const module = data.value.find(({ bundle: { path } }) => path === modulePath)?.bundle;
     const lessonIdx = module?.lessons.findIndex(({ path }) => path === lessonPath);
 
     if (module === undefined || lessonIdx === undefined) {
         return (<div className="navigation"/>);
     }
 
-    const page = parseInt(pageStr, 10);
     const lesson = module.lessons[lessonIdx];
+    const page = lesson.pages.findIndex(({ path }) => path === pageStr);
     const pagesInLesson = lesson.pages.length;
 
     const getPath = (lIdx: number, pIdx: number) => {

@@ -52,6 +52,9 @@ export const Login = (props: Props) => {
                     forceError={error !== undefined}
                     type="password"
                 />
+                <div>
+                    Forgot your password? Reset it <A href="/user/request-reset-password">here</A>.
+                </div>
                 <Button
                     label="Login"
                     onClick={login}

@@ -24,8 +24,15 @@ $minHeight: 32px;
                 .settings {
                     font-size: 32px;
 
-                    i {
+                    & > i {
                         margin: 8px 0px;
+                        padding: 8px;
+                        background-color: #FFFFFF00;
+                        color: palette.$color-neutral-00;
+
+                        &:hover {
+                            background-color: #FFFFFF30
+                        }
                     }
                 }
             }
@@ -73,13 +80,23 @@ $minHeight: 32px;
                 display: flex;
                 flex-direction: row;
                 align-self: flex-end;
-                font-size: 16px;
+                font-size: 0px;
 
                 transition: font-size 100ms ease-in;
 
-                i {
-                    margin: 0px 8px;
-                    transition: margin 100ms ease-in;
+                & > i {
+                    margin: 12px 20px;
+                    padding: 4px;
+
+                    transition: margin 100ms ease-in, padding 100ms ease-in, background-color 100ms ease-in, color 100ms ease-in;
+
+                    color: #FFFFFF80;
+                    background-color: currentColor;
+                }
+
+                .divider {
+                    border-left: 2px solid #FFFFFF30;
+                    margin: 8px 8px;
                 }
 
                 .event-catcher {

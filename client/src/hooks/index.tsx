@@ -1,5 +1,7 @@
+import { Loadable } from "@hypatia-app/common";
 import * as React from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { SettingsContext } from "../providers/settings-provider";
 
 const prefix = "__ls_hook";
 
@@ -59,7 +61,9 @@ export const useLocalStorage = <T extends any>(name: string, def: T) => {
 
 export const useNav = () => {
     const history = useHistory();
+    const { setPage } = React.useContext(SettingsContext);
     return (page: string) => () => {
+        setPage(undefined);
         history.push(page);
     };
 }
@@ -107,4 +111,34 @@ export const useRateLimit = <A extends unknown[]>(cb: (...args: A) => void, time
             cb(...args);
         }
     }
+}
+
+export const useLoadable = <T extends any>(cb: () => Loadable<T>, watch: unknown[] = []): [loadable: Loadable<T>, refresh: () => void] => {
+    const [loadable, setLoadable] = React.useState<Loadable<T>>(cb);
+    const isFirst = React.useRef(true);
+
+    React.useEffect(() => {
+        if (!isFirst.current) {
+            setLoadable(cb());
+        } else {
+            isFirst.current = false;
+        }
+    }, watch);
+
+    React.useEffect(() => {
+        if (loadable.kind !== "loading") return;
+
+        loadable.then(setLoadable);
+    }, watch)
+
+    return [
+        loadable,
+        () => {
+            if (loadable.kind !== "value") return;
+
+            const refresher = loadable.reload();
+            setLoadable(refresher);
+            refresher.then(setLoadable);
+        }
+    ]
 }

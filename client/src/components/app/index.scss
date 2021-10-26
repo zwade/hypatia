@@ -32,3 +32,19 @@ i {
         }
     }
 }
+
+.app-page {
+    display: grid;
+    grid-template:
+        ".    content     ." 1fr
+        / 1fr min(100vw, 800px) 1fr;
+    padding-top: 32px;
+
+    .content {
+        grid-area: content;
+    }
+}
+
+.bh-input {
+    margin: 2px;
+}

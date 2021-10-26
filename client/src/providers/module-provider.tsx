@@ -4,26 +4,25 @@ import { Loadable } from "@hypatia-app/common";
 
 import { API } from "../api";
 import { TheGreatLie } from "react-pwn";
+import { useLoadable } from "../hooks";
 
-export const ModuleContext = React.createContext<{ data: Loadable<Module.AsWire[]>, reload: () => void }>(TheGreatLie());
+export const ModuleContext = React.createContext<{
+    subscriptions: Loadable<Module.WithSettings[]>,
+    mine: Loadable<Module.WithSettings[]>,
+    reload: () => void
+}>(TheGreatLie());
 
 export const ModuleProvider = (props: { children: React.ReactNode }) => {
-    const [module, setModule] = React.useState<Loadable<Module.AsWire[]>>(API.Modules.modules());
+    const [subscriptions, reloadSubscriptions] = useLoadable(() => API.Modules.subscriptions());
+    const [mine, reloadMine] = useLoadable(() => API.Modules.mine());
 
-    React.useEffect(() => {
-        if (module.kind !== "loading") return;
-        module.then(setModule);
-    }, []);
-
-    const reload = async () => {
-        if (module.kind !== "value") return
-        const reloading = module.reload();
-        setModule(reloading);
-        setModule(await reloading);
-    }
+    const reload = () => {
+        reloadSubscriptions();
+        reloadMine();
+    };
 
     return (
-        <ModuleContext.Provider value={{ data: module, reload }}>
+        <ModuleContext.Provider value={{ subscriptions, mine, reload }}>
             {props.children}
         </ModuleContext.Provider>
     );

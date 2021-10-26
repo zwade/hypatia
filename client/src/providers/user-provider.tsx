@@ -16,7 +16,7 @@ export interface Props {
 }
 
 export const UserProvider = (props: Props) => {
-    const [user, setUser] = React.useState<Loadable<User>>(API.User.self());
+    const [user, setUser] = React.useState<Loadable<User>>(() => API.User.self());
 
     React.useEffect(() => {
         if (user.kind === "loading" || user.kind === "reloading") {

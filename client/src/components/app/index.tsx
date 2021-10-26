@@ -9,16 +9,20 @@ import { BlueGreen } from "../../utils/palette";
 import { AppContainer } from "../app-container";
 import { SettingsContext, SettingsProvider } from "../../providers/settings-provider";
 import { UserContext, UserProvider } from "../../providers/user-provider";
-import { Login, Register } from "../auth";
+import { Login, Register, RequestResetPassword, ResetPassword } from "../auth";
 import { useNav } from "../../hooks";
 import { Page } from "../page";
 
 import "./index.scss";
+import { Settings } from "../settings";
+import { ModuleEditor } from "../module-editor";
 
 const TopLevelPages = (props: { children: React.ReactNode }) => (
     <Switch>
         <Route exact path="/user/login" component={Login} />
         <Route exact path="/user/register" component={Register} />
+        <Route exact path="/user/request-reset-password" component={RequestResetPassword} />
+        <Route exact path="/user/reset-password" component={ResetPassword} />
         { props.children }
     </Switch>
 );
@@ -26,6 +30,8 @@ const TopLevelPages = (props: { children: React.ReactNode }) => (
 const Pages = () => (
     <>
         <Route exact path="/" component={ModuleBrowser} />
+        <Route exact path="/user/settings" component={Settings} />
+        <Route path="/editor" component={ModuleEditor} />
         <Route exact path="/:module/:lesson/:page" component={Page} />
     </>
 );
@@ -60,13 +66,13 @@ export const App = () => {
                     <PaletteProvider palette={BlueGreen}>
                         <SettingsProvider>
                             <ModalProvider>
-                                <AppContainer>
-                                    <UserProvider>
+                                <UserProvider>
+                                    <AppContainer>
                                         <TopLevelPages>
                                             <Content/>
                                         </TopLevelPages>
-                                    </UserProvider>
-                                </AppContainer>
+                                    </AppContainer>
+                                </UserProvider>
                             </ModalProvider>
                         </SettingsProvider>
                     </PaletteProvider>

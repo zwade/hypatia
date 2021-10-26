@@ -2,6 +2,18 @@ import { M, Marshaller } from "@zensors/sheriff";
 
 import { Service } from "./service"
 
+const MSlug = M.custom(M.str, (s: string) => {
+    if (!/^[a-z0-9][a-z0-9-]{2,}$/.test(s)) {
+        throw new Error("Invalid slug. Must match /^[a-z0-9][a-z0-9-]{2,}$/");
+    }
+})
+
+const MSlugFile = M.custom(M.str, (s: string) => {
+    if (!/^[a-z0-9]+(\.[a-z0-9]+)?$/.test(s)) {
+        throw new Error("Invalid slug. Must match /^[a-z0-9]+(\\.[a-z0-9]+)?$/");
+    }
+})
+
 export namespace View {
     export type Markdown = {
         kind: "markdown",
@@ -22,7 +34,7 @@ export namespace View {
 
     export const MMarkdown: Marshaller<Markdown> = M.obj({
         kind: M.lit("markdown"),
-        fileName: M.str
+        fileName: MSlugFile
     });
 
     export const MTerminal: Marshaller<Terminal> = M.obj({
@@ -48,6 +60,7 @@ export namespace View {
 export namespace Page {
     export type AsBundle = {
         name: string;
+        path: string;
         view: View.t;
     }
 
@@ -69,6 +82,7 @@ export namespace Page {
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
         name: M.str,
+        path: MSlugFile,
         view: View.MView,
     });
 }
@@ -76,6 +90,7 @@ export namespace Page {
 export namespace Lesson {
     export type AsBundle = {
         name: string;
+        path: string;
         pages: Page.AsBundle[]
     }
 
@@ -97,6 +112,7 @@ export namespace Lesson {
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
         name: M.str,
+        path: MSlug,
         pages: M.arr(Page.MAsBundle)
     });
 }
@@ -104,6 +120,7 @@ export namespace Lesson {
 export namespace Module {
     export type AsBundle = {
         name: string;
+        path: string;
         lessons: Lesson.AsBundle[];
         services: Service.t[];
     }
@@ -121,6 +138,13 @@ export namespace Module {
         services: Service.t[];
     }
 
+    export type WithSettings = {
+        bundle: AsWire;
+        public: boolean;
+        disabled: boolean;
+        owner: string;
+    }
+
     export const MAsInline: Marshaller<AsInline> = M.obj({
         name: M.opt(M.str),
         lessons: M.opt(M.arr(M.str)),
@@ -129,6 +153,7 @@ export namespace Module {
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
         name: M.str,
+        path: MSlug,
         lessons: M.arr(Lesson.MAsBundle),
         services: M.arr(Service.MService),
     });

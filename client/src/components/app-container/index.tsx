@@ -2,6 +2,7 @@ import * as React from "react";
 import { useNav } from "../../hooks";
 
 import { SettingsContext } from "../../providers/settings-provider";
+import { UserContext } from "../../providers/user-provider";
 import { minmax } from "../../utils/utils";
 
 import "./index.scss";
@@ -19,6 +20,7 @@ export const AppContainer = (props: Props) => {
     const isShowing = React.useRef(false);
     const [shouldShow, setShouldShow] = React.useState(isShowing.current);
     const { settings, setSettings } = React.useContext(SettingsContext);
+    const { user } = React.useContext(UserContext);
     const [showSettings, setShowSettings] = React.useState(false);
     const nav = useNav();
 
@@ -55,32 +57,42 @@ export const AppContainer = (props: Props) => {
 
     return (
         <div className="app-container">
-            <div className="header-container"
-                data-locked={lockHeader}
-                data-show={shouldShow}
-                style={{
-                    "--total-height": `${totalHeight}px`,
-                    "--min-height": `${minHeight}px`,
-                } as any}
-            >
-                <div className="header">
-                    <div className="logo" onClick={nav("/")}>hypatia</div>
+            <div className="header-container" data-locked={lockHeader} data-show={shouldShow}>
+                <div className="header" style={{ bottom }}>
+                    <div className="logo" onClick={nav("/")} style={{ fontSize }}>Hypatia</div>
                     <div className="settings">
                         {
-                            settings.global.lockHeader
-                                ? <i className="button" onClick={() => setSettings({ global: { lockHeader: false }})}>lock</i>
-                                : <i className="button" onClick={() => setSettings({ global: { lockHeader: true }})}>lock_open</i>
+                            user.value && settings.page !== undefined ? (
+                                <>
+                                    {
+                                        settings.global.lockHeader
+                                            ? <i className="button" onClick={() => setSettings({ global: { lockHeader: false }})}>lock</i>
+                                            : <i className="button" onClick={() => setSettings({ global: { lockHeader: true }})}>lock_open</i>
+                                    }
+                                    {
+                                        settings.global.vertical
+                                            ? <i className="button" onClick={() => setSettings({ global: { vertical: false } })}>vertical_split</i>
+                                            : <i className="button" onClick={() => setSettings({ global: { vertical: true } })}>horizontal_split</i>
+                                    }
+                                    <i className="button" onClick={() => setShowSettings(!showSettings)}>settings</i>
+                                    {
+                                        showSettings
+                                            ? <Settings onClose={() => setShowSettings(false)}/>
+                                            : null
+                                    }
+                                    <div className="divider"/>
+                                </>
+                            ) : undefined
                         }
                         {
-                            settings.global.vertical
-                                ? <i className="button" onClick={() => setSettings({ global: { vertical: false } })}>vertical_split</i>
-                                : <i className="button" onClick={() => setSettings({ global: { vertical: true } })}>horizontal_split</i>
-                        }
-                        <i className="button" onClick={() => setShowSettings(!showSettings)}>settings</i>
-                        {
-                            showSettings
-                                ? <Settings onClose={() => setShowSettings(false)}/>
-                                : null
+                            user.value ? (
+                                <>
+                                    <i className="button" onClick={nav("/editor")}>edit</i>
+                                    <i className="button" onClick={nav("/user/settings")}>account_circle</i>
+                                </>
+                            ) : (
+                                <i className="button" onClick={nav("/user/login")}>login</i>
+                            )
                         }
                     </div>
                 </div>

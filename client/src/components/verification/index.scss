@@ -1,0 +1,9 @@
+@use "~react-pwn/palette.scss";
+
+.please-verify {
+    max-width: 600px;
+    font-size: 24px;
+    margin: auto;
+    padding: 32px;
+    font-family: palette.$color-neutral-06;
+}

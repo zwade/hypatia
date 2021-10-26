@@ -4,14 +4,19 @@ import { SmartClient } from "./smart-client";
 type Find<Name extends string, Dep extends DBObject<any, any, any>> =
     Dep extends { tableName: Name } ? Dep : never;
 
+const SelfWitness = Symbol("DB Object Self Witness");
+
 export abstract class DBObject<T = unknown, AP = unknown, Deps extends DBObject<any, any, any>[] = []> {
     public abstract tableName: string;
     public abstract version: number;
 
     protected abstract initialize(client: PoolClient): Promise<void>;
     protected abstract fromPostgres(row: AP): T;
-    protected upgrade?: (client: PoolClient, currentVersion: number) => Promise<number> = undefined;
+    protected upgrade(client: PoolClient, currentVersion: number): Promise<number> {
+        throw new Error("Unable to perform ugprade");
+    };
 
+    protected selfWitness: typeof SelfWitness = SelfWitness;
     protected isSystem: boolean = false;
     protected pool: Promise<Pool>;
     protected deps: { [Name in Deps[number]["tableName"]]: Find<Name, Deps[number]> };
@@ -50,6 +55,11 @@ export abstract class DBObject<T = unknown, AP = unknown, Deps extends DBObject<
 
     protected get get1Opt() {
         return this.client.get1Opt.bind(this.client);
+    }
+
+    // Requires a self witness so no one tries to access it outside of a DBObject
+    public getClient(_witness: typeof SelfWitness) {
+        return this.client;
     }
 
     constructor(pool: Pool, dependents: Deps) {

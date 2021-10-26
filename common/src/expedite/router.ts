@@ -438,7 +438,28 @@ export class SafeError extends Error {
 }
 
 export type RemoveTrue<T> = T extends true ? never : T;
-export type IsJustTrue<T> = (T | true) extends true ? true : RemoveTrue<T>;
+type IsJustTrue<T> = (T | true) extends true ? true : RemoveTrue<T>;
+
+type GetQuery<T> = T extends Request<any, any, any, infer Q> ? Q : undefined
+type GetParams<T> = T extends Request<infer P, any, any, any> ? P : undefined
+type GetBody<T> = T extends Request<any, any, infer B, any> ? B : undefined
+type GetReturn<T> = T extends Request<any, infer R, any, any> ? R : undefined
+
+type EndpointsAreAssignable<E1, E2, E> =
+    {
+        [M in keyof E2]:
+            M extends keyof E1 ?
+            GetQuery<E1[M]> extends GetQuery<E2[M]> ?
+            GetParams<E1[M]> extends GetParams<E2[M]> ?
+            GetBody<E1[M]> extends GetBody<E2[M]> ?
+            GetReturn<E1[M]> extends GetReturn<E2[M]> ?
+                true
+            : [Error: "Return types aren't assignable", Endpoint: E, Method: M, From: GetReturn<E1[M]>, To: GetReturn<E2[M]>]
+            : [Error: "Endpoint body types aren't assignable", Endpoint: E, Method: M, From: GetBody<E1[M]>, To: GetBody<E2[M]>]
+            : [Error: "Endpoint param types aren't assignable", Endpoint: E, Method: M, From: GetParams<E1[M]>, To: GetParams<E2[M]>]
+            : [Error: "Endpoint query parameters aren't assignable", Endpoint: E, Method: M, From: GetQuery<E1[M]>, To: GetQuery<E2[M]>]
+            : [Error: "Missing method", Endpoint: E, Method: M, From: E1, To: E2]
+    }[keyof E2];
 
 export type RouterIsAssignable<R1, R2> =
     R1 extends RouterScope<any, any, infer Rt1> ?
@@ -447,10 +468,21 @@ export type RouterIsAssignable<R1, R2> =
             {
                 [K in keyof Rt2]:
                     K extends keyof Rt1 ?
-                        Rt1[K] extends Rt2[K] ?
-                            true
-                        : [Error: "Bad assignablility", Key: K, From: Rt1[K], To: Rt2[K]]
-                    : [Error: "Missing Key", Key: K]
+                    {
+                        [M in keyof Rt2[K]]:
+                            M extends keyof Rt1[K] ?
+                            GetQuery<Rt1[K][M]> extends GetQuery<Rt2[K][M]> ?
+                            GetParams<Rt1[K][M]> extends GetParams<Rt2[K][M]> ?
+                            GetBody<Rt1[K][M]> extends GetBody<Rt2[K][M]> ?
+                            GetReturn<Rt1[K][M]> extends GetReturn<Rt2[K][M]> ?
+                                true
+                            : [Error: "Return types aren't assignable", Endpoint: K, Method: M, From: GetReturn<Rt1[K][M]>, To: GetReturn<Rt2[K][M]>]
+                            : [Error: "Endpoint body types aren't assignable", Endpoint: K, Method: M, From: GetBody<Rt1[K][M]>, To: GetBody<Rt2[K][M]>]
+                            : [Error: "Endpoint param types aren't assignable", Endpoint: K, Method: M, From: GetParams<Rt1[K][M]>, To: GetParams<Rt2[K][M]>]
+                            : [Error: "Endpoint query parameters aren't assignable", Endpoint: K, Method: M, From: GetQuery<Rt1[K][M]>, To: GetQuery<Rt2[K][M]>]
+                            : [Error: "Missing method", Endpoint: K, Method: M, From: Rt1[K], To: Rt2[K]]
+                    }[keyof Rt2[K]]
+                    : [Error: "Missing Key", Endpoint: K]
             }[keyof Rt2]
         >
     : [Error: "Router 2 is not a Router"]

@@ -11,6 +11,9 @@ $border-radius: 4px;
         flex-grow: 1;
         padding: 16px;
         overflow: auto;
+        width: 100%;
+        max-width: 1000px;
+        margin: auto;
 
         & > div, & > p {
             margin: 16px 0px;

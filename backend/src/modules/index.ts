@@ -160,5 +160,14 @@ export const getAllModuleCaches = async () => {
     const modules = await Promise.all(directories.map((d) => getModuleCache(d, path.join(Options.moduleDir, d))));
 
     const enabledModules = new Set(Options.enabledModules);
-    return modules.filter((m) => m.lessons.length > 0 && (enabledModules.has(m.name) || enabledModules.has("ALL")));
+    const bundles = modules.filter((m) => m.lessons.length > 0 && (enabledModules.has(m.name) || enabledModules.has("ALL")));
+
+    return (
+        bundles.map((bundle) => ({
+            bundle,
+            public: true,
+            disabled: false,
+            owner: "",
+        }))
+    );
 }

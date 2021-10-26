@@ -1,0 +1,57 @@
+@use "~react-pwn/palette";
+
+.module-option {
+    display: grid;
+    grid-template:
+        "status      title" max-content
+        "description description" max-content
+        / max-content 1fr;
+    gap: 8px;
+
+    border: 2px solid palette.$color-primary-05;
+    background-color: palette.$color-neutral-02;
+
+    border-radius: 4px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 100ms ease-in;
+
+    &:hover {
+        background-color: palette.$color-neutral-03;
+    }
+
+    .option-status {
+        grid-area: status;
+        padding: 8px;
+        border-radius: 8px;
+        background-color: palette.$color-neutral-08;
+        justify-self: center;
+        align-self: center;
+
+        &[data-public=true] {
+            background-color: palette.$color-success-02;
+        }
+
+        &[data-deleted=true] {
+            background-color: palette.$color-error-02;
+        }
+    }
+
+    .option-title {
+        grid-area: title;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .option-info {
+        grid-area: description;
+
+        .lesson {
+            &::before {
+                content: "• ";
+            }
+        }
+    }
+}
+

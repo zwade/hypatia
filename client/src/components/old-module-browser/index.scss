@@ -1,46 +1,28 @@
-@use "~react-pwn/palette";
+@use "~react-pwn/palette.scss" as palette;
 
 .module-browser {
-    max-width: 1000px;
-    margin: auto;
-    padding-top: 32px;
-
-    display: flex;
-    flex-direction: column;
-
-    h2 {
-        text-align: center;
-    }
-
-    .module-view {
-        .module-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: max-content;
-            grid-auto-flow: dense;
-            grid-gap: 32px;
-
-        }
-    }
-}
-
-.option-popup {
-    max-width: 800px;
-    padding: 16px;
-
-    background-color: palette.$color-neutral-01;
-    border: 2px solid palette.$color-primary-05;
-    border-radius: 4px;
-
     display: grid;
-    grid-template-columns: 1fr;
-    grid-auto-rows: max-content;
-    grid-auto-flow: row;
-    row-gap: 8px;
+    grid-template:
+        "title title title" minmax(max-content, 48px)
+        ".     .     ." 48px
+        ".     toc   ." max-content
+        ".     .     ." 1fr
+        / 1fr minmax(max-content, 400px) 1fr;
+    height: 100%;
 
-    .subscription-lessons {
+    .title {
+        grid-area: title;
+        justify-self: center;
+        align-self: center;
+        font-size: 24px;
+    }
+
+    .table-of-contents {
+        grid-area: toc;
+
+        background: palette.$color-neutral-01;
         border-radius: 4px;
-        box-shadow: inset 0px 0px 0px 2px palette.$color-primary-01;
+        box-shadow: inset 0px 0px 0px 2px palette.$color-neutral-06;
 
         .module-entry {
             &:first-child {
@@ -55,15 +37,9 @@
                 }
             }
 
-            &:only-child[data-open=false] {
-                .module-name {
-                    border-radius: 4px;
-                }
-            }
-
             &:last-child[data-open=true] {
                 .lesson:last-child {
-                    height: 30px;
+                    height: 22px;
                     margin-bottom: 2px;
                 }
             }
@@ -80,8 +56,8 @@
 
             .module-name {
                 padding: 8px;
-                background-color: palette.$color-primary-01;
-                color: palette.$color-primary-09;
+                background-color: palette.$color-primary-05;
+                color: palette.$color-primary-00;
                 cursor: pointer;
                 display: flex;
                 flex-direction: row;
@@ -104,8 +80,8 @@
                 max-height: 0;
 
                 .lesson {
-                    height: 32px;
-                    padding: 4px 16px;
+                    height: 24px;
+                    padding-left: 16px;
                     margin: 0px 2px;
                     cursor: pointer;
                     overflow: hidden;

@@ -1,3 +1,13 @@
+export class Env {
+    public static get isProd() {
+        return Env.string("MODE", { allowUndefined: true }) === "production";
+    }
+
+    public static get isDev() {
+        return Env.string("MODE", { "default": "development" }) === "development";
+    }
+}
+
 export namespace Env {
     export function string(name: string, options: { default: string, allowUndefined?: boolean }): string;
     export function string(name: string, options: { default?: undefined, allowUndefined: true }): string | undefined;
