@@ -26,6 +26,7 @@ module.exports = {
         hot: true,
         historyApiFallback: true,
         proxy: {
+            "/env.js": proxyHost,
             "/api": proxyHost,
             "/ws-api": {
                 "target":proxyHost,
@@ -77,12 +78,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "./index.html")
         }),
-        new DefinePlugin({
-            "process.env": JSON.stringify({
-                MODE: process.env.MODE ?? "development",
-                TRUST: process.env.TRUST ?? "0"
-            }),
-        })
     ],
 
     // When importing a module whose path matches one of the following, just

@@ -55,6 +55,8 @@ export const AppContainer = (props: Props) => {
 
     const fontSize = (lockHeader || shouldShow) ? 32 : (totalHeight - minHeight - 8);
 
+    const isSingle = process.env.isSingle === "true";
+
     return (
         <div className="app-container">
             <div className="header-container" data-locked={lockHeader} data-show={shouldShow}>
@@ -80,11 +82,16 @@ export const AppContainer = (props: Props) => {
                                             ? <Settings onClose={() => setShowSettings(false)}/>
                                             : null
                                     }
-                                    <div className="divider"/>
                                 </>
                             ) : undefined
                         }
                         {
+                            user.value && settings.page !== undefined && !isSingle ? (
+                                <div className="divider"/>
+                            ) : undefined
+                        }
+                        {
+                            isSingle ? undefined :
                             user.value ? (
                                 <>
                                     <i className="button" onClick={nav("/editor")}>edit</i>

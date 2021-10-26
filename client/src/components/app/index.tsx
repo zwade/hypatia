@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { PaletteProvider, ModalProvider } from "react-pwn";
 
 import { ModuleProvider } from "../../providers/module-provider";
-import { ModuleBrowser } from "../module-browser";
+import { ModuleBrowser } from "../old-module-browser";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 import { BlueGreen } from "../../utils/palette";
 import { AppContainer } from "../app-container";
