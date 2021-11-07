@@ -29,6 +29,6 @@ export const Frame = (props: Props) => {
     }
 
     return (
-        <iframe width="100%" height="100%" src={connectionUri.value}/>
+        <iframe width="100%" height="100%" referrerPolicy="no-referrer" src={connectionUri.value}/>
     );
 }

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { PaletteProvider, ModalProvider } from "react-pwn";
 
 import { ModuleProvider } from "../../providers/module-provider";
-import { ModuleBrowser } from "../old-module-browser";
+import { ModuleBrowser } from "../module-browser";
 import { TerminalRunProvider } from "../../providers/terminal-run";
 import { BlueGreen } from "../../utils/palette";
 import { AppContainer } from "../app-container";
@@ -12,10 +12,10 @@ import { UserContext, UserProvider } from "../../providers/user-provider";
 import { Login, Register, RequestResetPassword, ResetPassword } from "../auth";
 import { useNav } from "../../hooks";
 import { Page } from "../page";
-
-import "./index.scss";
 import { Settings } from "../settings";
 import { ModuleEditor } from "../module-editor";
+
+import "./index.scss";
 
 const TopLevelPages = (props: { children: React.ReactNode }) => (
     <Switch>
@@ -62,21 +62,21 @@ export const App = () => {
     return (
         <Router>
             <TerminalRunProvider>
-                <ModuleProvider>
-                    <PaletteProvider palette={BlueGreen}>
-                        <SettingsProvider>
-                            <ModalProvider>
-                                <UserProvider>
-                                    <AppContainer>
-                                        <TopLevelPages>
-                                            <Content/>
-                                        </TopLevelPages>
-                                    </AppContainer>
-                                </UserProvider>
-                            </ModalProvider>
-                        </SettingsProvider>
-                    </PaletteProvider>
-                </ModuleProvider>
+                <UserProvider>
+                    <ModuleProvider>
+                        <PaletteProvider palette={BlueGreen}>
+                            <SettingsProvider>
+                                <ModalProvider>
+                                        <AppContainer>
+                                            <TopLevelPages>
+                                                <Content/>
+                                            </TopLevelPages>
+                                        </AppContainer>
+                                </ModalProvider>
+                            </SettingsProvider>
+                        </PaletteProvider>
+                    </ModuleProvider>
+                </UserProvider>
             </TerminalRunProvider>
         </Router>
     );

@@ -51,6 +51,10 @@ export namespace Service {
             kind: "docker",
             image: string,
             command?: string[],
+            volumes?: {
+                name: string;
+                path: string;
+            }[],
         }
     ) & {
         name: string;
@@ -76,6 +80,10 @@ export namespace Service {
             kind: M.lit("docker"),
             image: M.str,
             command: M.opt(M.arr(M.str)),
+            volumes: M.opt(M.arr(M.obj({
+                name: M.str,
+                path: M.str,
+            })))
         })
     );
 }

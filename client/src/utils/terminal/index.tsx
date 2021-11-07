@@ -70,6 +70,10 @@ export class TerminalConnection {
         }
     }
 
+    public kill() {
+        this.ws?.close();
+    }
+
 
     private trigger<T extends keyof Events>(evt: T, ...args: Events[T] extends ((...args: infer A) => void) ? A : never) {
         for (const cb of this.events[evt]) {

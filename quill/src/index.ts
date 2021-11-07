@@ -5,12 +5,7 @@ const main = async () => {
         try {
             await start(new URL("ws://app.localhost:3002"));
         } catch (e) {
-            // pass;
-            if (e instanceof Error) {
-                console.error(e.message);
-            } else {
-                console.error(e);
-            }
+            // pass
         }
         await new Promise(resolve => setTimeout(resolve, 1000));
         console.log("Lost connection, restarting");
@@ -18,3 +13,8 @@ const main = async () => {
 }
 
 main();
+
+process.on("unhandledRejection", (err) => {
+    console.error("Unhandled Rejection", err);
+    process.exit(1);
+});

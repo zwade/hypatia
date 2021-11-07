@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import * as React from "react";
+import { Loadable } from "@hypatia-app/common";
 
 import { useNav } from "../../hooks"
 import { ModuleContext } from "../../providers/module-provider";
@@ -11,14 +12,17 @@ export interface Props {
 
 export const Navigation = () => {
     const { module: modulePath, lesson: lessonPath, page: pageStr } = useParams<{ module: string, lesson: string, page: string }>();
-    const { subscriptions: data } = React.useContext(ModuleContext);
+    const { subscriptions, mine } = React.useContext(ModuleContext);
     const navigate = useNav();
 
-    if (!data.value) {
+
+    if (!subscriptions.value || !mine.value) {
         return <div className="navigation"/>;
     }
 
-    const module = data.value.find(({ bundle: { path } }) => path === modulePath)?.bundle;
+    const data = subscriptions.value.concat(mine.value);
+
+    const module = data.find(({ bundle: { path } }) => path === modulePath)?.bundle;
     const lessonIdx = module?.lessons.findIndex(({ path }) => path === lessonPath);
 
     if (module === undefined || lessonIdx === undefined) {

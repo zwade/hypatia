@@ -1,17 +1,22 @@
 import { Service, Connection } from "@hypatia-app/backend";
+import { Env, sleep, StableStream, Tracker } from "@hypatia-app/common";
 import * as docker from "dockerode";
 import * as portfinder from "portfinder";
 import * as WebSocket from "ws";
 import * as net from "net";
+import * as crypto from "crypto";
 
 const quillLabel = "QUILL_MANAGED";
 const quillValue = "true";
 const quillToken = "QUILL_TOKEN"
+const quillCreatedAt = "QUILL_CREATED_AT"
+
+const hmacSecret = Env.string("QUILL_HMAC_SECRET", { default: "quill-hmac-secret" });
 
 export class Container {
     private info;
     private container;
-    private websockets = new Set<WebSocket>();
+    private tracker;
 
     public get id() {
         return this.info.Labels[quillToken];
@@ -20,33 +25,19 @@ export class Container {
     public constructor(info: docker.ContainerInfo, container: docker.Container) {
         this.info = info;
         this.container = container;
+
+        this.tracker = new Tracker(() => {
+            console.log("Lost all connections, stopping container");
+            this.stop().catch(() => {});
+        }, 5_000);
     }
 
-    private bind(stream: NodeJS.ReadWriteStream & { destroy: () => void }, ws: WebSocket) {
-        const close = () => {
-            try { stream.destroy(); } catch (e) { }
-            try { ws.close(); } catch (e) { }
-            this.websockets.delete(ws);
-        }
+    private bind(left: StableStream<Buffer, Buffer>, right: StableStream<Buffer, Buffer>) {
+        left.bind(right, true);
+        right.bind(left, true);
 
-        if (ws.readyState === WebSocket.CLOSED) {
-            close();
-            return;
-        }
-
-        stream.on("error", (err) => { console.error("Stream failed due to", err); close(); })
-        stream.on("close", close);
-        ws.on("close", close);
-
-        stream.on("data", (data) => {
-            ws.send(data)
-        });
-        ws.on("message", (data) => {
-            stream.write(data as any)
-        });
-
-
-        this.websockets.add(ws);
+        this.tracker.track(left, false);
+        this.tracker.track(right, false);
     }
 
     public async getStatus() {
@@ -58,20 +49,71 @@ export class Container {
         await this.container.start();
     }
 
-    public async bindTty(ws: WebSocket) {
-        const stream = await this.container.attach({ stream: true, stdout: true, stderr: true, stdin: true, logs: true });
-        this.bind(stream as net.Socket, ws);
+    public async stop() {
+        await this.container.stop();
     }
 
-    public async bindPort(ws: WebSocket, port: number) {
-        const portObj = this.info.Ports.find((p) => p.PrivatePort === port);
+    public async bindTty(ws: StableStream<Buffer, Buffer>) {
+        const stream = (await this.container.attach({ stream: true, stdout: true, stderr: true, stdin: true, logs: true })) as net.Socket;
+        const socket = StableStream.fromSocket(stream);
+        this.bind(socket, ws);
+    }
+
+    public async bindPort(ws: StableStream<Buffer, Buffer>, port: number) {
+        const inspection = await this.container.inspect();
+        const ports = inspection.HostConfig.PortBindings as Record<`${number}/tcp`, { HostPort: `${number}` }[]>;
+
+        const portObj = ports[`${port}/tcp`]?.[0];
+
+        const createConnection = (port: number, addr: string, maxTimeout = 60_000) => {
+            const startTime = Date.now();
+            const createPromise = () => new Promise<net.Socket>((resolve, reject) => {
+                if (Date.now() - startTime > maxTimeout) {
+                    return reject(new Error("Timed out while connecting to local socket"));
+                }
+
+                const conn = net.createConnection(port, addr);
+
+                let failed = false;
+
+                const errorHandler = (e: any) => {
+                    console.log("Connection failed", e);
+                    failed = true;
+
+                    conn.off("error", errorHandler);
+                    conn.off("close", errorHandler);
+                    conn.destroy();
+
+                    resolve(sleep(1000).then(() => createPromise()));
+                }
+
+                conn.on("error", errorHandler);
+                conn.on("close", errorHandler);
+                conn.on("connect", async () => {
+                    // There's a race where it will connect then immediately close
+                    await sleep(100);
+                    if (failed) return;
+
+                    console.log("Connected to", port, addr);
+
+                    conn.off("error", errorHandler);
+                    conn.off("close", errorHandler);
+                    resolve(conn);
+                });
+            });
+
+            return createPromise();
+        }
+
         if (portObj) {
-            const connection = net.createConnection(portObj.PublicPort, "localhost");
-            this.bind(connection, ws);
+            const connection = await createConnection(parseInt(portObj.HostPort, 10), "localhost");
+            const socket = StableStream.fromSocket(connection);
+            this.bind(socket, ws);
         } else {
             const ipAddr = Object.values(this.info.NetworkSettings.Networks)[0].IPAddress;
-            const connection = net.createConnection(port, ipAddr);
-            this.bind(connection, ws);
+            const connection = await createConnection(port, ipAddr);
+            const socket = StableStream.fromSocket(connection);
+            this.bind(socket, ws);
         }
     }
 
@@ -88,6 +130,27 @@ export class ContainerManager {
     public constructor(exposePorts?: boolean) {
         this.docker = new docker();
         this.exposePorts = exposePorts ?? false;
+    }
+
+    public async getVolume(user: string, name: string) {
+        const volumeName = crypto.createHmac("sha256", hmacSecret).update(`${user}-${name}`).digest("hex");
+        try {
+            const volume = await this.docker.getVolume(volumeName).inspect();
+            return volume;
+        } catch (e: any) {
+            if (typeof e.statusCode !== "number" || e.statusCode !== 404) {
+                throw e;
+            }
+        }
+
+        const volume = await this.docker.createVolume({
+            Name: volumeName,
+            Labels: {
+                [quillLabel]: quillValue,
+            }
+        });
+
+        return await this.docker.getVolume(volumeName).inspect();
     }
 
     public async getContainers() {
@@ -116,8 +179,9 @@ export class ContainerManager {
             ],
         });
 
-        const currentContainers = await this.docker.listContainers({ filters });
+        const currentContainers = await this.docker.listContainers({ filters, all: true });
         if (currentContainers.length === 0) {
+            console.log("unable to find containers???");
             return undefined;
         }
 
@@ -126,7 +190,8 @@ export class ContainerManager {
         return container;
     }
 
-    public async createContainer(token: string, service: Service.t) {
+    public async createContainer(token: string, user: string, service: Service.t) {
+        console.info("Creating new container ", { token, user, service });
         if (service.kind !== "docker") {
             throw new Error("Unable to start non-docker container");
         }
@@ -146,6 +211,12 @@ export class ContainerManager {
             }
         }
 
+        let Binds: `${string}:${string}`[] = [];
+        for (const volume of service.volumes ?? []) {
+            const vol = await this.getVolume(user, volume.name);
+            Binds.push(`${vol.Name}:${volume.path}`);
+        }
+
         const dockerodeContainer = await this.docker.createContainer({
             Image: service.image,
             Cmd: service.command ? service.command : [],
@@ -154,6 +225,7 @@ export class ContainerManager {
             AttachStdout: true,
             AttachStdin: true,
             OpenStdin: true,
+            User: "root",
             Labels: {
                 [quillLabel]: quillValue,
                 [quillToken]: token,
@@ -161,8 +233,13 @@ export class ContainerManager {
             ExposedPorts: exposedPorts,
             HostConfig: {
                 PortBindings: portBindings,
-            }
+                Binds,
+                // Memory: 256 * 1024 * 1024,
+                // NanoCpus: 500_000_000,
+            } as any,
         });
+
+        await dockerodeContainer.start();
 
         const info = await this.docker.listContainers({ all: true, filters: JSON.stringify({ id: [dockerodeContainer.id] }) });
         return new Container(info[0], dockerodeContainer);

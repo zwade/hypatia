@@ -133,7 +133,6 @@ export namespace Loadable {
             retry: () => loading(thunk),
         }
     }
-
 }
 
 export type Loadable<T> =

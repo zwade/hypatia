@@ -1,5 +1,5 @@
 import * as WebSocket from "ws";
-import { ProtocolWebSocket } from "@hypatia-app/common";
+import { ProtocolWebSocket, StableStream } from "@hypatia-app/common";
 import { Connection, Service } from "@hypatia-app/backend";
 
 import { ControlProtocol } from "./types";
@@ -8,12 +8,14 @@ import { Container, ContainerManager } from "./docker";
 const connectClient = (baseUrl: URL, token: string, connection: Connection.t, container: Container) => {
     const url = new URL("/ws-bridge/session", baseUrl);
     url.search = new URLSearchParams({ token, connection: connection.name }).toString()
-    const ws = new WebSocket(url);
+
+    // It's a thunk because we don't buffer, so we don't want to connect until the handlers are established
+    const ws = StableStream.fromWebSocket(new WebSocket(url));
 
     if (connection.kind === "pty") {
-        container.bindTty(ws);
+        return container.bindTty(ws);
     } else {
-        container.bindPort(ws, connection.port);
+        return container.bindPort(ws, connection.port);
     }
 }
 
@@ -23,9 +25,10 @@ interface Session {
     options: ControlProtocol.Options;
 }
 
-const containers = new ContainerManager(true);
 
 export const start = async (baseUrl: URL) => {
+    const containers = new ContainerManager(true);
+
     const url = new URL("/ws-bridge/control", baseUrl);
     const rawWs = new WebSocket(url);
     const ws = new ProtocolWebSocket<ControlProtocol.FromClient, ControlProtocol.FromServer>(rawWs);
@@ -43,10 +46,6 @@ export const start = async (baseUrl: URL) => {
                 ws.send({ kind: "session-response", accepted: true, token });
                 services.set(token, { userId, service, options})
 
-                if (await containers.findContainer(token) === undefined) {
-                    containers.createContainer(token, service);
-                }
-
                 break;
             }
             case "update-session": {
@@ -56,10 +55,15 @@ export const start = async (baseUrl: URL) => {
                     break;
                 }
 
+                const status = await container.getStatus();
+                if (!status.Running) {
+                    await container.start();
+                }
+
                 if (msg.options.cols !== undefined && msg.options.rows !== undefined) {
                     const cols = msg.options.cols;
                     const rows = msg.options.rows;
-                    container.resize(cols, rows);
+                    await container.resize(cols, rows);
                 }
 
                 break;
@@ -81,7 +85,7 @@ export const start = async (baseUrl: URL) => {
 
                 let container = await containers.findContainer(token);
                 if (container === undefined) {
-                    container = await containers.createContainer(token, service);
+                    container = await containers.createContainer(token, session.userId, service);
                 }
 
                 const status = await container.getStatus();
@@ -89,7 +93,7 @@ export const start = async (baseUrl: URL) => {
                     await container.start();
                 }
 
-                connectClient(baseUrl, token, conn, container);
+                await connectClient(baseUrl, token, conn, container);
             }
         }
     }

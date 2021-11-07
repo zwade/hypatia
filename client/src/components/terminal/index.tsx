@@ -21,9 +21,10 @@ export const Terminal = (props: Props) => {
     const { onRun, offRun } = React.useContext(TerminalRunContext);
     const { current: fitAddon } = React.useRef(new FitAddon());
     const [conn, setConn] = React.useState<TerminalConnection | null>(null);
+    const [resetTracker, setResetTracker] = React.useState({});
     const [initialized, setInitialized] = React.useState(false);
 
-    const loadConnection = async () => {
+    const loadConnection = () => {
         if (xterm === null) return
 
         const conn = new TerminalConnection(
@@ -34,6 +35,8 @@ export const Terminal = (props: Props) => {
             xterm.terminal.cols,
         );
         setConn(conn);
+
+        return conn;
     }
 
     React.useEffect(() => {
@@ -47,8 +50,12 @@ export const Terminal = (props: Props) => {
     }, []);
 
     React.useEffect(() => {
-        loadConnection();
-    }, [xterm, initialized]);
+        const conn = loadConnection();
+
+        return () => {
+            conn?.kill();
+        }
+    }, [xterm, resetTracker, initialized]);
 
     React.useEffect(() => {
         if (xterm === null) return
@@ -110,7 +117,7 @@ export const Terminal = (props: Props) => {
                 conn === null ? (
                     <div
                         className="terminal-disconnected"
-                        onClick={loadConnection}
+                        onClick={() => { setResetTracker({}); }}
                     >
                         Lost connection to server. Click to reconnect.
                     </div>

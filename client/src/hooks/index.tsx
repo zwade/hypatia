@@ -128,7 +128,7 @@ export const useLoadable = <T extends any>(cb: () => Loadable<T>, watch: unknown
     React.useEffect(() => {
         if (loadable.kind !== "loading") return;
 
-        loadable.then(setLoadable);
+        loadable.then(setLoadable, setLoadable);
     }, watch)
 
     return [
@@ -138,7 +138,7 @@ export const useLoadable = <T extends any>(cb: () => Loadable<T>, watch: unknown
 
             const refresher = loadable.reload();
             setLoadable(refresher);
-            refresher.then(setLoadable);
+            refresher.then(setLoadable, setLoadable);
         }
     ]
 }
