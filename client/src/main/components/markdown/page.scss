@@ -10,10 +10,10 @@ $border-radius: 4px;
     .markdown {
         flex-grow: 1;
         padding: 16px;
-        overflow: auto;
-        width: 100%;
         max-width: 1000px;
         margin: auto;
+        padding-bottom: 32px;
+        overflow: auto;
 
         & > div, & > p {
             margin: 16px 0px;
@@ -77,6 +77,15 @@ $border-radius: 4px;
 
             &:last-child {
                 text-align: right;
+            }
+
+            &.disabled {
+                color: palette.$color-neutral-05;
+
+                &:hover {
+                    background-color: unset;
+                    cursor: not-allowed;
+                }
             }
         }
     }

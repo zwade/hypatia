@@ -1,0 +1,19 @@
+@font-face {
+    font-family: "Iosevka Web";
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/iosevka-custom-regular.ttf);
+}
+
+@font-face {
+    font-family: "Iosevka Web";
+    font-style: normal;
+    font-weight: 800;
+    src: url(../fonts/iosevka-custom-heavy.ttf);
+}
+
+.quest-app {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

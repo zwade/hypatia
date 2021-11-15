@@ -13,6 +13,8 @@ export type MatchCriteria =
     | { start: (e: Event, next?: Event) => boolean, end: (e: Event, next?: Event) => boolean }
     ;
 
+export const codeToString = (c: Code) => c === null || c <= 0 ? "" : String.fromCharCode(c);
+
 export const mapTag = (events: Event[], matchCriteria: MatchCriteria, cb: (subEvents: Event[]) => Event[]): Event[] => {
     const criteria =
         typeof matchCriteria === "string" ? {

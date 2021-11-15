@@ -10,7 +10,7 @@ import { Options } from "../options"
 
 const isConfig = (f: string) => f === "config.yml" || f === "config.yaml" || f === "config.json";
 const parseConfig = <T>(data: string, m: Marshaller<T>): T => {
-    const parsedData = yaml.parse(data);
+    const parsedData = yaml.parse(data) ?? {}; // Empty strings parse as null, but we actually want empty object
     marshal(parsedData, m);
     return parsedData;
 }
@@ -29,7 +29,7 @@ const readPage = async (fileName: string) => {
 
     let config: Page.AsInline;
     let pageData: string;
-    const separators = [...data.matchAll(/(^|\n)---+\n/g)];
+    const separators = [...data.matchAll(/(?<=^|\n)---+\n/g)];
     const hasFrontMatter = data.match(/^---+\n/) !== null && separators.length >= 2;
 
     if (hasFrontMatter) {
@@ -92,7 +92,8 @@ export const getPageData = async (module: string, lesson: string, page: string) 
         path: pageAsNumber.toString(),
         view:
             !config.additionalView ? baseView :
-            [baseView, config.additionalView]
+            [baseView, config.additionalView],
+        options: config.options,
     }
 
     return completeConfig

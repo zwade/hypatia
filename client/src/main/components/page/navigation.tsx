@@ -5,6 +5,8 @@ import { Loadable } from "@hypatia-app/common";
 import { useNav } from "../../hooks"
 import { ModuleContext } from "../../providers/module-provider";
 import { classes } from "../../utils/utils";
+import { PageOptionsContext } from "../../providers/page-options-provider";
+import { QuizContext } from "../../providers/quiz-provider";
 
 export interface Props {
 
@@ -13,8 +15,11 @@ export interface Props {
 export const Navigation = () => {
     const { module: modulePath, lesson: lessonPath, page: pageStr } = useParams<{ module: string, lesson: string, page: string }>();
     const { subscriptions, mine } = React.useContext(ModuleContext);
+    const pageOptions = React.useContext(PageOptionsContext);
+    const quiz = React.useContext(QuizContext);
     const navigate = useNav();
 
+    const allowedNext = pageOptions.requiresQuiz ? quiz.complete : true;
 
     if (!subscriptions.value || !mine.value) {
         return <div className="navigation"/>;
@@ -46,6 +51,7 @@ export const Navigation = () => {
         "/";
 
     const nextPageName =
+        !allowedNext ? "Complete Quiz To Advance" :
         page < pagesInLesson - 1 ? "Next Page" :
         lessonIdx < module.lessons.length - 1 ? "Next Lesson" :
         "Table of Contents";
@@ -74,8 +80,8 @@ export const Navigation = () => {
                 <div className="pageno">{ `${page + 1}/${pagesInLesson}` }</div>
             </div>
             <div
-                className={classes("nav-button", "navigation-next", page === 0 ? "disabled" : undefined)}
-                onClick={navigate(nextPage)}
+                className={classes("nav-button", "navigation-next", page === 0 || !allowedNext ? "disabled" : undefined)}
+                onClick={allowedNext ? navigate(nextPage) : undefined}
             >
                 { nextPageName }
             </div>

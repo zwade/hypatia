@@ -1,0 +1,102 @@
+@use "~react-pwn/palette";
+
+.test-handler {
+    margin: 10px;
+    flex-grow: 1;
+
+    .test-handler-error {
+        white-space: pre;
+        background: palette.$color-error-02;
+        color: palette.$color-neutral-00;
+        padding: 8px;
+        border-radius: 4px;
+        overflow: auto;
+
+        .test-handler-error-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .test-handler-error-inner {
+            max-width: 400px;
+            font-family: 'Iosevka Web', monospace;
+        }
+    }
+
+    .test-results {
+        overflow: auto;
+        flex-grow: 1;
+
+        .test-results-inner {
+            height: 0px;
+        }
+
+        .test-result {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8px;
+            border: 2px solid palette.$color-neutral-05;
+            border-radius: 4px;
+            margin: 8px 0px;
+            overflow: auto;
+
+            .test-result-name {
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+
+                &::before {
+                    font-family: 'Material Icons Outlined';
+                    margin-right: 8px;
+                }
+            }
+
+            &[data-result=pending] {
+                .test-result-name {
+                    color: palette.$color-neutral-07;
+
+                    &::before {
+                        content: 'help_outline';
+                    }
+                }
+            }
+
+            &[data-result=success], &[data-result=test-disabled] {
+                .test-result-name {
+                    color: palette.$color-success-01;
+
+                    &::before {
+                        content: 'check_circle';
+                    }
+                }
+            }
+
+            &[data-result=test-disabled] {
+                .test-result-name {
+                    color: palette.$color-success-00;
+
+                    &::before {
+                        content: 'not_interested';
+                    }
+                }
+            }
+
+            &[data-result=failure], &[data-result=domain-error] {
+                .test-result-name {
+                    color: palette.$color-error-01;
+
+                    &::before {
+                        content: 'cancel';
+                    }
+                }
+            }
+
+            .test-result-error {
+                white-space: pre;
+                font-family: 'Iosevka Web', monospace;
+                max-width: 400px;
+            }
+        }
+    }
+}

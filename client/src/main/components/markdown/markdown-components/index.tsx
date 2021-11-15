@@ -4,3 +4,4 @@ export { Code } from "./code";
 export { Image } from "./image";
 export * from "./quiz-components";
 export { Notes } from "./notes";
+export { Embed} from "./embed";

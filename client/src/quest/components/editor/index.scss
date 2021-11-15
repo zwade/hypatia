@@ -1,0 +1,13 @@
+.editor-container {
+    min-width: 600px;
+    min-height: 400px;
+    position: relative;
+
+    .editor-container-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}

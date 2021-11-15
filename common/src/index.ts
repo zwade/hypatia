@@ -7,3 +7,4 @@ export * from "./typed-event-emitter";
 export * from "./ws/protocol-web-socket";
 export * from "./env";
 export * from "./utils";
+export * from "./expect";

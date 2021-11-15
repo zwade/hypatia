@@ -67,23 +67,35 @@ export namespace Page {
     export type AsInline = {
         name?: string;
         additionalView?: View.t
+        options?: {
+            requiresQuiz?: boolean;
+        }
     }
 
     export type AsWire = {
         name: string;
         path: string;
         view: View.t;
+        options?: {
+            requiresQuiz?: boolean;
+        }
     }
 
     export const MAsInline: Marshaller<AsInline> = M.obj({
         name: M.opt(M.str),
         additionalView: M.opt(View.MView),
+        options: M.opt(M.obj({
+            requiresQuiz: M.opt(M.bool),
+        })),
     });
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
         name: M.str,
         path: MSlugFile,
         view: View.MView,
+        options: M.opt(M.obj({
+            requiresQuiz: M.opt(M.bool),
+        })),
     });
 }
 

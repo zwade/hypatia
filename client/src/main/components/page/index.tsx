@@ -7,9 +7,12 @@ import { API } from "../../api";
 import { SettingsContext } from "../../providers/settings-provider";
 import { View } from "./view";
 import { Navigation } from "./navigation";
+import { withVerification } from "../verification";
+import { PageOptionsProvider } from "../../providers/page-options-provider";
+import { QuizProvider } from "../../providers/quiz-provider";
+import { QuizNavigation } from "../markdown/quiz-navigation";
 
 import "./index.scss";
-import { withVerification } from "../verification";
 
 export const Page = withVerification(() => {
     const { module, lesson, page, path } = usePage()!;
@@ -35,11 +38,16 @@ export const Page = withVerification(() => {
     }
 
     return (
-        <div className="page">
-            <div className="view">
-                <View module={module} lesson={lesson} view={pageData.value.view}/>
-            </div>
-            <Navigation/>
-        </div>
+        <QuizProvider>
+            <PageOptionsProvider options={pageData.value.options ?? {}}>
+                <div className="page">
+                    <div className="view">
+                        <View module={module} lesson={lesson} view={pageData.value.view}/>
+                    </div>
+                    <QuizNavigation/>
+                    <Navigation/>
+                </div>
+            </PageOptionsProvider>
+        </QuizProvider>
     );
 });

@@ -2,6 +2,7 @@ const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { DefinePlugin, webpack, NormalModuleReplacementPlugin } = require("webpack");
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const proxyHost = process.env.PROXY_HOST || "http://localhost:3001";
 
@@ -10,6 +11,15 @@ module.exports = {
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
+
+    entry: {
+        main: "./src/main/index.tsx",
+        quest: "./src/quest/index.tsx",
+        "editor-worker": {
+            import: "monaco-editor/esm/vs/editor/editor.worker.js",
+            filename: "editor.worker.bundle.js",
+        }
+    },
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
@@ -73,11 +83,22 @@ module.exports = {
             }
         ]
     },
+    ignoreWarnings: [/Failed to parse source map/],
     plugins: [
         new NormalModuleReplacementPlugin(/power-assert/, "assert"),
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, "./index.html")
+            chunks: ["main"],
+            template: path.resolve(__dirname, "./index.html"),
+            filename: "index.html"
         }),
+        new HtmlWebpackPlugin({
+            chunks: ["quest"],
+            template: path.resolve(__dirname, "./index.html"),
+            filename: "quest.html"
+        }),
+        new MonacoWebpackPlugin({
+            languages: ["javascript", "typescript", "python"]
+        })
     ],
 
     // When importing a module whose path matches one of the following, just
