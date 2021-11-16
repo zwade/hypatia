@@ -118,18 +118,25 @@ export const useLoadable = <T extends any>(cb: () => Loadable<T>, watch: unknown
     const isFirst = React.useRef(true);
 
     React.useEffect(() => {
-        if (!isFirst.current) {
-            setLoadable(cb());
-        } else {
-            isFirst.current = false;
+        if (isFirst.current) return;
+
+        if (loadable.loading) {
+            loadable.cancel();
         }
+
+        const newLoadable = cb();
+        setLoadable(newLoadable);
+
+        if (!newLoadable.loading) return;
+        newLoadable.then(setLoadable);
     }, watch);
 
     React.useEffect(() => {
+        isFirst.current = false;
         if (loadable.kind !== "loading") return;
 
         loadable.then(setLoadable, setLoadable);
-    }, watch)
+    }, []);
 
     return [
         loadable,

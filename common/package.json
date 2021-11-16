@@ -1,6 +1,7 @@
 {
   "name": "@hypatia-app/common",
   "main": "./dist/index.js",
+  "browser": "./dist/client.js",
   "types": "./dist/index.d.ts",
   "version": "0.0.17",
   "packageManager": "yarn@3.0.1",

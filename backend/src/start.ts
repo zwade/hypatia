@@ -5,6 +5,7 @@ import * as express from "express";
 import * as http from "http";
 import * as yargs from "yargs";
 import * as path from "path";
+import * as bodyParser from "body-parser";
 
 import { AppRouter } from "./routes";
 import { wsOriginRouter, originRouter } from "./net-utils";
@@ -70,6 +71,8 @@ export const start = async () => {
 
     const app = express();
     const server = http.createServer(app);
+
+    app.use(bodyParser.json());
 
     wsOriginRouter(app, server);
     originRouter(app);

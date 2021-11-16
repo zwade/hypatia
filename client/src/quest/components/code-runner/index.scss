@@ -23,12 +23,16 @@
         }
     }
 
+    .test-handler-instructions {
+        max-width: 400px;
+    }
+
     .test-results {
         overflow: auto;
         flex-grow: 1;
 
         .test-results-inner {
-            height: 0px;
+            max-height: 200px;
         }
 
         .test-result {

@@ -5,6 +5,7 @@ import { Divider } from "../divider";
 import { Markdown } from "../markdown";
 import { Terminal } from "../terminal";
 import { Frame } from "../frame";
+import { QuestWrapper } from "../quest-wrapper";
 
 export interface Props {
     module: string;
@@ -52,6 +53,9 @@ export const View = (props: Props) => {
         }
         case "http": {
             return <Frame module={module} lesson={lesson} connection={view.connection}/>;
+        }
+        case "quest": {
+            return <QuestWrapper module={module} lesson={lesson} file={view.file}/>;
         }
     }
 }

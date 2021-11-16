@@ -17,6 +17,9 @@ export namespace API {
         export const updateModule = (module: string, opts: { disabled?: boolean, public?: boolean }) =>
             client["/modules/:module"].post(undefined, opts, { module });
 
+        export const fileSignature = (module: string, lesson: string, file: string) =>
+            client["/modules/:module/:lesson/signed-asset/:file"].get(undefined, undefined, { module, lesson, file });
+
     }
 
     export namespace Service {

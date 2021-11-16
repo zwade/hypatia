@@ -2,6 +2,7 @@ import * as React from "react";
 import { Expect, JsonSerializable } from "@hypatia-app/common/dist/expect";
 import { List } from "immutable";
 import { Button, Frame } from "react-pwn";
+import { MessageContext } from "../../providers/message-provider";
 
 export interface Test {
     name: string;
@@ -20,10 +21,20 @@ export interface Props {
 type TestResult = ["pending"] | Expect.TestResult;
 
 export const TestHandler = (props: Props) => {
+    const { onReport, report } = React.useContext(MessageContext);
     const [compileError, setCompileError] = React.useState<string | null>(null);
     const [compiledFunction, setCompiledFunction] = React.useState<{ fn: (...args: any[]) => unknown } | null>(null);
     const [results, setResults] = React.useState(() => List<TestResult>(props.tests.map(() => ["pending"])));
     const [runTest, setRunTest] = React.useState<number | null>(null);
+    const runTestsRef = React.useRef<() => void>();
+
+    React.useEffect(() => {
+        console.log("Setting a report handler");
+        onReport(() => {
+            console.log("Invoking the report fn");
+            runTestsRef.current?.();
+        })
+    }, []);
 
     React.useEffect(() => {
         const run = async () => {
@@ -42,12 +53,20 @@ export const TestHandler = (props: Props) => {
                     }
                 }
             }
+
+            if (runTest === null) {
+                const total = results.count((result) => result[0] !== "test-disabled");
+                const correct = results.count((result) => result[0] === "success");
+                console.log("reporting", total, "out of", correct);
+
+                report({ total, correct });
+            }
         }
 
         run();
     }, [compiledFunction, runTest]);
 
-    const runTests = () => {
+    runTestsRef.current = () => {
         try {
             const compiled = props.compile();
             setCompiledFunction({ fn: compiled });
@@ -100,7 +119,7 @@ export const TestHandler = (props: Props) => {
             <Button
                 className="test-run-button"
                 label="Run Tests"
-                onClick={runTests}
+                onClick={runTestsRef.current}
             />
         </Frame>
     )

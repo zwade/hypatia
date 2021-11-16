@@ -30,7 +30,12 @@ export namespace View {
         connection: string,
     }
 
-    export type t = Markdown | Terminal | Http | [t, t];
+    export type Quest = {
+        kind: "quest",
+        file: string,
+    }
+
+    export type t = Markdown | Terminal | Http | Quest | [t, t];
 
     export const MMarkdown: Marshaller<Markdown> = M.obj({
         kind: M.lit("markdown"),
@@ -47,11 +52,17 @@ export namespace View {
         connection: M.str,
     });
 
+    export const MQuest: Marshaller<Quest> = M.obj({
+        kind: M.lit("quest"),
+        file: MSlugFile
+    });
+
     export const MView: Marshaller<t> = M.rec((self) =>
         M.union(
             MMarkdown,
             MTerminal,
             MHttp,
+            MQuest,
             M.tup(self, self)
         )
     );

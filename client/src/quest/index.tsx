@@ -1,47 +1,74 @@
+import * as React from "react";
 import { Map as IMap } from "immutable";
 import { render } from "react-dom"
 import { PaletteProvider } from "react-pwn";
+import { Loadable } from "@hypatia-app/common";
+import type { Quest } from "@hypatia-app/backend/dist/types";
 
 import { BlueGreen } from "../main/utils/palette";
 import { MultiEditor } from "./components/multi-editor";
 import { FileProvider } from "./providers/file-provider";
+import { CodeRunner } from "./components/code-runner";
+import { useLoadable } from "../main/hooks";
+import { API } from "./api";
+import { MessageContext, MessageProvider } from "./providers/message-provider";
 
 import "./index.scss";
 import "./load-brython";
-import { CodeRunner } from "./components/code-runner";
 
-const App = () => {
-    const templates = IMap({
-        "python": `
-def result(search_query):
-    return search_query
-        `.trim(),
-        "javascript": `
-function result(search_query) {
-    return search_query
-}
-        `.trim(),
-    })
+const waitingForApp = Symbol("Waiting for App");
+
+const _App = () => {
+    const { configuration } = React.useContext(MessageContext);
+    const [loadable] = useLoadable<Quest.t>(() => {
+        if (configuration !== undefined) {
+            const { module, lesson, file, signature } = configuration;
+            return API.Modules.getSignedQuest(module, lesson, file, signature)
+        }
+
+        return Loadable.unrecoverableError(waitingForApp);
+    }, [configuration]);
+
+    if (!loadable.value) {
+        if (loadable.loading || loadable.error === waitingForApp) {
+            return (
+                <div className="loading">
+                    Loading
+                </div>
+            );
+        } else {
+            return (
+                <div className="error">
+                    Something went wrong
+                </div>
+            );
+        }
+    }
+
+    const data = loadable.value;
 
     return (
         <PaletteProvider palette={BlueGreen}>
-            <FileProvider templates={templates}>
+            <FileProvider templates={IMap(data.templates)}>
                 <div className="quest-app">
                     <MultiEditor/>
                     <CodeRunner
-                        name={"Sample Test"}
-                        instructions={"Write a program that will output a number plus one"}
-                        tests={[
-                            { name: "The value 2", input: [2], expect: ["toBe", 3] },
-                            { name: "The value 3", input: [3], expect: ["toBeGreaterThan", 3] },
-                            { name: "The value 4", input: [4], expect: ["toBeGreaterThanOrEqual", 5] },
-                            { name: "The value 5", input: [5], expect: ["not", "toBe", 5] },
-                        ]}
+                        name={data.name}
+                        instructions={data.instructions}
+                        tests={data.tests}
                     />
                 </div>
             </FileProvider>
         </PaletteProvider>
     );
 }
+
+const App = () => {
+    return (
+        <MessageProvider>
+            <_App/>
+        </MessageProvider>
+    )
+};
 
 render(<App/>, document.getElementById("root"))

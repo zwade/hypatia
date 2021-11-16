@@ -94,7 +94,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             chunks: ["quest"],
             template: path.resolve(__dirname, "./index.html"),
-            filename: "quest.html"
+            filename: "quest/index.html"
         }),
         new MonacoWebpackPlugin({
             languages: ["javascript", "typescript", "python"]

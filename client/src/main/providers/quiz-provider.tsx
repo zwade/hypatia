@@ -12,6 +12,7 @@ export enum QuestionStatus {
 export interface QuestionContextData {
     currentStatus: IMap<number, QuestionStatus>;
     setStatus: (questionId: number, status: QuestionStatus) => void;
+    forceRefresh: () => void;
     onCheck: (id: number | undefined, cb: () => void) => () => void;
     check: (id?: number) => void;
     shouldShowHint: boolean;
@@ -49,6 +50,11 @@ export const QuizProvider = (props: Props) => {
                 statusRef.current = statusRef.current.set(questionId, s);
             }
             update({});
+        },
+        forceRefresh: () => {
+            for (const cb of renameRef.current.get(undefined) || ISet<() => void>()) {
+                cb();
+            }
         },
         onCheck: (id: number | undefined, cb: () => void) => {
             renameRef.current = renameRef.current.update(id, (set = ISet()) => set.add(cb));

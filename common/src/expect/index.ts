@@ -164,8 +164,8 @@ export namespace Expect {
                 const success = error !== undefined;
                 return (
                     success === !isNegated ? ["success"] :
-                    success ? ["failure", `expected ${result} to not throw an error`] :
-                    ["failure", `expected ${result} to throw an error`]
+                    success ? ["failure", `expected function to not throw an error`] :
+                    ["failure", `expected function to throw an error`]
                 )
             }
             case "toBeAcceptedBy": {
