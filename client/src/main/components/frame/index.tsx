@@ -2,6 +2,7 @@ import { Loadable } from "@hypatia-app/common";
 import * as React from "react";
 
 import { API } from "../../api";
+import { Loading } from "../loading";
 
 export interface Props {
     module: string;
@@ -25,7 +26,7 @@ export const Frame = (props: Props) => {
     }, [props.module, props.lesson, props.connection]);
 
     if (connectionUri.value === undefined) {
-        return <>Loading</>;
+        return <Loading/>;
     }
 
     return (

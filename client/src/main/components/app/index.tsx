@@ -16,6 +16,7 @@ import { Settings } from "../settings";
 import { ModuleEditor } from "../module-editor";
 
 import "./index.scss";
+import { Loading } from "../loading";
 
 const TopLevelPages = (props: { children: React.ReactNode }) => (
     <Switch>
@@ -47,7 +48,7 @@ const Content = () => {
             return null;
         }
         case "loading": {
-            return <h1>Loading</h1>;
+            return <Loading/>
         }
         case "reloading":
         case "value": {

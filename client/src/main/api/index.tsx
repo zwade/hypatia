@@ -10,6 +10,7 @@ export namespace API {
         export const shared = () => client["/modules/q/shared"].get();
         export const pub = () => client["/modules/q/public"].get();
 
+        export const get = (module: string) => client["/modules/:module"].get(undefined, undefined, { module });
         export const pageData = (module: string, lesson: string, page: string) =>
             client["/modules/:module/:lesson/:page/data"].get(undefined, undefined, { module, lesson, page });
         export const pageContent = (module: string, lesson: string, filename: string) =>

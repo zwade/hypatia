@@ -13,6 +13,7 @@ import { QuizProvider } from "../../providers/quiz-provider";
 import { QuizNavigation } from "../markdown/quiz-navigation";
 
 import "./index.scss";
+import { Loading } from "../loading";
 
 export const Page = withVerification(() => {
     const { module, lesson, page, path } = usePage()!;
@@ -34,7 +35,7 @@ export const Page = withVerification(() => {
     }, [module, lesson, page]);
 
     if (!pageData.value) {
-        return <div className="page">Loading...</div>;
+        return <div className="page"><Loading/></div>;
     }
 
     return (

@@ -4,7 +4,7 @@ import * as path from "path";
 import * as fs from "fs-extra";
 import * as yaml from "yaml";
 
-import { getPageData, getAllModuleCaches, getPageFile } from "../modules/utils";
+import { getPageData, getAllModuleCaches, getPageFile, getModuleByPath } from "../modules/utils";
 import { Module } from "../types";
 import { Options } from "../options";
 import { Quest } from "../types/quest";
@@ -44,6 +44,19 @@ export const moduleRouter = Router()
     .get("/q/public", (leaf) => leaf
         .return(() => {
             return [] as Module.WithSettings[];
+        })
+    )
+
+    .get("/:module", (leaf) => leaf
+        .then(marshalParams(M.obj({ module: M.str })))
+        .return(async (req): Promise<Module.WithSettings> => {
+            const module = await getModuleByPath(req.params.module);
+            return {
+                bundle: module,
+                disabled: false,
+                owner: "00000000-0000-0000-0000-000000000000",
+                public: true,
+            }
         })
     )
 

@@ -7,6 +7,7 @@ import "./index.scss";
 import { useLocalStorage } from "../../hooks";
 import { SettingsContext } from "../../providers/settings-provider";
 import { withVerification } from "../verification";
+import { Loading } from "../loading";
 
 export interface Props {
 
@@ -24,7 +25,7 @@ export const ModuleBrowser = withVerification((props: Props) => {
     if (data.value === undefined) {
         return (
             <div className="module-browser">
-                <div className="loading-message">Loading Modules</div>
+                <div className="loading-message"><Loading/></div>
             </div>
         );
     }

@@ -6,7 +6,7 @@ import { M, marshal } from "@zensors/sheriff";
 import { v4 as uuid } from "uuid";
 
 import * as WebSocket from "ws";
-import { getModuleByPath } from "../modules";
+import { getModuleByPath } from "../modules/utils";
 import { ProxyManager } from "./proxy";
 import { hostname, port, withSubdomain } from "../net-utils";
 

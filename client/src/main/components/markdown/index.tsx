@@ -1,21 +1,19 @@
 import * as React from "react";
 import ReactMarkdown from "react-markdown";
 import RehypeHighlight from "rehype-highlight";
-import RehypeRaw from "rehype-raw";
 import RemarkGFM from "remark-gfm";
 import { Loadable } from "@hypatia-app/common";
 
 import { API } from "../../api";
 import { Code, Quiz, Image, QuizCheckbox, QuizQuestion, QuizRadio, QuizTextInput, QuizHint, Notes, Embed } from "./markdown-components";
 import { AllowedHtmlPlugin, AttrPlugin, NotesPlugin, QuizPlugin, EmbedPlugin } from "./parsers";
-import { QuizProvider } from "../../providers/quiz-provider";
-import { QuizNavigation } from "./quiz-navigation";
 import { QuizElements } from "./parsers/quiz";
 import { NotesElements } from "./parsers/notes-input";
+import { EmbedElements } from "./parsers/embed";
+import { Loading } from "../loading";
 
 import "./page.scss";
 import "./material-dark.scss";
-import { EmbedElements } from "./parsers/embed";
 
 export interface Props {
     module: string;
@@ -38,7 +36,7 @@ export const Markdown = (props: Props) => {
     }, [module, lesson, file]);
 
     if (!pageContent.value) {
-        return <div className="page">Loading...</div>;
+        return <div className="page"><Loading/></div>;
     }
 
     return (

@@ -5,6 +5,7 @@ import { API } from "../../api";
 import { useLoadable } from "../../hooks";
 import { ModuleOption } from "../module-option";
 import { EditPane } from "./edit-pane";
+import { Loading } from "../loading";
 
 export const Selector = () => {
     const [modules, refreshModules] = useLoadable(() => API.Modules.mine());
@@ -25,7 +26,7 @@ export const Selector = () => {
         e.target.value = "";
     }
 
-    if (!modules.value) return <>Loading...</>;
+    if (!modules.value) return <Loading/>;
 
     return (
         <>

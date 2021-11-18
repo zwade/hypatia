@@ -4,6 +4,7 @@ import { API } from "../../api";
 import { useLoadable } from "../../hooks";
 
 import { ModuleContext } from "../../providers/module-provider";
+import { Loading } from "../loading";
 import { ModuleOption } from "../module-option";
 import { withVerification } from "../verification";
 
@@ -28,7 +29,7 @@ export const ModuleBrowser = withVerification(() => {
     }
 
     if (subscriptions.loading && mine.loading) {
-        return <>Loading...</>;
+        return <Loading/>;
     }
 
     const SelectionModal =

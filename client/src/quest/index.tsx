@@ -12,6 +12,7 @@ import { CodeRunner } from "./components/code-runner";
 import { useLoadable } from "../main/hooks";
 import { API } from "./api";
 import { MessageContext, MessageProvider } from "./providers/message-provider";
+import { Loading } from "../main/components/loading";
 
 import "./index.scss";
 import "./load-brython";
@@ -33,7 +34,7 @@ const _App = () => {
         if (loadable.loading || loadable.error === waitingForApp) {
             return (
                 <div className="loading">
-                    Loading
+                    <Loading/>
                 </div>
             );
         } else {
