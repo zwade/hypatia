@@ -73,6 +73,9 @@ export namespace Page {
         name: string;
         path: string;
         view: View.t;
+        options: {
+            requiresQuiz: boolean;
+        }
     }
 
     export type AsInline = {
@@ -104,9 +107,9 @@ export namespace Page {
         name: M.str,
         path: MSlugFile,
         view: View.MView,
-        options: M.opt(M.obj({
-            requiresQuiz: M.opt(M.bool),
-        })),
+        options: M.obj({
+            requiresQuiz: M.bool,
+        }),
     });
 }
 
@@ -142,6 +145,7 @@ export namespace Lesson {
 
 export namespace Module {
     export type AsBundle = {
+        bundleVersion: 1;
         name: string;
         path: string;
         lessons: Lesson.AsBundle[];
@@ -175,6 +179,7 @@ export namespace Module {
     });
 
     export const MAsBundle: Marshaller<AsBundle> = M.obj({
+        bundleVersion: M.lit(1),
         name: M.str,
         path: MSlug,
         lessons: M.arr(Lesson.MAsBundle),

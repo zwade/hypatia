@@ -4,7 +4,7 @@ import * as path from "path";
 import * as fs from "fs-extra";
 import * as yaml from "yaml";
 
-import { getPageData, getAllModuleCaches, getPageFile } from "../modules";
+import { getPageData, getAllModuleCaches, getPageFile } from "../modules/utils";
 import { Module } from "../types";
 import { Options } from "../options";
 import { Quest } from "../types/quest";

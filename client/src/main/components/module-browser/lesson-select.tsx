@@ -17,7 +17,7 @@ export const LessonSelect = (props: Props) => {
         <div
             className={"module-entry"}
             data-open={open}
-            style={{ "--max-height": `${bundle.lessons.length * 32}px` } as any}
+            style={{ "--max-height": `${bundle.lessons.length * 40}px` } as any}
         >
             <div
                 className={"module-name"}

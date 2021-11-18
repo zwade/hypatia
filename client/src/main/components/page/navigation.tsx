@@ -69,7 +69,7 @@ export const Navigation = () => {
     return (
         <div className="navigation">
             <div
-                className={classes("nav-button", "navigation-previous", page === 0 ? "disabled" : undefined)}
+                className={classes("nav-button", "navigation-previous")}
                 onClick={navigate(prevPage)}
             >
                 { prevPageName }
@@ -80,7 +80,7 @@ export const Navigation = () => {
                 <div className="pageno">{ `${page + 1}/${pagesInLesson}` }</div>
             </div>
             <div
-                className={classes("nav-button", "navigation-next", page === 0 || !allowedNext ? "disabled" : undefined)}
+                className={classes("nav-button", "navigation-next", !allowedNext ? "disabled" : undefined)}
                 onClick={allowedNext ? navigate(nextPage) : undefined}
             >
                 { nextPageName }
