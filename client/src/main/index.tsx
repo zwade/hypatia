@@ -11,6 +11,11 @@ declare global {
     interface process {
         env: Record<string, string | undefined>
     }
+
+    namespace React {
+        type _CSSProperties = { [K in `--${string}`]: string | number };
+        interface CSSProperties extends _CSSProperties {}
+    }
 }
 
-render(<App/>, document.getElementById("root"))
+render(<App/>, document.getElementById("root"));

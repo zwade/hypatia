@@ -1,0 +1,102 @@
+@use "~react-pwn/palette";
+
+.file-explorer {
+    height: 100%;
+    background: palette.$color-primary-05;
+
+    .subtree {
+        .file, .directory {
+            color: palette.$color-neutral-03;
+            padding: 2px 16px;
+            padding-left: calc(var(--depth) * 16px + 16px);
+            height: calc(var(--entry-height) - 4px);
+
+            &:hover {
+                color: palette.$color-neutral-01;
+            }
+        }
+
+        .directory {
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            &::before {
+                content: "expand_more";
+                font-family: 'Material Icons';
+                transform: rotate(-90deg);
+                display: inline-block;
+                transition: transform 100ms ease-in-out;
+                font-size: 20px;
+                margin-bottom: -2px;
+            }
+        }
+
+        &.shown > .directory::before {
+            transform: rotate(0deg);
+        }
+
+        .collapsible {
+            transition: max-height 100ms ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+        }
+
+        &.shown > .collapsible{
+            max-height: calc(var(--size) * var(--entry-height));
+        }
+
+        .file {
+            cursor: pointer;
+
+            &.selected {
+                background: palette.$color-primary-09;
+            }
+        }
+    }
+}
+
+.context-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    .off-click {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .context-menu-display {
+        position: absolute;
+
+        .context-menu-segment {
+            background: palette.$color-neutral-01;
+            cursor: pointer;
+            padding: 2px;
+            border-left: 1px solid palette.$color-neutral-09;
+            border-right: 1px solid palette.$color-neutral-09;
+
+            &:hover {
+                background: palette.$color-neutral-03;
+            }
+
+            &:first-child {
+                border-top: 1px solid palette.$color-neutral-09;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
+
+            &:last-child {
+                border-bottom: 1px solid palette.$color-neutral-09;
+                border-bottom-left-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+        }
+    }
+}

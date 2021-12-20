@@ -1,14 +1,20 @@
 import * as React from "react";
 import { useParams } from "react-router";
-import { API } from "../../../api";
-import { useLoadable } from "../../../hooks";
-import { Loading } from "../../loading";
+import { EditorProvider } from "./provider";
+
+import "./index.scss";
+import { EditorFooter } from "./footer";
+import { Sidebar } from "./sidebar";
 
 export const ModuleExplorer = () => {
-    const path = useParams<{ module: string }>();
-    const [module] = useLoadable(() => API.Modules.get(path.module));
+    const { module } = useParams<{ module: string }>();
 
     return (
-        <Loading/>
+        <div className="module-explorer">
+            <EditorProvider module={module}>
+                <Sidebar/>
+                <EditorFooter/>
+            </EditorProvider>
+        </div>
     );
 }

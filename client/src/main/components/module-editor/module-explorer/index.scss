@@ -1,0 +1,20 @@
+@use "~react-pwn/palette";
+
+.module-explorer {
+    height: 100%;
+    display: grid;
+    grid-template:
+        "sidebar editors" 1fr
+        "footer  footer" 64px
+        / max-content 1fr;
+
+    .module-editor-sidebar {
+        grid-area: sidebar;
+    }
+
+    .module-editor-footer {
+        grid-area: footer;
+        background: palette.$color-neutral-09;
+        color: palette.$color-neutral-00;
+    }
+}

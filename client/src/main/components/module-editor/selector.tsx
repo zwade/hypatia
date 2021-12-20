@@ -29,25 +29,27 @@ export const Selector = () => {
     if (!modules.value) return <Loading/>;
 
     return (
-        <>
-            {
-                selected !== null
-                    ? <EditPane module={selected} onClose={() => setSelected(null)} refresh={refreshModules} />
-                    : undefined
-            }
-            <div className="module-selector">
+        <div className="app-page module-editor">
+            <div className="content">
                 {
-                    modules.value.map((module) => (
-                        <ModuleOption
-                            key={module.bundle.path}
-                            module={module}
-                            onClick={() => setSelected(module)}
-                        />
-                    ))
+                    selected !== null
+                        ? <EditPane module={selected} onClose={() => setSelected(null)} refresh={refreshModules} />
+                        : undefined
                 }
-                <label htmlFor="hidden-input"  className="upload-new"/>
+                <div className="module-selector">
+                    {
+                        modules.value.map((module) => (
+                            <ModuleOption
+                                key={module.bundle.path}
+                                module={module}
+                                onClick={() => setSelected(module)}
+                            />
+                        ))
+                    }
+                    <label htmlFor="hidden-input"  className="upload-new"/>
+                </div>
+                <input onChange={onChange} id="hidden-input" type="file" accept=".zip"/>
             </div>
-            <input onChange={onChange} id="hidden-input" type="file" accept=".zip"/>
-        </>
+        </div>
     );
 }

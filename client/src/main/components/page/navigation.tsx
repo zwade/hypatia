@@ -81,7 +81,12 @@ export const Navigation = () => {
             </div>
             <div
                 className={classes("nav-button", "navigation-next", !allowedNext ? "disabled" : undefined)}
-                onClick={allowedNext ? navigate(nextPage) : undefined}
+                onClick={(e) => {
+                    if (allowedNext || e.metaKey) {
+                        navigate(nextPage)();
+                        e.preventDefault();
+                    }
+                }}
             >
                 { nextPageName }
             </div>
