@@ -6,9 +6,10 @@
   "version": "0.0.17",
   "packageManager": "yarn@3.0.1",
   "license": "MIT",
-  "peerDependencies": {
+  "optionalDependencies": {
     "express": "*",
-    "pg": "*"
+    "pg": "*",
+    "@zensors/sheriff": "*"
   },
   "scripts": {
     "prepublish": "yarn r ts:build"

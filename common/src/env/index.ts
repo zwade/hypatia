@@ -31,9 +31,14 @@ export namespace Env {
         let result: number | undefined;
         try {
             result = parseInt(process.env[name]!, 10);
+            if (Number.isNaN(result)) {
+                result === undefined;
+            }
         } catch (e) {
             // pass
         }
+
+        result ??= options.default;
 
         if (result === undefined && !options.allowUndefined) {
             throw new Error(`Unable to get environment variable [${name}]`);
